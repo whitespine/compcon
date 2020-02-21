@@ -103,4 +103,4 @@ async function getUser(): Promise<UserProfile> {
   return UserProfile.Deserialize(data)
 }
 
-export { getUser, UserProfile }
+export { getUser, UserProfile, IUserProfile }
