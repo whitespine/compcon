@@ -6,8 +6,7 @@ import { Capacitor } from '@capacitor/core'
 Vue.use(Router)
 
 export default new Router({
-  // TODO: put in a check for dev here so it doesn't break HMR
-  // mode: Capacitor.platform === 'web' ? 'history' : 'hash',
+  mode: Capacitor.platform === 'web' ? 'history' : 'hash',
   scrollBehavior() {
     return { x: 0, y: 0 }
   },

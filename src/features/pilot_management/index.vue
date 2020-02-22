@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="pilot-management">
     <cc-nav pilot-management />
-    <div class="ma-3">
+    <div class="pilot-management__inner ma-3">
       <v-fade-transition leave-absolute>
         <router-view />
       </v-fade-transition>
