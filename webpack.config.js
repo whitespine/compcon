@@ -24,7 +24,8 @@ function versionString() {
     return `PREVIEW @ ${commitRef}`
     // Otherwise this is probably a local build
   } else {
-    return 'UNKNOWN'
+    return process.env.PACKAGE_VERSION || process.env.npm_package_version  || ''
+    // return 'UNKNOWN'
   }
 }
 

@@ -1,7 +1,5 @@
 import { Capacitor } from '@capacitor/core'
 import path from 'path'
-import { promisify } from 'util'
-import PromisifyFileReader from 'promisify-file-reader'
 
 import ExtLog from './ExtLog'
 
@@ -35,58 +33,59 @@ const ensureDataDir = function(): void {
   }
 }
 
-const writeFile = async function(name: string, data: string): Promise<void> {
+const writeFile = function(name: string, data: string): void {
   switch (PLATFORM) {
     case 'web':
       localStorage.setItem(name, data)
       break
     case 'electron':
-      await promisify(fs.writeFile)(path.resolve(userDataPath, name), data)
+      fs.writeFileSync(path.resolve(userDataPath, name), data)
       break
     default:
       throw new Error(platformNotSupportedMessage)
   }
 }
 
-const readFile = async function(name: string): Promise<string> {
+const readFile = function(name: string): string {
   switch (PLATFORM) {
     case 'web':
       return localStorage.getItem(name)
     case 'electron':
-      return await promisify(fs.readFile)(path.resolve(userDataPath, name), 'utf-8')
+      return fs.readFileSync(path.resolve(userDataPath, name), 'utf-8')
     default:
       throw new Error(platformNotSupportedMessage)
   }
 }
 
-const exists = async function(name: string): Promise<boolean> {
+const exists = function(name: string): boolean {
   switch (PLATFORM) {
     case 'web':
       return Boolean(localStorage.getItem(name))
     case 'electron':
-      return await promisify(fs.exists)(path.resolve(userDataPath, name))
+      return fs.existsSync(path.resolve(userDataPath, name))
     default:
       throw new Error(platformNotSupportedMessage)
   }
 }
 
-const saveData = async function<T>(fileName: string, data: T): Promise<void> {
+const saveData = function<T>(fileName: string, data: T): void {
   return writeFile(fileName, JSON.stringify(data))
 }
 
-const loadData = async function<T>(fileName: string): Promise<T[]> {
-  const fileExists = await exists(fileName)
+const loadData = function<T>(fileName: string): T[] {
+  const fileExists =  exists(fileName)
   if (fileExists) {
-    const dataText = await readFile(fileName)
+    const dataText =  readFile(fileName)
     return (JSON.parse(dataText) || []) as T[]
   } else {
     return []
   }
 }
 
-const importData = async function<T>(file: File): Promise<T> {
-  const text = await PromisifyFileReader.readAsText(file)
-  return JSON.parse(text) as T
+const importData = function<T>(file: any): T {
+  console.log('data import: ', file)
+
+  return JSON.parse(file) as T
 }
 
 const dataPathMap = {

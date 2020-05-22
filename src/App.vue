@@ -56,6 +56,9 @@ export default Vue.extend({
     Vue.prototype.$notify = this.$refs.notifier.notify.bind(this.$refs.notifier)
     Vue.prototype.$notifyError = this.$refs.notifier.notifyError.bind(this.$refs.notifier)
   },
+  created() {
+    console.log(getModule(NavStore, this.$store).DarkMode)
+  }
 })
 </script>
 

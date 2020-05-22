@@ -1,4 +1,5 @@
 import { Capacitor } from '@capacitor/core'
+import fs from 'fs'
 
 const PLATFORM = Capacitor.platform
 const platformNotSupportedMessage = `ERROR - PLATFORM NOT SUPPORTED: "${PLATFORM}" `
@@ -8,7 +9,7 @@ if (PLATFORM == 'electron') {
   electron = require('electron')
 }
 
-const saveFile = function(filename, data, label = 'Save') {
+const saveFile = function(filename, data, label = 'Save'): void {
   switch (PLATFORM) {
     case 'web':
       const blob = new Blob([data])
@@ -28,6 +29,8 @@ const saveFile = function(filename, data, label = 'Save') {
       dialog.showSaveDialog({
         defaultPath: filename,
         buttonLabel: label,
+      }, (path) => {
+        fs.writeFileSync(path, data)
       })
       return
     default:

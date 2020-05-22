@@ -1,9 +1,11 @@
+import { Capacitor } from '@capacitor/core'
 import path from 'path'
 import extlog from './ExtLog'
 import uuid from 'uuid/v4'
 import { writeFile, readFile, exists, USER_DATA_PATH } from './Data'
 
-const CONFIG_FILE_NAME = 'user.config'
+const PLATFORM = Capacitor.platform
+const CONFIG_FILE_NAME = PLATFORM === 'web' ? 'user.config' : path.join(USER_DATA_PATH, 'user.config')
 
 interface IUserProfile {
   id: string
@@ -140,9 +142,29 @@ async function getUser(): Promise<UserProfile> {
       return
     }
   }
-
   const data = JSON.parse(await readFile(CONFIG_FILE_NAME)) as IUserProfile
   return UserProfile.Deserialize(data)
 }
 
-export { getUser, UserProfile }
+function getUserSync(): UserProfile {
+  const configFileExists = exists(CONFIG_FILE_NAME)
+  if (!configFileExists) {
+    try {
+      writeFile(CONFIG_FILE_NAME, JSON.stringify(new UserProfile(uuid())))
+      extlog('Created user profile')
+    } catch (err) {
+      extlog(
+        `Critical Error: COMP/CON unable to create user profile at ${path.join(
+          USER_DATA_PATH,
+          CONFIG_FILE_NAME
+        )}: \n ${err}`
+      )
+      return
+    }
+  }
+  console.log(readFile(CONFIG_FILE_NAME))
+  const data = JSON.parse(readFile(CONFIG_FILE_NAME)) as IUserProfile
+  return UserProfile.Deserialize(data)
+}
+
+export { getUser, getUserSync, UserProfile }

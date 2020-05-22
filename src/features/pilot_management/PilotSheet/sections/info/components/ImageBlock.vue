@@ -14,8 +14,9 @@
       <v-icon left>mdi-circle-edit-outline</v-icon>
       Set Pilot Portrait
     </v-btn>
+    
 
-    <cc-image-selector-web v-if="$platform" ref="imageSelector" :item="pilot" type="pilot" />
+    <cc-image-selector-web v-if="$platform === 'web'" ref="imageSelector" :item="pilot" type="pilot" />
     <cc-image-selector v-else ref="imageSelector" :item="pilot" type="pilot" />
   </div>
 </template>

@@ -45,27 +45,27 @@ jobs:
         on:
           tags: true
           branch: master
-    - name: build_electron
-      os: osx
-      osx_image: xcode10.2
-      script:
-        - mkdir -p ~/$TRAVIS_BUILD_NUMBER/mac
-        - yarn electron:build --publish never
-      deploy:
-      - provider: releases
-        token: $GH_TOKEN
-        file_glob: true
-        file:
-        - "electron/dist/COMPCON*.AppImage"
-        - "electron/dist/COMPCON*.exe"
-        - "electron/dist/COMPCON*mac.zip"
-        on:
-          tags: true
-          branch: master
-        edge: true
-      - provider: script
-        on:
-          tags: true
-          branch: master
-        script: bash build_scripts/deploy_butler.sh
-        edge: true
+    # - name: build_electron
+    #  os: osx
+    #  osx_image: xcode10.2
+    #  script:
+    #    - mkdir -p ~/$TRAVIS_BUILD_NUMBER/mac
+    #    - yarn electron:build --publish never
+    #  deploy:
+    #  - provider: releases
+    #    token: $GH_TOKEN
+    #    file_glob: true
+    #    file:
+    #    - "electron/dist/COMPCON*.AppImage"
+    #    - "electron/dist/COMPCON*.exe"
+    #    - "electron/dist/COMPCON*mac.zip"
+    #    on:
+    #      tags: true
+    #      branch: master
+    #    edge: true
+    #  - provider: script
+    #    on:
+    #      tags: true
+    #      branch: master
+    #    script: bash build_scripts/deploy_butler.sh
+    #    edge: true

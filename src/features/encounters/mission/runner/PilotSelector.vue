@@ -153,7 +153,7 @@ export default Vue.extend({
     },
     async fileImport(file) {
       try {
-        const fileData = await importData<IPilotData>(file)
+        const fileData = importData<IPilotData>(file)
         this.filePilot = Pilot.Deserialize(fileData)
         this.filePilot.RenewID()
       } catch (error) {

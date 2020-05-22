@@ -50,7 +50,7 @@
 
     <v-toolbar-title>
       <span class="heading">COMP/CON</span>
-      <span class="flavor-text white--text">{{ $appVersion }}</span>
+      <span v-if="$appVersion" class="flavor-text white--text">{{ $appVersion }}</span>
     </v-toolbar-title>
 
     <v-spacer />

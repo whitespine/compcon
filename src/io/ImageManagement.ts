@@ -20,6 +20,8 @@ let stat
 if (PLATFORM == 'electron') {
   fs = require('fs')
   electron = require('electron')
+  console.log(electron.remote.app)
+  console.log(electron.remote.app.getPath('userData'))
   userDataPath = path.join((electron.app || electron.remote.app).getPath('userData'), 'data')
 
   exists = promisify(fs.exists)
@@ -53,60 +55,18 @@ enum ImageTag {
   Misc = 'misc',
 }
 
-function getImageDir(subdir: ImageTag, defaults: boolean = false): string {
+function getImageDir(subdir: ImageTag, defaults?: boolean): string {
   // images are grabbed from /static/img on web, datapath on electron
   const root = isWeb ? '/static' : userDataPath
-  if (defaults && !isWeb) return path.join(root, 'img', 'default', subdir)
+  if (defaults && !isWeb) return path.join(root, 'img', subdir)
   return path.join(root, 'img', subdir)
 }
 
-function getImagePath(subdir: ImageTag, fileName: string, defaults: boolean = false) {
+function getImagePath(subdir: ImageTag, fileName: string, defaults?: boolean): string {
   return path.join(getImageDir(subdir, defaults), fileName)
 }
 
-// TODO: figure out how to make this work on web
-// function getImageInfoArray(subdir: ImageTag): IImageInfo[] {
-//   const imageDir = imageDir(subdir)
-//   const imageData = path.join(imageDir, 'info.json')
-
-//   if (!fs.existsSync(imageData)) {
-//     extlog(`image subdir ${subdir} author db doesn't exist, creating...`)
-//     try {
-//       fs.writeFileSync(imageData, '[]')
-//     } catch (error) {
-//       extlog(`error getting image info array for ${imageData}`)
-//       return
-//     }
-//   }
-
-//   return JSON.parse(fs.readFileSync(imageData, 'utf-8')) as IImageInfo[]
-// }
-// function writeImageInfo(infoArray: IImageInfo[], subdir: ImageTag): void {
-//   const imageDir = getImageDir(subdir)
-//   try {
-//     fs.writeFileSync(path.join(imageDir, 'info.json'), JSON.stringify(infoArray))
-//   } catch (err) {
-//     extlog(`unable to write image info file in ${imageDir}`)
-//   }
-// }
-
-// function checkImageData(subdir: ImageTag): void {
-//   const images = getImagePaths(subdir)
-//   const info = getImageInfoArray(subdir)
-
-//   images.forEach(i => {
-//     if (!info.find(x => x.filename === i)) {
-//       info.push({
-//         filename: i,
-//         artist: 'Unknown',
-//       })
-//     }
-//   })
-
-//   writeImageInfo(info, subdir)
-// }
-
-async function getImagePaths(subdir: ImageTag, defaults: boolean = false): Promise<string[]> {
+async function getImagePaths(subdir: ImageTag, defaults?: boolean): Promise<string[]> {
   if (isWeb) return
   const imageDir = getImageDir(subdir, defaults)
   const dirExists = await exists(imageDir)
@@ -123,7 +83,7 @@ async function copyDefaults(origin: string): Promise<void> {
   const defaultDirPath = path.join(__dirname, 'static', 'img', origin)
   if (!(await exists(defaultDirPath))) return
   const defaults = await readdir(defaultDirPath)
-  const destinationDir = path.join(userDataPath, 'img', 'default', origin)
+  const destinationDir = path.join(userDataPath, 'img', origin)
   const destinationDirExists = await exists(destinationDir)
   if (!destinationDirExists) {
     extlog(`${origin} default folder does not exist in user folder. Creating...`)
@@ -149,12 +109,12 @@ async function copyDefaults(origin: string): Promise<void> {
 
 async function validateImageFolders(): Promise<void> {
   if (isWeb) return
-  let subdirs = Object.keys(ImageTag).map(k => ImageTag[k as string])
+  const subdirs = Object.keys(ImageTag).map(k => ImageTag[k as string])
 
   const imgPath = path.join(userDataPath, 'img')
   const imgPathExists = await exists(imgPath)
   if (!imgPathExists) {
-    extlog(`img subfolder doesn't exist, creating...`)
+    extlog(`img subfolder doesn't exist, creating...(${imgPath})`)
     await mkdir(imgPath)
   }
   const defaultPath = path.join(userDataPath, 'img', 'default')
@@ -165,28 +125,19 @@ async function validateImageFolders(): Promise<void> {
   }
   Promise.all(
     subdirs.map(async subdir => {
-      // TODO
-      // checkImageData(subdir)
       await copyDefaults(subdir)
     })
   )
 }
 
-async function addImage(subdir: ImageTag, imagePath: string) {
+async function addImage(subdir: ImageTag, imagePath: string): Promise<void> {
   if (isWeb) return
   const imageDir = getImageDir(subdir)
   const imgFilename = path.parse(imagePath).base
-  // TODO
-  // let info = getImageInfoArray(subdir)
-  // info.push({
-  //   filename: imgFilename,
-  //   artist: 'Unknown',
-  // })
-  // writeImageInfo(info, subdir)
   await copyFile(imagePath, path.join(imageDir, imgFilename))
 }
 
-async function removeImage(subdir: ImageTag, filename: string) {
+async function removeImage(subdir: ImageTag, filename: string): Promise<void> {
   const p = path.join(getImageDir(subdir), filename)
   if (await exists(p)) {
     await unlink(p)
@@ -194,18 +145,6 @@ async function removeImage(subdir: ImageTag, filename: string) {
     extlog(`unable to delete image: file missing at ${p}`)
     return
   }
-  // TODO:
-  // let info = getImageInfoArray(subdir)
-  // const idx = info.findIndex(x => x.filename === filename)
-  // info.splice(idx, 1)
-  // writeImageInfo(info, subdir)
 }
-
-//TODO: image data management
-// function updateImageInfo(info: IImageInfo) {}
-
-// function importImagePackage() {}
-
-// function exportImagePackage() {}
 
 export { getImagePath, validateImageFolders, getImagePaths, addImage, removeImage, ImageTag }

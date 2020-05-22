@@ -90,6 +90,7 @@ import HelpPage from '../nav/pages/Help.vue'
 import OptionsPage from '../nav/pages/Options/index.vue'
 import { getModule } from 'vuex-module-decorators'
 import { NavStore } from '@/store'
+import {getUserSync} from '@/io/User'
 
 export default Vue.extend({
   name: 'landing-page',
@@ -110,11 +111,17 @@ export default Vue.extend({
     next()
   },
   beforeMount() {
-    const ns = getModule(NavStore, this.$store)
-    console.log(ns)
-    ns.initDarkMode()
-    console.log(ns.DarkMode)
-    this.$vuetify.theme.dark = ns.DarkMode
+    console.log(this.$vuetify.theme.dark)
+    const u = getUserSync()
+    console.log(u.Theme)
+    this.$vuetify.theme.dark = u.Theme === 'dark'
+    console.log(this.$vuetify.theme.dark)
+
+    // const ns = getModule(NavStore, this.$store)
+    // console.log(ns)
+    // ns.initDarkMode()
+    // console.log(ns.DarkMode)
+    // this.$vuetify.theme.dark = ns.DarkMode
   },
   methods: {
     ccLog(btn: string) {
