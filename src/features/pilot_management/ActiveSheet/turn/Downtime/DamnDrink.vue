@@ -22,8 +22,8 @@
             outlined
             dense
             hide-details
-            append-outer-icon="add"
-            prepend-icon="remove"
+            append-outer-icon="mdi-plus-circle-outline"
+            prepend-icon="mdi-minus-circle-outline"
             @click:append-outer="skillRoll++"
             @click:prepend="skillRoll > 1 ? skillRoll-- : ''"
           />
@@ -181,7 +181,7 @@ export default Vue.extend({
   methods: {
     addReserve() {
       if (this.skillRoll < 10) {
-        let nr = new Reserve({
+        const nr = new Reserve({
           id: 'reserve_damndrink',
           type: 'Resources',
           name: 'A Damn Drink',
@@ -193,11 +193,14 @@ export default Vue.extend({
           used: false,
         })
         const lossArr = [...this.losses]
-        lossArr.splice(lossArr.findIndex(x => x === this.kept), 1)
+        lossArr.splice(
+          lossArr.findIndex(x => x === this.kept),
+          1
+        )
         nr.ResourceCost = `You've lost ${lossArr[0].toLowerCase()}, as well as ${lossArr[1].toLowerCase()}`
         this.pilot.Reserves.push(nr)
       } else if (this.skillRoll < 20) {
-        let nr = new Reserve({
+        const nr = new Reserve({
           id: 'reserve_damndrink',
           type: 'Resources',
           name: this.reserve1,
@@ -212,7 +215,7 @@ export default Vue.extend({
         nr.ResourceCost = `You've lost ${this.loss.toLowerCase()}`
         this.pilot.Reserves.push(nr)
       } else {
-        let nr = new Reserve({
+        const nr = new Reserve({
           id: 'reserve_damndrink',
           type: 'Resources',
           name: this.reserve1,
@@ -226,7 +229,7 @@ export default Vue.extend({
         nr.Note = this.details1
         this.pilot.Reserves.push(nr)
 
-        let nr2 = new Reserve({
+        const nr2 = new Reserve({
           id: 'reserve_damndrink',
           type: 'Resources',
           name: this.reserve2,

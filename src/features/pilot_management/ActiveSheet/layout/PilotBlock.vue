@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div v-show="!pilot.Mounted">
     <v-row align="start" class="mb-n3">
       <v-col>
         <span class="heading mech" style="line-height: 5px">{{ pilot.Callsign }}</span>
-        <div class="flavor-text grey--text">{{ pilot.Name }}</div>
+        <div class="flavor-text subtle--text">{{ pilot.Name }}</div>
       </v-col>
       <v-col cols="auto" class="ml-auto text-right mr-2 mt-n2">
-        <span class="heading h3 primary--text">HP</span>
+        <span class="heading h3 accent--text">HP</span>
         <b>
           <cc-tick-bar
             small
@@ -15,25 +15,23 @@
             :current="pilot.CurrentHP"
             :max="pilot.MaxHP"
             @update="pilot.CurrentHP = $event"
-          >
-            {{ pilot.CurrentHP }}/{{ pilot.MaxHP }}
-          </cc-tick-bar>
+          ></cc-tick-bar>
         </b>
       </v-col>
       <v-col cols="auto" class="text-right mx-2 mt-n2">
-        <div class="heading h3 primary--text">Armor</div>
+        <div class="heading h3 accent--text">Armor</div>
         <div class="font-weight-bold">{{ pilot.Armor }}</div>
       </v-col>
       <v-col cols="auto" class="text-right mx-2 mt-n2">
-        <div class="heading h3 primary--text">E-Defense</div>
+        <div class="heading h3 accent--text">E-Defense</div>
         <div class="font-weight-bold">{{ pilot.EDefense }}</div>
       </v-col>
       <v-col cols="auto" class="text-right mx-2 mt-n2">
-        <div class="heading h3 primary--text">Evasion</div>
+        <div class="heading h3 accent--text">Evasion</div>
         <div class="font-weight-bold">{{ pilot.Evasion }}</div>
       </v-col>
       <v-col cols="auto" class="text-right mx-2 mt-n2">
-        <div class="heading h3 primary--text">Grit</div>
+        <div class="heading h3 accent--text">Grit</div>
         <div class="font-weight-bold">+{{ pilot.Grit }}</div>
       </v-col>
     </v-row>
@@ -70,7 +68,7 @@
         v-for="(s, i) in pilot.Skills"
         :key="`sk_${i}`"
         :ref="`sk_${i}`"
-        cols="4"
+        :cols="$vuetify.breakpoint.lgAndUp ? 4 : 6"
         color="secondary"
         collapsible
         start-closed
@@ -96,90 +94,6 @@
         :org="o"
         @remove="pilot.RemoveOrganization(i)"
       />
-    </v-row>
-
-    <v-row dense>
-      <v-col cols="auto">
-        <span class="overline">TALENTS</span>
-      </v-col>
-      <v-col cols="auto" class="ml-auto">
-        <v-btn
-          x-small
-          outlined
-          class="fadeSelect"
-          @click="expandAll(pilot.Talents.length, 'tal_', true)"
-        >
-          <v-icon small left>mdi-chevron-up</v-icon>
-          All
-        </v-btn>
-        <v-btn
-          x-small
-          outlined
-          class="fadeSelect"
-          @click="expandAll(pilot.Talents.length, 'tal_', false)"
-        >
-          <v-icon small left>mdi-chevron-down</v-icon>
-          All
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <cc-active-card
-        v-for="(t, i) in pilot.Talents"
-        :key="`tal_${i}`"
-        :ref="`tal_${i}`"
-        collapsible
-        color="primary"
-        :cols="6"
-        :header="`${t.Talent.Name} ${'I'.repeat(t.Rank)}`"
-        subheader="PILOT TALENT"
-      >
-        <ul v-for="n in 3" :key="'t_' + n">
-          <li v-if="t.Rank >= n">
-            <span v-html="t.Talent.Ranks[n - 1].description" />
-          </li>
-        </ul>
-      </cc-active-card>
-    </v-row>
-
-    <v-row dense>
-      <v-col cols="auto">
-        <span class="overline">CORE BONUSES</span>
-      </v-col>
-      <v-col cols="auto" class="ml-auto">
-        <v-btn
-          x-small
-          outlined
-          class="fadeSelect"
-          @click="expandAll(pilot.CoreBonuses.length, 'cb_', true)"
-        >
-          <v-icon small left>mdi-chevron-up</v-icon>
-          All
-        </v-btn>
-        <v-btn
-          x-small
-          outlined
-          class="fadeSelect"
-          @click="expandAll(pilot.CoreBonuses.length, 'cb_', false)"
-        >
-          <v-icon small left>mdi-chevron-down</v-icon>
-          All
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row v-if="pilot.CoreBonuses">
-      <cc-active-card
-        v-for="(bonus, i) in pilot.CoreBonuses"
-        :key="`cb_${i}`"
-        :ref="`cb_${i}`"
-        :cols="12 / pilot.CoreBonuses.length"
-        color="corepower"
-        collapsible
-        :header="bonus.Name"
-        subheader="CORE BONUS"
-      >
-        <p class="pa-1 ma-0" v-html="bonus.Effect" />
-      </cc-active-card>
     </v-row>
   </div>
 </template>

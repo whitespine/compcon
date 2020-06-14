@@ -1,7 +1,11 @@
 <template>
   <div class="mx-6">
-    <v-row dense>
+    <v-row dense align="center">
       <v-col>
+        <div v-if="mech.Pilot.PlayerName" class="mb-1">
+          <span class="heading h3 stark--text">{{ mech.Pilot.PlayerName }}</span>
+          <span class="flavor-text">as</span>
+        </div>
         <span class="heading mech" style="line-height: 15px">
           {{ mech.Pilot.Callsign }}
           <span class="light-text--text">
@@ -41,7 +45,7 @@
                     </div>
                     <span class="heading h2">
                       {{ mech.Frame.CoreSystem.Active }}
-                      <span class="pt-2 ml-2 caption grey--text">(ACTIVE)</span>
+                      <span class="pt-2 ml-2 caption subtle--text">(ACTIVE)</span>
                     </span>
                     <p class="mb-1" v-html="mech.Frame.CoreSystem.Effect" />
                     <cc-tags :tags="mech.Frame.CoreSystem.Tags" color="corepower" />
@@ -52,15 +56,20 @@
           </v-dialog>
         </div>
       </v-col>
+      <v-col cols="auto" class="ml-auto">
+        <v-btn v-if="mech.Activations === 0" large color="secondary" @click="mech.Activations += 1">
+          Reactivate
+        </v-btn>
+      </v-col>
     </v-row>
 
     <v-alert
       v-if="mech.Activations === 0 && !mech.Defeat"
-      prominent
       dark
       dense
       border="left"
       icon="mdi-check"
+      color="panel"
     >
       <span class="heading h2">Turn Complete</span>
     </v-alert>
@@ -75,7 +84,7 @@
 
     <v-row dense>
       <v-col cols="9">
-        <v-row justify="space-between" dense>
+        <v-row justify="space-around" dense>
           <v-col cols="3">
             <cc-status-select
               label="Statuses"
@@ -111,9 +120,9 @@
             <v-text-field
               v-model="mech.Burn"
               type="number"
-              append-outer-icon="add"
+              append-outer-icon="mdi-plus-circle-outline"
               append-icon="mdi-fire"
-              prepend-icon="remove"
+              prepend-icon="mdi-minus-circle-outline"
               style="width: 115px"
               class="hide-input-spinners"
               hint="BURN"
@@ -126,8 +135,8 @@
           </v-col>
         </v-row>
 
-        <v-row dense align="center" class="mt-n3">
-          <v-col cols="auto" class="mr-n6">
+        <v-row dense align="center" justify="space-between" class="mt-n3">
+          <v-col cols="auto">
             <cc-tick-bar
               :key="mech.CurrentStructure"
               :current="mech.CurrentStructure"
@@ -139,11 +148,11 @@
               @update="mech.CurrentStructure = $event"
             >
               <span class="heading h3">
-                Struct: {{ mech.CurrentStructure }}/{{ mech.MaxStructure }}
+                Struct
               </span>
             </cc-tick-bar>
           </v-col>
-          <v-col v-if="mech.Armor" cols="auto" class="ml-5">
+          <v-col v-if="mech.Armor" cols="auto">
             <cc-tick-bar
               :key="mech.Armor"
               :current="mech.Armor"
@@ -152,11 +161,13 @@
               color="armor"
               full-icon="mdi-shield"
               readonly
+              number-only
+              hide-max
             >
-              <span class="heading h3">Armor: {{ mech.Armor }}</span>
+              <span class="heading h3">Armor</span>
             </cc-tick-bar>
           </v-col>
-          <v-col cols="auto" class="ml-5">
+          <v-col cols="auto">
             <cc-tick-bar
               :key="mech.CurrentHP"
               :current="mech.CurrentHP"
@@ -164,16 +175,32 @@
               large
               color="hp"
               rollover
+              max-length="20"
               @update="mech.CurrentHP = $event"
               @rollover="onHpRollover"
             >
-              <span class="heading h3">HP: {{ mech.CurrentHP }}/{{ mech.MaxHP }}</span>
+              <span class="heading h3">HP</span>
+            </cc-tick-bar>
+          </v-col>
+          <v-col cols="auto">
+            <cc-tick-bar
+              :key="mech.Overshield"
+              :current="mech.Overshield"
+              :max="mech.Overshield"
+              large
+              color="stark"
+              number-only
+              hide-values
+              :full-icon="'mdi-octagram'"
+              @update="mech.Overshield = $event"
+            >
+              <span class="heading h3">OVERSHIELD</span>
             </cc-tick-bar>
           </v-col>
         </v-row>
 
-        <v-row dense>
-          <v-col cols="auto" class="mr-n6">
+        <v-row dense align="center" justify="space-between">
+          <v-col cols="auto">
             <cc-tick-bar
               :key="mech.CurrentStress"
               :current="mech.CurrentStress"
@@ -184,10 +211,10 @@
               :class="{ rolledOver: stressRolledOver }"
               @update="mech.CurrentStress = $event"
             >
-              <span class="heading h3">Reactor: {{ mech.CurrentStress }}/{{ mech.MaxStress }}</span>
+              <span class="heading h3">Reactor</span>
             </cc-tick-bar>
           </v-col>
-          <v-col class="ml-5">
+          <v-col cols="auto">
             <cc-tick-bar
               :key="mech.CurrentHeat"
               :current="mech.CurrentHeat"
@@ -201,23 +228,14 @@
               @rollover="onHeatRollover"
             >
               <span v-if="mech.IsInDangerZone" class="dangerzone--text heading h3">
-                HEAT: {{ mech.CurrentHeat }}/{{ mech.HeatCapacity }}
+                HEAT
               </span>
               <span v-else class="heading h3">
-                HEAT: {{ mech.CurrentHeat }}/{{ mech.HeatCapacity }}
+                HEAT
               </span>
             </cc-tick-bar>
-            <div
-              v-if="mech.IsInDangerZone"
-              class="caption font-weight-bold dangerzone--text text-center"
-            >
-              // HEAT::DANGER ZONE //
-            </div>
-            <div v-else class="caption grey--text text-center">
-              HEAT LEVELS NOMINAL
-            </div>
           </v-col>
-          <v-col>
+          <v-col cols="auto">
             <cc-tick-bar
               :key="mech.CurrentRepairs"
               :current="mech.CurrentRepairs"
@@ -228,7 +246,7 @@
               @update="mech.CurrentRepairs = $event"
             >
               <span class="heading h3">
-                REPAIR CAP: {{ mech.CurrentRepairs }}/{{ mech.RepairCapacity }}
+                REPAIR CAP
               </span>
             </cc-tick-bar>
           </v-col>
@@ -244,19 +262,11 @@
               class="text-center"
               empty-icon="mdi-battery-10"
               full-icon="mdi-battery"
+              hide-values
               @update="mech.CurrentCoreEnergy = $event"
             >
               <span class="heading h3">CORE</span>
             </cc-tick-bar>
-            <div
-              v-if="mech.CurrentCoreEnergy"
-              class="text-center caption font-weight-bold corepower--text"
-            >
-              AVAILABLE
-            </div>
-            <div v-else class="text-center caption grey--text">
-              EXHAUSTED
-            </div>
           </v-col>
           <v-col cols="auto">
             <cc-tick-bar
@@ -269,19 +279,20 @@
               color="overcharge"
               full-icon="mdi-alert-decagram"
               class="text-center"
+              hide-values
               @update="mech.CurrentOvercharge = $event"
             >
               <span class="heading h3">
-                Overcharge
+                Overcharge&nbsp;
+                <span class="text-center overcharge--text font-weight-bold">
+                  {{ overcharge[mech.CurrentOvercharge] }}
+                </span>
               </span>
             </cc-tick-bar>
-            <div class="text-center caption overcharge--text font-weight-bold">
-              {{ overcharge[mech.CurrentOvercharge] }}
-            </div>
           </v-col>
         </v-row>
 
-        <v-row dense align="center">
+        <v-row dense align="center" class="mt-2">
           <v-col cols="auto" class="flavor-text mr-2 ml-2 mt-n2">
             <div>
               <span class="heading h2">{{ mech.Hull }}</span>
@@ -306,39 +317,107 @@
           </v-col>
           <v-col>
             <v-row>
-              <cc-active-card color="pilot" header="Speed" :content="mech.Speed" />
+              <cc-active-card prominent color="pilot" header="Speed" :content="mech.Speed" />
               <cc-active-card
+                prominent
                 color="pilot"
                 header="Attack Bonus"
                 :content="`+${mech.AttackBonus}`"
               />
-              <cc-active-card color="pilot" header="Tech Attack" :content="`${mech.TechAttack > 0 ? '+' : ''}${mech.TechAttack}`" />
+              <cc-active-card
+                prominent
+                color="pilot"
+                header="Tech Attack"
+                :content="`${mech.TechAttack > 0 ? '+' : ''}${mech.TechAttack}`"
+              />
             </v-row>
             <v-row>
               <cc-active-card
+                prominent
                 color="pilot"
                 header="Evasion"
                 :content="mech.IsStunned ? 5 : mech.Evasion"
               />
-              <cc-active-card color="pilot" header="E-Defense" :content="mech.EDefense" />
-              <cc-active-card color="pilot" header="Save Target" :content="mech.SaveTarget" />
-              <cc-active-card color="pilot" header="Sensor Range" :content="mech.SensorRange" />
+              <cc-active-card prominent color="pilot" header="E-Defense" :content="mech.EDefense" />
+              <cc-active-card
+                prominent
+                color="pilot"
+                header="Save Target"
+                :content="mech.SaveTarget"
+              />
+              <cc-active-card
+                prominent
+                color="pilot"
+                header="Sensor Range"
+                :content="mech.SensorRange"
+              />
             </v-row>
           </v-col>
           <v-col cols="auto">
-            <v-icon size="120" color="pilot">cci-size-{{ mech.Size }}</v-icon>
+            <v-icon size="120" color="accent">{{ mech.SizeIcon }}</v-icon>
           </v-col>
         </v-row>
       </v-col>
       <v-col cols="3">
         <v-card flat outlined>
-          <v-card-text class="pa-1">
+          <v-card-text class="pa-1 ml-2">
             <v-img v-if="mech.Image" :key="mech.Image" :src="mech.Image" aspect-ratio="1" />
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
-    <div class="overline">LOADOUT</div>
+
+    <v-row dense class="mt-n2">
+      <v-col cols="auto">
+        <span class="overline">TALENTS</span>
+      </v-col>
+      <v-col cols="auto" class="ml-auto">
+        <v-btn
+          x-small
+          outlined
+          class="fadeSelect"
+          @click="expandAll(mech.Pilot.Talents.length, 'tal_', true)"
+        >
+          <v-icon small left>mdi-chevron-up</v-icon>
+          All
+        </v-btn>
+        <v-btn
+          x-small
+          outlined
+          class="fadeSelect"
+          @click="expandAll(mech.Pilot.Talents.length, 'tal_', false)"
+        >
+          <v-icon small left>mdi-chevron-down</v-icon>
+          All
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <cc-active-card
+        v-for="(t, i) in mech.Pilot.Talents"
+        :key="`tal_${i}`"
+        :ref="`tal_${i}`"
+        collapsible
+        start-closed
+        color="primary"
+        md="12"
+        lg="6"
+        xl="4"
+        :header="`${t.Talent.Name} ${'I'.repeat(t.Rank)}`"
+        subheader="PILOT TALENT"
+      >
+        <ul v-for="n in 3" :key="'t_' + n">
+          <li v-if="t.Rank >= n">
+            <span v-html="t.Talent.Ranks[n - 1].description" />
+          </li>
+        </ul>
+      </cc-active-card>
+    </v-row>
+
+    <div class="overline">COUNTERS</div>
+    <cc-counter-set :actor="mech.Pilot" />
+
+    <div class="overline mt-n6">LOADOUT</div>
     <v-row dense>
       <player-equipment-item
         v-for="(i, idx) in mech.ActiveLoadout.Equipment"
@@ -349,7 +428,11 @@
     <v-divider class="my-2" />
     <cc-title small color="pilot">
       GM's Notes
-      <cc-text-editor label="Edit Player Notes" :original="mech.GmNote" @save="mech.GmNote = $event" />
+      <cc-text-editor
+        label="Edit Player Notes"
+        :original="mech.GmNote"
+        @save="mech.GmNote = $event"
+      />
     </cc-title>
     <p v-html="mech.GmNote" />
     <v-divider class="my-2" />
@@ -366,35 +449,9 @@
           class="mx-1"
           @click:close="mech.RemoveReaction(r)"
         >
-          <v-icon left dark>mdi-redo-variant</v-icon>
+          <v-icon left dark>cci-reaction</v-icon>
           <span class="heading h3">{{ r }}</span>
         </v-chip>
-      </v-col>
-    </v-row>
-    <v-row v-if="!rest" dense justify="start" class="mb-10">
-      <v-col v-if="!mech.Defeat">
-        <v-btn
-          block
-          x-large
-          color="secondary"
-          :disabled="mech.Activations === 0"
-          @click="mech.Activations = 0"
-        >
-          End Turn
-        </v-btn>
-        <v-slide-y-transition leave-absolute>
-          <v-btn
-            v-if="mech.Activations === 0"
-            block
-            outlined
-            small
-            color="primary"
-            class="mt-1"
-            @click="mech.Activations += 1"
-          >
-            Reactivate
-          </v-btn>
-        </v-slide-y-transition>
       </v-col>
     </v-row>
     <div v-if="rest" style="height: 30px" />
@@ -418,8 +475,8 @@ export default Vue.extend({
       required: true,
     },
     rest: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data: () => ({
     overcharge: [' +1 ', ' +1d3 ', ' +1d6 ', '+1d6+4'],
@@ -446,6 +503,12 @@ export default Vue.extend({
     },
   },
   methods: {
+    expandAll(len: number, key: string, expand: boolean) {
+      for (let i = 0; i < len; i++) {
+        const k = key + i
+        this.$refs[k][0].collapsed = expand
+      }
+    },
     onHpRollover() {
       if (this.mech.CurrentStructure <= 1) {
         this.$nextTick(() => {

@@ -10,7 +10,7 @@
       <v-divider class="mb-2" />
       <div class="pt-2 heading h3 text-center">
         Roll
-        <v-icon large color="primary">mdi-dice-d20</v-icon>
+        <v-icon large color="accent">mdi-dice-d20</v-icon>
         &nbsp;and add any relevant Skill Trigger bonuses, modifiers, or accuracy
       </div>
       <v-row justify="center">
@@ -22,8 +22,8 @@
             outlined
             dense
             hide-details
-            append-outer-icon="add"
-            prepend-icon="remove"
+            append-outer-icon="mdi-plus-circle-outline"
+            prepend-icon="mdi-minus-circle-outline"
             @click:append-outer="skillRoll++"
             @click:prepend="skillRoll > 1 ? skillRoll-- : ''"
           />
@@ -63,7 +63,7 @@
             </p>
             <p v-else-if="skillRoll < 20" class="font-weight-bold px-3">
               you find the information you’ve looking for. However...
-              <v-card class="pa-1 ma-0" color="grey lighten-4">
+              <v-card class="pa-1 ma-0" color="panel">
                 <v-card-text class="pa-1 ma-0">
                   <v-radio-group v-model="choice" mandatory>
                     <v-radio :label="choices[0]" :value="0"></v-radio>
@@ -81,7 +81,7 @@
               <v-slide-y-transition>
                 <v-card
                   v-if="skillRoll >= 10 || (skillRoll < 10 && commit)"
-                  color="grey lighten-4"
+                  color="panel"
                   class="ml-5 mr-5 mt-2"
                 >
                   <v-toolbar dark dense color="action--downtime">
@@ -131,7 +131,7 @@ export default Vue.extend({
   }),
   methods: {
     addReserve() {
-      let nr = new Reserve({
+      const nr = new Reserve({
         id: 'reserve_gatherinfo',
         type: 'Resources',
         name: 'Information',

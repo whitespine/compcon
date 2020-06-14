@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row v-if="!encounter" align="center" justify="center" style="width: 100%; height: 100%;">
       <v-col cols="auto">
-        <span class="heading h1 grey--text text--lighten-2">no encounter selected</span>
+        <span class="heading h1 subtle--text text--lighten-2">no encounter selected</span>
       </v-col>
     </v-row>
     <div v-else>
@@ -19,10 +19,15 @@
           </span>
         </v-col>
         <v-col cols="2" class="ml-auto text-center mt-n1">
-          <div class="active--text heading h1">
-            {{ encounter.Power.toString().padStart(4, '0') }}
-          </div>
-          <div class="overline mt-n3">TOTAL POWER RATING</div>
+          <cc-tooltip
+            title="Power Rating"
+            content="The Power Rating is an attempt to calculate the relative strength of an NPC (or encounters’ worth of NPCs) based on tier and applied templates, compared to mission’s Pilot and their current level. It should, generally, produce results more or less in line with the Balancing Combat section on pp. 283 of the LANCER Core Book.<br> That said, this is an experimental feature that is still very heavily in development, and does not (yet) always produce reliable results. Moreover, this tool doesn’t consider NPC or player team composition, synergies, strengths, and weaknesses. Nor does this tool consider map layout, mission objectives, or reinforcement schedules.<br>While we will continue to work on this tool to produce more accurate, actionable results, please use it only as a general indicator of relative NPC strength."
+          >
+            <div class="active--text heading h1">
+              {{ encounter.Power.toString().padStart(4, '0') }}
+            </div>
+            <div class="overline mt-n3">TOTAL POWER RATING</div>
+          </cc-tooltip>
         </v-col>
       </v-row>
       <v-row dense align="center">
@@ -30,8 +35,6 @@
           <v-combobox
             v-model="encounter.Labels"
             outlined
-            small-chips
-            deletable-chips
             dense
             multiple
             label="User Labels"
@@ -121,13 +124,14 @@
       <cc-title small class="mb-3">
         SITREP
       </cc-title>
-      <v-combobox
-        v-model="encounter.Sitrep"
+      <v-select
+        v-model="selRep"
         item-text="name"
         outlined
         dense
         label="Engagement Type"
         :items="sitreps"
+        @change="encounter.Sitrep = sitreps.find(x => x.name === selRep)"
       />
       <v-textarea
         v-model="encounter.Sitrep.description"
@@ -141,7 +145,7 @@
       <v-divider class="mt-2" />
       <v-row dense justify="center">
         <v-col class="text-center">
-          <span class="heading h3 primary--text">PC victory</span>
+          <span class="heading h3 accent--text">PC victory</span>
           <v-textarea
             v-model="encounter.Sitrep.pcVictory"
             filled
@@ -155,7 +159,7 @@
         </v-col>
         <v-divider vertical class="mx-2" />
         <v-col class="text-center">
-          <span class="heading h3 primary--text">enemy victory</span>
+          <span class="heading h3 accent--text">enemy victory</span>
           <v-textarea
             v-model="encounter.Sitrep.enemyVictory"
             filled
@@ -169,7 +173,7 @@
         </v-col>
         <v-divider vertical class="mx-2" />
         <v-col class="text-center">
-          <span class="heading h3 primary--text">no victor</span>
+          <span class="heading h3 accent--text">no victor</span>
           <v-textarea
             v-model="encounter.Sitrep.noVictory"
             filled
@@ -185,7 +189,7 @@
       <v-divider />
       <v-row dense justify="center">
         <v-col class="text-center">
-          <span class="heading h3 primary--text">Deployment</span>
+          <span class="heading h3 accent--text">Deployment</span>
           <v-textarea
             v-model="encounter.Sitrep.deployment"
             filled
@@ -198,7 +202,7 @@
         </v-col>
         <v-divider vertical class="mx-2" />
         <v-col class="text-center">
-          <span class="heading h3 primary--text">Extraction</span>
+          <span class="heading h3 accent--text">Extraction</span>
           <v-textarea
             v-model="encounter.Sitrep.extraction"
             filled
@@ -213,7 +217,7 @@
       <v-divider />
       <v-row dense justify="center">
         <v-col class="text-center">
-          <span class="heading h3 primary--text">Control Zones</span>
+          <span class="heading h3 accent--text">Control Zones</span>
           <v-textarea
             v-model="encounter.Sitrep.controlZone"
             filled
@@ -226,7 +230,7 @@
         </v-col>
         <v-divider vertical class="mx-2" />
         <v-col class="text-center">
-          <span class="heading h3 primary--text">Objective</span>
+          <span class="heading h3 accent--text">Objective</span>
           <v-textarea
             v-model="encounter.Sitrep.objective"
             filled
@@ -244,7 +248,7 @@
       <v-row dense>
         <v-col cols="8">
           <fieldset>
-            <legend class="heading h3 primary--text mx-2">FORCES</legend>
+            <legend class="heading h3 accent--text mx-2">FORCES</legend>
             <div v-if="forces.enemy.length" class="caption ml-2">ENEMY</div>
             <v-divider v-if="forces.enemy.length" />
             <npc-chip
@@ -289,7 +293,7 @@
         </v-col>
         <v-col cols="4">
           <fieldset>
-            <legend class="heading h3 primary--text mx-2">REINFORCEMENTS</legend>
+            <legend class="heading h3 accent--text mx-2">REINFORCEMENTS</legend>
             <div v-if="reinforcements.enemy.length" class="caption ml-2">ENEMY</div>
             <v-divider v-if="forces.enemy.length" />
             <npc-chip
@@ -338,11 +342,11 @@
         GM Notes
         <cc-text-editor
           label="Edit GM Notes"
-          :original="encounter.GmNotes"
-          @save="encounter.GmNotes = $event"
+          :original="encounter.Note"
+          @save="encounter.Note = $event"
         />
       </cc-title>
-      <p v-html="encounter.GmNotes" />
+      <p :key="encounter.Note.length" v-html="encounter.Note" />
       <br />
       <cc-solo-dialog ref="npcDialog" no-confirm title="ADD NPC" fullscreen no-pad>
         <npc-selector @select="addNpc($event)" />
@@ -372,26 +376,23 @@ export default Vue.extend({
   name: 'encounter-card',
   components: { NpcSelector, NpcChip },
   props: {
-    id: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    labels: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    campaigns: {
-      type: Array,
-      required: false,
-      default: () => [],
+    encounter: {
+      type: Object,
+      required: true,
     },
   },
+  data: () => ({
+    selRep: 'Standard Combat',
+    ctest: ['a', 'b', 'c'],
+  }),
   computed: {
-    encounter() {
+    labels() {
       const store = getModule(EncounterStore, this.$store)
-      return store.Encounters.find(x => x.ID === this.id)
+      return store.Encounters.flatMap(x => x.Labels).filter(x => x)
+    },
+    campaigns() {
+      const store = getModule(EncounterStore, this.$store)
+      return store.Encounters.map(x => x.Campaign).filter(x => x)
     },
     environmentData() {
       return getModule(CompendiumStore, this.$store).Environments

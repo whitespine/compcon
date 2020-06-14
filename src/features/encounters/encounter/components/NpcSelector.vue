@@ -1,6 +1,6 @@
 <template>
   <cc-sidebar-view cols="3">
-    <div slot="alt">
+    <div slot="sidebar">
       <v-row dense>
         <v-col>
           <v-text-field
@@ -35,20 +35,22 @@
         <template v-slot:group.header="h" class="transparent">
           <div class="primary sliced">
             <v-icon dark left>mdi-chevron-right</v-icon>
-            <span class="heading white--text">
-              {{ h.group && h.group !== 'null' ? h.group.toUpperCase() : 'NONE' }}
+            <span v-if="h.group && h.group !== 'null'" class="heading white--text text-uppercase">
+              <span v-if="Array.isArray(h.group)" v-html="h.group.join(', ')" />
+              <span v-else v-html="h.group" />
             </span>
+            <span v-else>NONE</span>
           </div>
         </template>
         <template v-slot:item.Name="{ item }">
           <span
-            class="primary--text heading clickable ml-n2"
+            class="accent--text heading clickable ml-n2"
             @click="
-              $vuetify.goTo(`#e_${item.ID}`, {
+              $vuetify.goTo(`#${generateNpcElementId(item)}`, {
                 duration: 150,
                 easing: 'easeInOutQuad',
                 offset: 25,
-                container: '.v-dialog--active',
+                container: $el.closest('.v-dialog--active'),
               })
             "
           >
@@ -60,10 +62,10 @@
       </v-data-table>
     </div>
     <br />
-    <div v-if="!npcs.length" class="grey--text heading h2 text-center">
+    <div v-if="!npcs.length" class="subtle--text heading h2 text-center">
       // NO NPCS AVAILABLE //
     </div>
-    <v-row v-for="(npc, i) in npcs" :id="`e_${npc.ID}`" :key="`${npc.ID}_${i}`">
+    <v-row v-for="(npc, i) in npcs" :id="generateNpcElementId(npc)" :key="`${npc.ID}_${i}`">
       <v-col class="pl-0 mb-2">
         <npc-panel :npc="npc">
           <div>
@@ -120,6 +122,11 @@ export default Vue.extend({
   created() {
     const compendium = getModule(NpcStore, this.$store)
     this.npcs = compendium.Npcs
+  },
+  methods: {
+    generateNpcElementId: function(npc) {
+      return `e_${this._uid}_${npc.ID}`
+    },
   },
 })
 </script>

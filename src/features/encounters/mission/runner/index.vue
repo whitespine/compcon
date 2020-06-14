@@ -54,7 +54,7 @@
                 </v-card-text>
               </v-card>
             </v-menu>
-            <v-btn small tile color="primary" :to="`runner/${item.ID}`">
+            <v-btn small tile color="primary" class="white--text" :to="`runner/${item.ID}`">
               CONTINUE MISSION
               <v-icon right>mdi-chevron-double-right</v-icon>
             </v-btn>
@@ -77,9 +77,11 @@
         >
           <template v-slot:group.header="h" class="transparent">
             <div class="secondary darken-2 sliced">
-              <span class="heading white--text ml-3">
-                {{ h.group && h.group !== 'null' ? h.group.toUpperCase() : 'NONE' }}
+              <span v-if="h.group && h.group !== 'null'" class="heading white--text text-uppercase">
+                <span v-if="Array.isArray(h.group)" v-html="h.group.join(', ')" />
+                <span v-else v-html="h.group" />
               </span>
+              <span v-else>NONE</span>
             </div>
           </template>
           <template v-slot:item.Name="{ item }">
@@ -97,7 +99,7 @@
             <v-chip v-for="l in item.Labels" :key="item.ID + l" small>{{ l }}</v-chip>
           </template>
           <template v-slot:item.Start="{ item }">
-            <v-btn small tile color="primary" :to="`briefing/${item.ID}`">
+            <v-btn small tile color="primary" class="white--text" :to="`briefing/${item.ID}`">
               START MISSION
               <v-icon right>mdi-chevron-double-right</v-icon>
             </v-btn>
@@ -120,9 +122,11 @@
         >
           <template v-slot:group.header="h" class="transparent">
             <div class="pilot sliced">
-              <span class="heading white--text ml-3">
-                {{ h.group && h.group !== 'null' ? h.group.toUpperCase() : 'NONE' }}
+              <span v-if="h.group && h.group !== 'null'" class="heading white--text text-uppercase">
+                <span v-if="Array.isArray(h.group)" v-html="h.group.join(', ')" />
+                <span v-else v-html="h.group" />
               </span>
+              <span v-else>NONE</span>
             </div>
           </template>
           <template v-slot:item.Remove="{ item }">

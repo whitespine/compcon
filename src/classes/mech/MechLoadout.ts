@@ -32,23 +32,19 @@ class MechLoadout extends Loadout {
   }
 
   public UpdateIntegrated(mech: Mech): void {
+    this._integratedSystems.splice(0, this._integratedSystems.length)
+
     mech.IntegratedSystems.forEach(s => {
-      if (!this._integratedSystems.find(x => x.ID === s.ID)) this._integratedSystems.push(s)
+      this._integratedSystems.push(s)
     })
 
-    this._integratedSystems.forEach((s, idx) => {
-      if (!mech.IntegratedSystems.find(x => x.ID === s.ID)) this._integratedSystems.splice(idx, 1)
-    })
+    this._integratedMounts.splice(0, this._integratedMounts.length)
 
     mech.IntegratedMounts.forEach(s => {
-      if (!this._integratedMounts.find(x => x.ItemSource === s.ItemSource))
-        this._integratedMounts.push(s)
+      this._integratedMounts.push(s)
     })
 
-    this._integratedMounts.forEach((s, idx) => {
-      if (!mech.IntegratedMounts.find(x => x.ItemSource === s.ItemSource))
-        this._integratedMounts.splice(idx, 1)
-    })
+    console.log(this._integratedMounts)
 
     this.save()
   }
@@ -103,16 +99,17 @@ class MechLoadout extends Loadout {
   }
 
   public get Equipment(): MechEquipment[] {
-    let mods = this.Weapons.map(x => x.Mod).filter(x => x != null)
-    let equip = ((this.Weapons as MechEquipment[])
-                  .concat(this.Systems as MechEquipment[])
-                  .concat(this.IntegratedSystems as MechEquipment[]))
+    const mods = this.Weapons.map(x => x.Mod).filter(x => x != null)
+    const equip = (this.Weapons as MechEquipment[])
+      .concat(this.Systems as MechEquipment[])
+      .concat(this.IntegratedSystems as MechEquipment[])
     if (mods.length > 0) return equip.concat(mods as MechEquipment[])
     else return equip
   }
 
   public get Weapons(): MechWeapon[] {
     return this.AllMounts(true, true)
+      .filter(x => !x.IsLocked)
       .flatMap(x => x.Weapons)
       .filter(x => x != null)
   }
@@ -166,7 +163,7 @@ class MechLoadout extends Loadout {
   }
 
   public get RequiredLicenses(): ILicenseRequirement[] {
-    let requirements = [] as ILicenseRequirement[]
+    const requirements = [] as ILicenseRequirement[]
     const equippedWeapons = (this.Weapons as LicensedItem[]).concat(
       this.Weapons.map(x => x.Mod).filter(x => x !== null) as LicensedItem[]
     )
@@ -245,9 +242,9 @@ class MechLoadout extends Loadout {
   }
 
   public static Deserialize(loadoutData: IMechLoadoutData, mech: Mech): MechLoadout {
-    let ml = new MechLoadout(mech)
+    const ml = new MechLoadout(mech)
     ml.ID = loadoutData.id
-    ml.Name = loadoutData.name
+    ml._name = loadoutData.name
     ml._systems = loadoutData.systems.map(x => MechSystem.Deserialize(x))
     ml._integratedSystems = !loadoutData.integratedSystems
       ? mech.IntegratedSystems

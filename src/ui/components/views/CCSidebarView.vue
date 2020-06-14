@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="mt-n3">
     <v-row dense no-gutters>
-      <v-col :cols="cols" style="position: fixed" class="pt-2">
+      <v-col v-if="$vuetify.breakpoint.mdAndUp" :cols="cols" style="position: fixed" class="pt-2">
         <slot name="alt" />
         <v-list
           dense
@@ -11,7 +11,10 @@
           <slot name="sidebar" />
         </v-list>
       </v-col>
-      <v-col :offset="cols" class="pl-7 mr-7">
+      <v-col
+        :offset="$vuetify.breakpoint.mdAndUp ? cols : 0"
+        :class="$vuetify.breakpoint.mdAndUp ? 'pl-7 mr-7' : ''"
+      >
         <slot />
       </v-col>
     </v-row>
@@ -21,13 +24,13 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
-@Component({ name: 'cc-sidebar-view', })
+@Component({ name: 'cc-sidebar-view' })
 export default class CCSidebarView extends Vue {
-  @Prop({ type: Boolean, required: false, })
-  popup?: boolean 
+  @Prop({ type: Boolean, required: false })
+  popup?: boolean
 
-  @Prop({ type: [Number, String], required: false, default: '2', })
-  cols: number | string 
+  @Prop({ type: [Number, String], required: false, default: '2' })
+  cols: number | string
 }
 </script>
 

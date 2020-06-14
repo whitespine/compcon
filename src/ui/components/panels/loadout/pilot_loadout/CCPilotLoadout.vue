@@ -1,17 +1,8 @@
 <template>
-  <cc-loadout-panel
-    :loadouts="pilot.Loadouts"
-    :active-loadout="pilot.ActiveLoadout"
-    :readonly="readonly"
-    color="pilot"
-    @set-active="pilot.ActiveLoadout = $event"
-    @add-loadout="pilot.AddLoadout()"
-    @clone-loadout="pilot.CloneLoadout()"
-    @remove-loadout="pilot.RemoveLoadout()"
-  >
+  <div>
     <v-row :dense="readonly">
       <pilot-armor-card
-        :item="pilot.ActiveLoadout.Armor[0]"
+        :item="pilot.Loadout.Armor[0]"
         :readonly="readonly"
         @equip="setArmor($event)"
         @remove="setArmor(null)"
@@ -22,16 +13,16 @@
         :key="`pgwi_${i}`"
         :item="w"
         :readonly="readonly"
-        @equip="$set(pilot.ActiveLoadout.Weapons, i, $event)"
-        @remove="$set(pilot.ActiveLoadout.Weapons, i, null)"
+        @equip="setWeapon($event, i)"
+        @remove="setWeapon(null, i)"
       />
       <pilot-weapon-card
         v-for="(w, i) in extendedWeapons()"
         :key="`pgwi_${i}`"
         :item="w"
         :readonly="readonly"
-        @equip="$set(pilot.ActiveLoadout.ExtendedWeapons, i, $event)"
-        @remove="$set(pilot.ActiveLoadout.ExtendedWeapons, i, null)"
+        @equip="setWeapon($event, i)"
+        @remove="setWeapon(null, i)"
       />
     </v-row>
     <v-row dense>
@@ -40,19 +31,19 @@
         :key="`pgi_${i}`"
         :item="g"
         :readonly="readonly"
-        @equip="$set(pilot.ActiveLoadout.Gear, i, $event)"
-        @remove="$set(pilot.ActiveLoadout.Gear, i, null)"
+        @equip="setGear($event, i)"
+        @remove="setGear(null, i)"
       />
       <pilot-gear-card
         v-for="(g, i) in extendedGear()"
         :key="`pgi_${i}`"
         :item="g"
         :readonly="readonly"
-        @equip="$set(pilot.ActiveLoadout.ExtendedGear, i, $event)"
-        @remove="$set(pilot.ActiveLoadout.ExtendedGear, i, null)"
+        @equip="$set(pilot.Loadout.ExtendedGear, i, $event)"
+        @remove="$set(pilot.Loadout.ExtendedGear, i, null)"
       />
     </v-row>
-  </cc-loadout-panel>
+  </div>
 </template>
 
 <script lang="ts">
@@ -60,7 +51,7 @@ import Vue from 'vue'
 import PilotArmorCard from './_PLArmorCard.vue'
 import PilotWeaponCard from './_PLWeaponCard.vue'
 import PilotGearCard from './_PLGearCard.vue'
-import { PilotArmor } from '@/class'
+import { PilotArmor, PilotWeapon, PilotGear } from '@/class'
 
 export default Vue.extend({
   name: 'cc-pilot-loadout',
@@ -76,22 +67,29 @@ export default Vue.extend({
   },
   methods: {
     gear() {
-      return this.pilot.ActiveLoadout.Gear
+      return this.pilot.Loadout.Gear
     },
     extendedGear() {
-      if (this.pilot.has('reserve', 'extendedharness')) return this.pilot.ActiveLoadout.ExtendedGear
+      if (this.pilot.has('reserve', 'extendedharness')) return this.pilot.Loadout.ExtendedGear
       return []
     },
     weapons() {
-      return this.pilot.ActiveLoadout.Weapons
+      return this.pilot.Loadout.Weapons
     },
     extendedWeapons() {
-      if (this.pilot.has('reserve', 'extendedharness'))
-        return this.pilot.ActiveLoadout.ExtendedWeapons
+      if (this.pilot.has('reserve', 'extendedharness')) return this.pilot.Loadout.ExtendedWeapons
       return []
     },
     setArmor(a: PilotArmor | null) {
-      this.$set(this.pilot.ActiveLoadout.Armor, 0, a)
+      this.$set(this.pilot.Loadout.Armor, 0, a)
+      this.pilot.Heal()
+    },
+    setWeapon(w: PilotWeapon | null, idx: number) {
+      this.$set(this.pilot.Loadout.Weapons, idx, w)
+      this.pilot.Heal()
+    },
+    setGear(g: PilotGear | null, idx: number) {
+      this.$set(this.pilot.Loadout.Gear, idx, g)
       this.pilot.Heal()
     },
   },

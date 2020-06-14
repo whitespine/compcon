@@ -1,11 +1,11 @@
 import uuid from 'uuid/v4'
-import _ from 'lodash'
 import { store } from '@/store'
 import { Capacitor } from '@capacitor/core'
 import { getImagePath, ImageTag } from '@/io/ImageManagement'
 import { NpcStats, NpcClass, NpcTemplate, NpcFeature, NpcItem } from './'
 import { INpcStats, INpcItemSaveData } from './interfaces'
 import { EncounterSide } from '@/class'
+import { ICounterData } from '@/interface'
 
 export interface INpcData {
   active: boolean
@@ -13,6 +13,7 @@ export interface INpcData {
   class: string
   tier: number | string
   name: string
+  subtitle: string
   campaign: string
   labels: string[]
   tag: string
@@ -27,11 +28,12 @@ export interface INpcData {
   statuses: string[]
   conditions: string[]
   resistances: string[]
-  reactions: string[]
   burn: number
   destroyed: boolean
   defeat: string
   actions: number
+  counter_data: ICounterSaveData[]
+  custom_counters: object[]
   cc_ver: string
 }
 
@@ -39,6 +41,7 @@ export class Npc implements IActor {
   private _active: boolean
   private _id: string
   private _name: string
+  private _subtitle: string
   private _campaign: string
   private _tier: string | number
   private _class: NpcClass
@@ -55,7 +58,6 @@ export class Npc implements IActor {
   private _statuses: string[]
   private _conditions: string[]
   private _resistances: string[]
-  private _reactions: string[]
   private _burn: number
   private _actions: number
   private _destroyed: boolean
@@ -67,12 +69,13 @@ export class Npc implements IActor {
     this._active = false
     this._id = uuid()
     this._name = `New ${npcClass.Name[0].toUpperCase()}${npcClass.Name.slice(1)}`
+    this._subtitle = ''
     this._tier = t
     this._templates = []
     this._user_labels = []
     this._side = EncounterSide.Enemy
     this._note = this._cloud_image = this._local_image = ''
-    this._campaign = null
+    this._campaign = ''
     this._class = npcClass
     this._tag = this.Class.Role.toLowerCase() === 'biological' ? 'Biological' : 'Mech'
     this._stats = NpcStats.FromClass(npcClass, t)
@@ -81,7 +84,6 @@ export class Npc implements IActor {
     npcClass.BaseFeatures.forEach(f => {
       this._items.push(new NpcItem(f, t))
     })
-    this._reactions = ['Overwatch']
     this._burn = 0
     this._actions = 2
     this._destroyed = false
@@ -133,7 +135,7 @@ export class Npc implements IActor {
   }
 
   public ResetStats(): void {
-    this._current_stats = _.clone(this._stats)
+    this._current_stats = NpcStats.FromMax(this._stats)
   }
 
   public get EncounterName(): string {
@@ -150,6 +152,15 @@ export class Npc implements IActor {
 
   public set Name(val: string) {
     this._name = val
+    this.save()
+  }
+
+  public get Subtitle(): string {
+    return this._subtitle
+  }
+
+  public set Subtitle(val: string) {
+    this._subtitle = val
     this.save()
   }
 
@@ -211,8 +222,8 @@ export class Npc implements IActor {
       this._stats = NpcStats.FromClass(this.Class, newTier)
       this._items.forEach(i => {
         i.Tier = newTier
-        this.setStatBonuses(i.Feature)
       })
+      this.RecalcBonuses()
     }
     this.save()
   }
@@ -261,53 +272,62 @@ export class Npc implements IActor {
 
   public AddTemplate(temp: NpcTemplate): void {
     this._templates.push(temp)
-    temp.BaseFeatures.forEach(f => this.AddFeature(f))
-    this.save()
+    temp.BaseFeatures.forEach(f => this.AddFeature(f, true))
+    this.RecalcBonuses()
   }
 
   public RemoveTemplate(temp: NpcTemplate): void {
     const idx = this._templates.findIndex(x => x.ID === temp.ID)
     if (idx > -1) {
       this._templates.splice(idx, 1)
-      temp.BaseFeatures.forEach(f => this.RemoveFeature(f))
-      temp.OptionalFeatures.forEach(f => this.RemoveFeature(f))
+      temp.BaseFeatures.forEach(f => this.RemoveFeature(f, true))
+      temp.OptionalFeatures.forEach(f => this.RemoveFeature(f, true))
+      this.RecalcBonuses()
     }
-    this.save()
   }
 
-  setStatBonuses(feat: NpcFeature, remove?: boolean): void {
-    if (feat.Override) {
-      for (const key in feat.Override) {
-        if (remove && typeof this.Tier === 'number')
-          this._stats.Stats[key] = this.Class.Stats.Stat(key, this.Tier)
-        else this._stats.Stats[key] = feat.Override[key]
-      }
-    } else {
-      if (feat.Bonus) {
-        for (const key in feat.Bonus) {
-          if (feat.Bonus.hasOwnProperty(key)) {
-            if (remove) this._stats.Stats[key] -= feat.Bonus[key]
-            else this._stats.Stats[key] += feat.Bonus[key]
+  setStatBonuses(): void {
+    this._stats.ClearBonuses()
+    this._items.forEach(item => {
+      if (item.Feature.Override) {
+        for (const key in item.Feature.Override) {
+          const o = Array.isArray(item.Feature.Override[key])
+            ? item.Feature.Override[key][item.Tier - 1]
+            : item.Feature.Override[key]
+          this._stats.Overrides[key] = o
+        }
+      } else {
+        if (item.Feature.Bonus) {
+          for (const key in item.Feature.Bonus) {
+            const b = Array.isArray(item.Feature.Bonus[key])
+              ? item.Feature.Bonus[key][item.Tier - 1]
+              : item.Feature.Bonus[key]
+            this._stats.Bonuses[key] += parseInt(b)
           }
         }
       }
-    }
+    })
   }
 
-  public AddFeature(feat: NpcFeature): void {
-    const t = typeof this.Tier === 'number' ? this.Tier : 1
-    this._items.push(new NpcItem(feat, t))
-    this.setStatBonuses(feat)
+  public RecalcBonuses(): void {
+    this.setStatBonuses()
+    this.ResetStats()
     this.save()
   }
 
-  public RemoveFeature(feat: NpcFeature): void {
+  public AddFeature(feat: NpcFeature, skipRecalc?: boolean): void {
+    const t = typeof this.Tier === 'number' ? this.Tier : 1
+    const item = new NpcItem(feat, t)
+    this._items.push(item)
+    if (!skipRecalc) this.RecalcBonuses()
+  }
+
+  public RemoveFeature(feat: NpcFeature, skipRecalc?: boolean): void {
     const j = this._items.findIndex(x => x.Feature.ID === feat.ID)
     if (j > -1) {
       this._items.splice(j, 1)
-      this.setStatBonuses(feat, true)
+      if (!skipRecalc) this.RecalcBonuses()
     }
-    this.save()
   }
 
   public get Items(): NpcItem[] {
@@ -332,11 +352,61 @@ export class Npc implements IActor {
     return this._local_image
   }
 
+  public get HasImage(): boolean {
+    return !!this._cloud_image || !!this._local_image
+  }
+
   public get Image(): string {
     if (this._cloud_image) return this._cloud_image
     else if (Capacitor.platform !== 'web' && this._local_image)
       return getImagePath(ImageTag.NPC, this._local_image)
     else return getImagePath(ImageTag.Frame, 'nodata.png', true)
+  }
+
+  // -- COUNTERS ----------------------------------------------------------------------------------
+
+  private _counterSaveData = []
+  public get CounterSaveData(): ICounterSaveData[] {
+    return this._counterSaveData
+  }
+  public saveCounter(inputData: ICounterSaveData): void {
+    const index = this._counterSaveData.findIndex(datum => datum.id === inputData.id)
+    if (index < 0) {
+      this._counterSaveData = [...this._counterSaveData, inputData]
+    } else {
+      this._counterSaveData[index] = inputData
+      this._counterSaveData = [...this._counterSaveData]
+    }
+    this.save()
+  }
+
+  private _customCounters: ICounterData[] = []
+  public get CustomCounterData(): ICounterData[] {
+    return this._customCounters || []
+  }
+
+  public createCustomCounter(name: string): void {
+    const counter = {
+      name,
+      id: uuid(),
+      custom: true,
+    }
+    this._customCounters = [...this._customCounters, counter]
+    this.save()
+  }
+
+  public deleteCustomCounter(id: string): void {
+    const index = this._customCounters.findIndex(c => c.custom && c.id === id)
+    if (index > -1) {
+      this._customCounters.splice(index, 1)
+      this._customCounters = [...this._customCounters]
+    }
+    this.save()
+  }
+
+  public get CounterData(): ICounterData[] {
+    // TODO: handle features that require a counter
+    return [this.CustomCounterData].flat().filter(x => x)
   }
 
   // -- Encounter Management ----------------------------------------------------------------------
@@ -360,7 +430,7 @@ export class Npc implements IActor {
   public set CurrentHP(val: number) {
     if (val > this.MaxHP) this.CurrentStats.HP = this.MaxHP
     else if (val <= 0) {
-      this.CurrentStats.HP = this.MaxHP - val
+      this.CurrentStats.HP = this.MaxHP + val
       this.CurrentStructure -= 1
     } else this.CurrentStats.HP = val
   }
@@ -499,20 +569,15 @@ export class Npc implements IActor {
   }
 
   public get Reactions(): string[] {
-    return this._reactions
-  }
-
-  public set Reactions(val: string[]) {
-    this._reactions = val
+    return this.CurrentStats.Reactions
   }
 
   public AddReaction(r: string): void {
-    if (!this.Reactions.some(x => x === r)) this.Reactions.push(r)
+    this.CurrentStats.AddReaction(r)
   }
 
   public RemoveReaction(r: string): void {
-    const idx = this.Reactions.findIndex(x => x === r)
-    if (idx > -1) this.Reactions.splice(idx, 1)
+    this.CurrentStats.RemoveReaction(r)
   }
 
   public FullRepair(): void {
@@ -526,8 +591,12 @@ export class Npc implements IActor {
     this.CurrentStats.Activations = this.Stats.Activations
     this._actions = 2
     this.CurrentStats.Speed = 0
-    this.Reactions = ['Overwatch']
+    this.CurrentStats.AddReaction('Overwatch')
     this.save()
+  }
+
+  public get SizeIcon(): string {
+    return `cci-size-${this.Stats.Size === 0.5 ? 'half' : this.Stats.Size}`
   }
 
   public static Serialize(npc: Npc): INpcData {
@@ -537,6 +606,7 @@ export class Npc implements IActor {
       class: npc.Class.ID,
       tier: npc._tier,
       name: npc._name,
+      subtitle: npc._subtitle,
       campaign: npc._campaign,
       labels: npc._user_labels,
       tag: npc._tag,
@@ -551,11 +621,12 @@ export class Npc implements IActor {
       statuses: npc._statuses,
       conditions: npc._conditions,
       resistances: npc._resistances,
-      reactions: npc._reactions,
       burn: npc._burn,
       destroyed: npc._destroyed,
       defeat: npc._defeat,
       actions: npc._actions,
+      counter_data: npc.CounterSaveData,
+      custom_counters: npc.CustomCounterData,
       cc_ver: npc.cc_ver,
     }
   }
@@ -567,27 +638,30 @@ export class Npc implements IActor {
     npc._id = data.id
     npc._tier = data.tier
     npc._name = data.name
+    npc._subtitle = data.subtitle || ''
     npc._side = data.side as EncounterSide
-    npc._campaign = data.campaign
-    npc._user_labels = data.labels
+    npc._campaign = data.campaign || ''
+    npc._user_labels = data.labels || []
     npc._tag = data.tag
     npc._templates = data.templates.map(x => store.getters.referenceByID('NpcTemplates', x))
     npc._items = data.items.map(x => NpcItem.Deserialize(x))
+    npc._stats = NpcStats.Deserialize(data.stats)
+    npc.RecalcBonuses()
     npc._note = data.note
     npc._cloud_image = data.cloudImage
     npc._local_image = data.localImage
-    npc._stats = NpcStats.Deserialize(data.stats)
     npc._current_stats = data.currentStats
       ? NpcStats.Deserialize(data.currentStats)
       : NpcStats.FromMax(npc._stats)
     npc._statuses = data.statuses || []
     npc._conditions = data.conditions || []
     npc._resistances = data.resistances || []
-    npc._reactions = data.reactions || []
     npc._burn = data.burn || 0
     npc._actions = data.actions || 1
     npc._destroyed = data.destroyed || false
     npc._defeat = data.defeat || ''
+    npc._counterSaveData = data.counter_data || []
+    npc._customCounters = (data.custom_counters as ICounterData[]) || []
     npc.cc_ver = data.cc_ver
     return npc
   }

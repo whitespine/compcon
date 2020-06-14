@@ -12,14 +12,14 @@
     </cc-title>
     <cc-solo-dialog
       ref="skillSelector"
-      icon="cci-trait"
+      icon="cci-skill"
       no-confirm
       title="Set Pilot Skill Triggers"
       fullscreen
     >
       <cc-skill-selector :pilot="pilot" />
     </cc-solo-dialog>
-    <v-row style="width: calc(100vw - 250px)">
+    <v-row :style="$vuetify.breakpoint.lgAndUp ? `width: calc(100vw - 250px)` : ''">
       <v-col cols="auto" class="mr-2 text-center">
         <span class="stat-text">PILOT GRIT</span>
         <br />

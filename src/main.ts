@@ -15,6 +15,9 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuetify from 'vuetify/lib'
 import VueMousetrap from 'vue-mousetrap'
 import lancerData from 'lancer-data'
+import VueResizeText from 'vue-resize-text'
+
+import './registerServiceWorker'
 
 import theme from './ui/theme'
 
@@ -34,9 +37,7 @@ Object.defineProperty(Vue.prototype, '$_', { value: _ })
 Object.defineProperty(Vue.prototype, '$platform', { value: Capacitor.platform })
 
 Vue.prototype.$appVersion = process.env.VERSION_STRING
-Vue.prototype.$lancerVersion = `${lancerData.info.version} [${
-  require('lancer-data/package.json').version
-}]`
+Vue.prototype.$lancerVersion = `${lancerData.info.version}`
 
 const vuetify = new Vuetify(theme)
 
@@ -46,6 +47,7 @@ Vue.use(TiptapVuetifyPlugin, {
   vuetify,
   iconsGroup: 'md',
 })
+Vue.use(VueResizeText)
 
 Vue.config.devtools = process.env.NODE_ENV === 'development'
 
@@ -54,6 +56,9 @@ mixins.forEach(m => {
 })
 
 Vue.directive('extlink', externalLinkDirective)
+
+Vue.config.errorHandler = (error, vm) => Vue.prototype.$notifyError(error, vm)
+window.onerror = error => Vue.prototype.$notifyError(error)
 
 new Vue({
   components: { App },

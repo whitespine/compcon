@@ -33,13 +33,15 @@
           <template v-slot:group.header="h" class="transparent">
             <div class="primary sliced">
               <v-icon dark left>mdi-chevron-right</v-icon>
-              <span class="heading white--text">
-                {{ h.group && h.group !== 'null' ? h.group.toUpperCase() : 'NONE' }}
+              <span v-if="h.group && h.group !== 'null'" class="heading white--text text-uppercase">
+                <span v-if="Array.isArray(h.group)" v-html="h.group.join(', ')" />
+                <span v-else v-html="h.group" />
               </span>
+              <span v-else>NONE</span>
             </div>
           </template>
           <template v-slot:item.Name="{ item }">
-            <span class="primary--text heading clickable ml-n2" @click="toMission(item.ID)">
+            <span class="accent--text heading clickable ml-n2" @click="toMission(item.ID)">
               <v-menu offset-x left>
                 <template v-slot:activator="{ on }">
                   <v-btn icon small class="mt-n1 mr-n2" @click.stop v-on="on">
@@ -137,6 +139,7 @@ export default Vue.extend({
   },
   created() {
     const store = getModule(MissionStore, this.$store)
+    console.log(store.Missions)
     this.missions = store.Missions
   },
   methods: {
@@ -144,7 +147,6 @@ export default Vue.extend({
       this.$router.push({ name: 'edit-mission', params: { id } })
     },
     deleteMission(Mission: Mission) {
-      this.$router.push({ name: 'edit-mission', params: {} })
       const store = getModule(MissionStore, this.$store)
       store.deleteMission(Mission)
     },

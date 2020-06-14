@@ -44,8 +44,8 @@
                     label="Initial Roll Result"
                     outlined
                     dense
-                    append-outer-icon="add"
-                    prepend-icon="remove"
+                    append-outer-icon="mdi-plus-circle-outline"
+                    prepend-icon="mdi-minus-circle-outline"
                     hide-details
                     @click:append-outer="initialRoll++"
                     @click:prepend="initialRoll > 1 ? initialRoll-- : ''"
@@ -144,10 +144,7 @@
                   </v-alert>
                 </v-col>
               </v-row>
-              <div
-                v-if="improveSelection.ResourceCost"
-                class="text-center heading h2 primary--text"
-              >
+              <div v-if="improveSelection.ResourceCost" class="text-center heading h2 accent--text">
                 OR
               </div>
               <v-row justify="center">
@@ -159,8 +156,8 @@
                     outlined
                     dense
                     hide-details
-                    append-outer-icon="add"
-                    prepend-icon="remove"
+                    append-outer-icon="mdi-plus-circle-outline"
+                    prepend-icon="mdi-minus-circle-outline"
                     @click:append-outer="improveRoll++"
                     @click:prepend="improveRoll > 1 ? improveRoll-- : ''"
                   />
@@ -284,7 +281,7 @@ export default Vue.extend({
   },
   methods: {
     addProject() {
-      let p = new Project({
+      const p = new Project({
         id: 'reserve_project',
         type: 'Project',
         name: 'Project (In Progress)',

@@ -43,7 +43,7 @@ class Encounter implements IMissionStep {
     this._name = 'New Encounter'
     this._location = ''
     this._labels = []
-    this._campaign = null
+    this._campaign = ''
     this._gm_notes = ''
     this._narrative_notes = ''
     this._environment = 'Nominal'
@@ -178,8 +178,12 @@ class Encounter implements IMissionStep {
   }
 
   public get Power(): number {
-    const enemy = this.Npcs(EncounterSide.Enemy).reduce((a, b) => +a + +b.Power, 0)
-    const ally = this.Npcs(EncounterSide.Ally).reduce((a, b) => +a + +b.Power, 0)
+    const enemy = this.Npcs(EncounterSide.Enemy)
+      .concat(this.Reinforcements(EncounterSide.Enemy))
+      .reduce((a, b) => +a + +b.Power, 0)
+    const ally = this.Npcs(EncounterSide.Ally)
+      .concat(this.Reinforcements(EncounterSide.Enemy))
+      .reduce((a, b) => +a + +b.Power, 0)
     return enemy - ally
   }
 
@@ -216,21 +220,21 @@ class Encounter implements IMissionStep {
     }
   }
 
-  public SetCloudMap(src: string): void {
+  public SetCloudImage(src: string): void {
     this._cloud_map = src
     this.save()
   }
 
-  public get CloudMap(): string {
+  public get CloudImage(): string {
     return this._cloud_map
   }
 
-  public SetLocalMap(src: string): void {
+  public SetLocalImage(src: string): void {
     this._local_map = src
     this.save()
   }
 
-  public get LocalMap(): string {
+  public get LocalImage(): string {
     return this._local_map
   }
 
@@ -255,8 +259,8 @@ class Encounter implements IMissionStep {
       environment: enc.Environment,
       environmentDetails: enc.EnvironmentDetails,
       sitrep: enc.Sitrep,
-      cloud_map: enc.CloudMap,
-      local_map: enc.LocalMap,
+      cloud_map: enc.CloudImage,
+      local_map: enc.LocalImage,
     }
   }
 

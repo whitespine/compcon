@@ -148,7 +148,7 @@
             v-html="
               mech.CurrentStructure >= 3
                 ? 'Your mech is <b>stunned</b> until the end of your next turn.'
-                : 'Your mech must pass a <b>hull</b> save or be <b>destroyed</b>. Even on a successful check, your mech is <b>stunned</b> until the end of your next turn.'
+                : 'Your mech must pass a <b>hull</b> check or be <b>destroyed</b>. Even on a successful check, your mech is <b>stunned</b> until the end of your next turn.'
             "
           />
           <div slot="confirm-button">
@@ -156,9 +156,9 @@
               <v-btn color="success" large @click="applyDirectHit">confirm</v-btn>
             </div>
             <div v-else>
-              <v-btn color="error" tile large @click="window = 4">fail hull save</v-btn>
+              <v-btn color="error" tile large @click="window = 4">fail hull check</v-btn>
               <v-btn color="success darken-1" tile large @click="applyDirectHit()">
-                pass hull save
+                pass hull check
               </v-btn>
             </div>
           </div>
@@ -179,19 +179,18 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import TableWindowItem from './_TableWindowItem.vue'
 import ResultData from './_structure_results.json'
-import { Mech } from '@/class'
+import { Mech, MechLoadout, MechSystem } from '@/class'
 
-@Component({ 
+@Component({
   name: 'structure-table',
   components: { TableWindowItem },
 })
 export default class CCSidebarView extends Vue {
-  
   dialog = false
-  show() {
+  show(): void {
     this.dialog = true
   }
-  close() {
+  close(): void {
     this.window = 0
     this.rolls = []
     this.systemTraumaRoll = null
@@ -201,7 +200,7 @@ export default class CCSidebarView extends Vue {
   }
   window = 0
 
-  @Prop({ type: Object, required: true, })
+  @Prop({ type: Object, required: true })
   mech!: Mech
 
   rolls = []
@@ -218,10 +217,10 @@ export default class CCSidebarView extends Vue {
     'Glancing Blow',
   ]
 
-  get loadout() {
+  get loadout(): MechLoadout {
     return this.mech.ActiveLoadout
   }
-  get totalRolls() {
+  get totalRolls(): number {
     return (this.mech.CurrentStructure - this.mech.MaxStructure) * -1
   }
   get resultWindow(): number {
@@ -241,33 +240,38 @@ export default class CCSidebarView extends Vue {
     return 4
   }
 
-
-  get destroyableMounts() {
+  get destroyableMounts(): { name: string; index: number }[] {
     return this.loadout
       .AllMounts(
         this.mech.Pilot.has('CoreBonus', 'cb_improved_armament'),
         this.mech.Pilot.has('CoreBonus', 'cb_integrated_weapon')
       )
-      .filter(x => x.Weapons.some(w => !w.Destroyed) && !(x.IsLimited && x.Uses === 0))
+      .filter(x => x.Weapons.some(w => !w.Destroyed && !(w.IsLimited && w.Uses === 0)))
       .map((m, i) => ({ name: m.Name, index: i }))
   }
-  get destroyableSystems() {
-    return this.loadout.Systems.filter(x => !x.Destroyed && !(x.IsLimited && x.Uses === 0))
+
+  get destroyableSystems(): MechSystem[] {
+    return this.loadout.Systems.filter(
+      x => !x.IsIndestructible && !x.Destroyed && !(x.IsLimited && x.Uses === 0)
+    )
   }
 
-  applyGlancingBlow() {
+  applyGlancingBlow(): void {
     if (!this.mech.Conditions.includes('Impaired')) this.mech.Conditions.push('Impaired')
     this.close()
   }
-  applyDirectHit() {
+
+  applyDirectHit(): void {
     if (!this.mech.Conditions.includes('Stunned')) this.mech.Conditions.push('Stunned')
     this.close()
   }
-  applyDestroyed() {
+
+  applyDestroyed(): void {
     this.mech.Destroy()
     this.close()
   }
-  applySystemTrauma() {
+
+  applySystemTrauma(): void {
     if (this.systemTraumaRoll > 3) {
       this.loadout.Systems.find(x => x.ID === this.destroyedSystem).Destroy()
     } else {

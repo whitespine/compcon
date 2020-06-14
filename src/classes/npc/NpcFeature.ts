@@ -24,6 +24,7 @@ export interface INpcFeatureData {
   override?: object
   tags: ITagData[]
   brew: string
+  hide_active: boolean
   type: NpcFeatureType
 }
 
@@ -37,6 +38,7 @@ export abstract class NpcFeature {
   private _locked: boolean
   private _tags: ITagData[]
   private _brew: string
+  private _hide_active: boolean
   protected type: NpcFeatureType
 
   public constructor(data: INpcFeatureData) {
@@ -49,6 +51,7 @@ export abstract class NpcFeature {
     this._locked = data.locked || false
     this._tags = data.tags
     this._brew = data.brew || 'CORE'
+    this._hide_active = data.hide_active || false
   }
 
   public get ID(): string {
@@ -63,6 +66,14 @@ export abstract class NpcFeature {
     return `${this._origin.name} ${this._origin.type} - ${
       this._origin.base ? 'Base' : 'Optional'
     } ${this.FeatureType}`
+  }
+
+  public get OriginClass(): string {
+    return this._origin.name
+  }
+
+  public get OriginSet(): string {
+    return this._origin.base ? 'Base' : 'Optional'
   }
 
   public get IsBase(): boolean {
@@ -84,7 +95,7 @@ export abstract class NpcFeature {
     if (m) {
       return this._effect.replace(
         perTier,
-        m[0].replace('{', '<b class="primary--text">').replace('}', '</b>')
+        m[0].replace('{', '<b class="accent--text">').replace('}', '</b>')
       )
     }
     return this._effect
@@ -101,7 +112,7 @@ export abstract class NpcFeature {
           .replace('{', '')
           .replace('}', '')
           .split('/')
-        fmt = fmt.replace(x, `<b class="primary--text">${tArr[tier - 1]}</b>`)
+        fmt = fmt.replace(x, `<b class="accent--text">${tArr[tier - 1]}</b>`)
       })
     }
     return fmt
@@ -113,6 +124,10 @@ export abstract class NpcFeature {
 
   public get Tags(): Tag[] {
     return Tag.Deserialize(this._tags)
+  }
+
+  public get HideActive(): boolean {
+    return this._hide_active
   }
 
   public get FeatureType(): NpcFeatureType {
@@ -127,9 +142,5 @@ export abstract class NpcFeature {
   public get Source(): string {
     return ''
     // return this._origin.name
-  }
-
-  public get Color(): string {
-    return 'npc--feature'
   }
 }

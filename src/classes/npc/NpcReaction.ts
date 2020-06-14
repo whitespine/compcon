@@ -11,7 +11,7 @@ export class NpcReaction extends NpcFeature {
 
   public constructor(data: INpcReactionData) {
     super(data)
-    this._trigger = data.trigger
+    this._trigger = data.trigger || ''
     this.type = NpcFeatureType.Reaction
   }
 
@@ -21,5 +21,9 @@ export class NpcReaction extends NpcFeature {
 
   public get Color(): string {
     return 'npc--reaction'
+  }
+
+  public get Icon(): string {
+    return 'cci-reaction'
   }
 }

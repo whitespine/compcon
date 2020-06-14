@@ -1,5 +1,4 @@
-import { rules } from 'lancer-data'
-import { LicensedItem, MountType, ItemType, MechType, CoreSystem } from '@/class'
+import { Rules, LicensedItem, MountType, ItemType, MechType, CoreSystem } from '@/class'
 import { ILicensedItemData, ICoreData } from '@/interface'
 import { getImagePath, ImageTag } from '@/io/ImageManagement'
 
@@ -28,6 +27,7 @@ interface IFrameData extends ILicensedItemData {
   traits: FrameTrait[]
   core_system: ICoreData
   image_url?: string
+  other_art?: { tag: ImageTag; src: string }[]
 }
 
 class Frame extends LicensedItem {
@@ -38,6 +38,7 @@ class Frame extends LicensedItem {
   private _traits: FrameTrait[]
   private _core_system: CoreSystem
   private _image_url?: string
+  private _other_art?: { tag: ImageTag; src: string }[]
 
   public constructor(frameData: IFrameData) {
     super(frameData)
@@ -49,6 +50,7 @@ class Frame extends LicensedItem {
     this._core_system = new CoreSystem(frameData.core_system)
     this._item_type = ItemType.Frame
     this._image_url = frameData.image_url
+    this._other_art = frameData.other_art
   }
 
   public get Mechtype(): MechType[] {
@@ -57,6 +59,10 @@ class Frame extends LicensedItem {
 
   public get YPosition(): number {
     return this._y_pos
+  }
+
+  public get OtherArt(): { tag: ImageTag; src: string }[] {
+    return this._other_art
   }
 
   public get MechTypeString(): string {
@@ -72,12 +78,16 @@ class Frame extends LicensedItem {
     return this._stats.size
   }
 
+  public get SizeIcon(): string {
+    return `cci-size-${this.Size === 0.5 ? 'half' : this.Size}`
+  }
+
   public get Armor(): number {
     return this._stats.armor
   }
 
   public get Structure(): number {
-    return rules.base_structure + (this._stats.structuremod || 0)
+    return Rules.BaseStructure + (this._stats.structuremod || 0)
   }
 
   public get HP(): number {
@@ -93,7 +103,7 @@ class Frame extends LicensedItem {
   }
 
   public get HeatStress(): number {
-    return rules.base_stress + (this._stats.stressmod || 0)
+    return Rules.BaseStress + (this._stats.stressmod || 0)
   }
 
   public get HeatCap(): number {

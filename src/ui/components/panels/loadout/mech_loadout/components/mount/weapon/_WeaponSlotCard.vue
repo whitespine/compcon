@@ -3,8 +3,15 @@
     <slot-card-base ref="base" :item="item" :readonly="readonly">
       <div slot="header">
         <span v-if="item">
-          <equipment-options :item="item" />
-          <span v-if="!item.Destroyed" class="ml-n2">{{ item.Name }}</span>
+          <equipment-options
+            :item="item"
+            @swap="$refs.base.$refs.selectorDialog.show()"
+            @remove="remove()"
+          />
+          <span v-if="!item.Destroyed" class="ml-n2">
+            {{ item.Name }}
+            <span v-if="item.FlavorName" class="caption ml-2 my-n1">//{{ item.TrueName }}</span>
+          </span>
           <span v-else class="py-1 error" style="letter-spacing: 3px">
             &emsp;/ / {{ item.Name }} DESTROYED / /&emsp;
           </span>
@@ -21,8 +28,23 @@
         />
       </div>
       <div v-if="item">
-        <equipment-header :item="item" :color="color">
-          <div v-if="!intWeapon && !readonly">
+        <equipment-header :item="item" :color="color" :use-bonus="mech.Pilot.LimitedBonus">
+          <div class="d-inline mx-2">
+            <cc-range-element
+              v-if="item.Range"
+              small
+              :range="item.getTotalRange(mech)"
+              class="d-inline"
+            />
+            <cc-damage-element
+              v-if="item.Damage"
+              small
+              :damage="item.Damage"
+              :type-override="item.DamageTypeOverride"
+              class="d-inline"
+            />
+          </div>
+          <div v-if="!intWeapon && !readonly" class="d-inline mx-2">
             <v-btn
               outlined
               small
@@ -34,36 +56,18 @@
             </v-btn>
           </div>
         </equipment-header>
-        <v-row v-if="item.Effect">
-          <p class="effect-text px-2 mx-2 py-0 mb-1" v-html="item.Effect" />
-        </v-row>
+        <cc-item-effect-panel
+          v-if="item.Effect"
+          :key="item.Effect.length"
+          :effects="item.Effect"
+          transparent
+        />
         <v-row v-if="item.Mod" dense justify="center">
-          <mod-inset :mod="item.Mod" @remove-mod="item.Mod = null" />
+          <mod-inset :mod="item.Mod" :mech="mech" @remove-mod="item.Mod = null" />
         </v-row>
-        <v-row v-if="item.IsLimited" dense no-gutters align="end" class="mt-n2">
-          <v-col cols="12">
-            <span class="overline">
-              USES
-            </span>
-          </v-col>
-          <v-col cols="auto">
-            <cc-item-uses :item="item" :bonus="mech.Pilot.LimitedBonus" :color="color" />
-          </v-col>
-          <v-col cols="auto" class="ml-2 mb-1 overline">
-            {{ item.MaxUses }}
-            ({{ item.Uses }}/{{ item.MaxUses + mech.Pilot.LimitedBonus }})
-          </v-col>
-        </v-row>
+        <ammo-case-inset :level="armoryLevel" />
         <v-row no-gutters align="center" class="ml-2 mr-6">
-          <v-col cols="auto">
-            <v-row>
-              <cc-range-element small :range="item.getTotalRange(mech)" />
-              <v-divider vertical class="ml-2" />
-              <cc-damage-element small :damage="item.Damage" />
-            </v-row>
-          </v-col>
-          <v-col cols="auto" class="ml-auto">&nbsp;</v-col>
-          <v-col cols="auto">
+          <v-col cols="auto" class="ml-auto">
             <cc-tags small :tags="item.Tags" :color="color" />
           </v-col>
           <v-col v-if="item.Mod" cols="auto" class="ml-6">
@@ -103,10 +107,18 @@ import SlotCardBase from '../../_SlotCardBase.vue'
 import WeaponSelector from './_WeaponSelector.vue'
 import ModSelector from './_ModSelector.vue'
 import ModInset from './_ModInset.vue'
+import AmmoCaseInset from './_AmmoCaseInset.vue'
 import EquipmentOptions from '../../_EquipmentOptions.vue'
 import EquipmentHeader from '../../_EquipmentHeader.vue'
 import ShLockDialog from '../_ShLockDialog.vue'
-import { MechWeapon, WeaponMod, WeaponSize, EquippableMount } from '@/class'
+import {
+  MechWeapon,
+  WeaponMod,
+  WeaponSize,
+  EquippableMount,
+  PilotTalent,
+  WeaponType,
+} from '@/class'
 
 export default Vue.extend({
   name: 'weapon-slot-card',
@@ -115,6 +127,7 @@ export default Vue.extend({
     WeaponSelector,
     ModSelector,
     ModInset,
+    AmmoCaseInset,
     EquipmentOptions,
     EquipmentHeader,
     ShLockDialog,
@@ -149,6 +162,15 @@ export default Vue.extend({
     color() {
       return this.mech.Frame.Manufacturer.Color
     },
+    armoryLevel() {
+      if (!this.item) return 0
+      if (this.item.Size !== WeaponSize.Main || this.item.Type === WeaponType.Melee) return 0
+      const tal = this.mech.Pilot.Talents.find(
+        (x: PilotTalent) => x.Talent.ID === 't_walking_armory'
+      )
+      if (!tal) return 0
+      return tal.Rank
+    },
   },
   methods: {
     equip(item: MechWeapon) {
@@ -156,6 +178,8 @@ export default Vue.extend({
       if (item.Size === WeaponSize.Superheavy) {
         this.equipSuperheavy(item)
       } else {
+        if (this.item && this.item.Size === WeaponSize.Superheavy)
+          this.mech.ActiveLoadout.UnequipSuperheavy()
         this.weaponSlot.EquipWeapon(item, this.mech.Pilot)
       }
     },

@@ -1,11 +1,11 @@
 <template>
-  <div class="mt-2">
+  <div :class="`mt-2 ${$vuetify.breakpoint.mdAndDown ? 'text-center' : ''}`">
     <p class="heading mech">COMP/CON</p>
     <div class="mx-2">
       C/C version:
-      <b class="primary--text">{{ $appVersion }}</b>
+      <b class="accent--text">{{ $appVersion }}</b>
       // LANCER CORE version:
-      <b class="primary--text">{{ $lancerVersion }}</b>
+      <b class="accent--text">{{ $lancerVersion }}</b>
     </div>
     <p align="center" class="my-2">
       <a href="https://app.netlify.com/sites/compcon/deploys">
@@ -45,11 +45,11 @@
       <v-progress-circular :size="80" :width="5" color="primary" indeterminate />
     </div>
     <div v-else>
-      <div class="heading h2 primary--text text-center mt-n1">LANCER by:</div>
+      <div class="heading h2 accent--text text-center mt-n1">LANCER by:</div>
       <v-row justify="center">
         <dev-badge v-for="c in credits.writers" :key="c.name" :info="c" big />
       </v-row>
-      <div class="heading h2 primary--text text-center mt-2">COMP/CON Development by:</div>
+      <div class="heading h2 accent--text text-center mt-2">COMP/CON Development by:</div>
       <v-row dense>
         <dev-badge v-for="c in credits.lead_devs" :key="c.name" :info="c" big />
         <dev-badge v-for="c in credits.devs" :key="c.name" :info="c" />
@@ -64,23 +64,23 @@
         />
         of:
       </span>
-      <v-row justify="center">
+      <v-row>
         <tier-five v-for="c in credits.t5" :key="c.name" :info="c" />
       </v-row>
-      <v-row dense justify="center">
+      <v-row dense>
         <tier-four v-for="c in credits.t4" :key="c.name" :info="c" />
       </v-row>
-      <v-row dense justify="center">
+      <v-row dense>
         <tier-three v-for="c in credits.t3" :key="c" :name="c" />
       </v-row>
-      <v-row dense justify="center">
+      <v-row dense>
         <tier-two v-for="c in credits.t2" :key="c" :name="c" />
       </v-row>
-      <v-row dense justify="center">
+      <v-row dense>
         <tier-one v-for="c in credits.t1" :key="c" :name="c" />
       </v-row>
-      <span class="heading h2 text--text text-center mt-4">Special Thanks to:</span>
-      <div class="text-center my-2">
+      <span class="heading h2 text--text mt-4">Special Thanks to:</span>
+      <div class="my-2">
         <special-thanks v-for="c in credits.special_thanks" :key="c" :name="c" />
       </div>
     </div>

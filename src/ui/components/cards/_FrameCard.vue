@@ -1,14 +1,18 @@
 <template>
   <v-card-text>
-    <v-row>
-      <v-col cols="7">
-        <v-row>
-          <span class="heading h2 text--text">
-            {{ item.Source }} {{ item.MechTypeString }} Frame
-          </span>
-          <v-icon size="60" color="primary" class="ml-auto mt-n2" style="line-height: 40px">
-            cci-size-{{ item.Size === 0.5 ? 'half' : item.Size }}
-          </v-icon>
+    <v-row dense>
+      <v-col md="12" lg="7">
+        <v-row dense align="center">
+          <v-col>
+            <span class="heading h2 text--text">
+              {{ item.Source }} {{ item.MechTypeString }} Frame
+            </span>
+          </v-col>
+          <v-col cols="auto" class="ml-auto">
+            <v-icon size="60" color="accent" class="mt-n2" style="line-height: 40px">
+              {{ item.SizeIcon }}
+            </v-icon>
+          </v-col>
         </v-row>
         <div v-if="item.Description">
           <span class="overline ml-n2 text--text">COMPENDIUM ENTRY</span>
@@ -16,17 +20,17 @@
         </div>
         <div>
           <span class="overline ml-n2 text--text">COMBAT PROFILE</span>
-          <p class="heading h3 grey--text light-panel text-center py-10">
+          <p class="heading h3 subtle--text light-panel text-center py-10">
             <v-icon large color="grey">mdi-lock</v-icon>
             <br />
             FEATURE IN DEVELOPMENT
           </p>
         </div>
       </v-col>
-      <v-col cols="5">
-        <v-img :src="item.DefaultImage" />
+      <v-col v-if="$vuetify.breakpoint.lgAndUp" cols="5">
+        <v-img :src="item.DefaultImage" max-width="35vw" />
         <cc-tooltip simple content="Feature In Development">
-          <v-btn small outlined block disabled>View {{ item.Name }} Gallery</v-btn>
+          <frame-gallery-modal :frame="item" />
         </cc-tooltip>
       </v-col>
     </v-row>
@@ -45,7 +49,7 @@
     <span class="overline ml-n2 text--text">AVAILABLE WEAPON MOUNTS</span>
     <v-row justify="space-around" class="mb-3">
       <v-col v-for="(m, i) in item.Mounts" :key="m + i" cols="auto">
-        <v-chip large label outlined color="primary" class="heading h3">{{ m }} Mount</v-chip>
+        <v-chip large label outlined color="accent" class="heading h3">{{ m }} Mount</v-chip>
       </v-col>
     </v-row>
 
@@ -56,11 +60,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { FrameStatblock, FrameCoreSystemPanel } from './frame'
+import { FrameGalleryModal, FrameStatblock, FrameCoreSystemPanel } from './frame'
 
 export default Vue.extend({
   name: 'cc-frame-card',
-  components: { FrameStatblock, FrameCoreSystemPanel },
+  components: { FrameGalleryModal, FrameStatblock, FrameCoreSystemPanel },
   props: {
     item: {
       type: Object,

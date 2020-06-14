@@ -31,10 +31,11 @@
         >
           <template v-slot:group.header="h" class="transparent">
             <div class="primary sliced">
-              <span class="heading white--text ml-2">
+              <span v-if="h.group" class="heading white--text ml-2 text-uppercase">
                 <v-icon v-if="h.group.toLowerCase() === 'biological'" dark>mdi-heart-pulse</v-icon>
                 <v-icon v-else dark>cci-role-{{ h.group }}</v-icon>
-                {{ h.group.toUpperCase() }}
+                <span v-if="Array.isArray(h.group)" v-html="h.group.join(', ')" />
+                <span v-else v-html="h.group" />
               </span>
             </div>
           </template>
@@ -50,7 +51,7 @@
             >
               {{ item.Name }}
               <v-scroll-x-transition leave-absolute>
-                <v-icon v-if="selectedClass === item" right color="primary">
+                <v-icon v-if="selectedClass === item" right color="accent">
                   mdi-chevron-triple-right
                 </v-icon>
               </v-scroll-x-transition>
@@ -78,7 +79,7 @@
       <class-card v-if="selectedClass" ref="card" :npcc="selectedClass" />
       <v-row v-else align="center" justify="center" style="width: 100%; height: 100%;">
         <v-col cols="auto">
-          <span class="heading h1 grey--text text--lighten-2">select npc class</span>
+          <span class="heading h1 subtle--text text--lighten-2">select npc class</span>
         </v-col>
       </v-row>
     </template>

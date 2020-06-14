@@ -1,36 +1,47 @@
 <template>
   <v-container fluid px-5>
-    <h1 class="heading">MANUFACTURERS</h1>
+    <h1 v-resize-text="{ maxFontSize: '36pt' }" class="heading">MANUFACTURERS</h1>
     <v-tabs
       v-model="tabModel"
-      vertical
+      :vertical="$vuetify.breakpoint.lgAndUp"
       background-color="primary"
       :slider-size="12"
       slider-color="active"
       icons-and-text
+      show-arrows
     >
       <v-tab v-for="(m, i) in manufacturers" :key="m.ID" ripple>
         <cc-logo size="large" :source="m" :color="tabModel == i ? 'white' : 'black'" />
         {{ m.ID }}
       </v-tab>
       <v-tab-item v-for="m in manufacturers" :key="m.ID + 'desc'">
-        <v-card flat class="px-3 py-3 light-panel clipped-x-large">
-          <v-card-title class="heading mech pb-4" :style="`color: ${m.Color}`">
-            {{ m.Name }}
+        <v-card flat class="px-3 py-3 panel clipped-x-large">
+          <v-card-title
+            :class="`heading ${$vuetify.breakpoint.lgAndUp ? 'mech pb-3' : 'h2'}`"
+            :style="`color: ${m.Color}; word-break: break-word!important`"
+          >
+            <span style="overflow-wrap: normal!important;">
+              {{ m.Name }}
+            </span>
           </v-card-title>
-          <v-card-text class="mt-1 ml-2 pr-4 pt-0">
-            <div style="float: right; margin-left: 20px; margin-right: 50px">
+          <v-card-text class="mt-1 pr-4 pt-0">
+            <div
+              v-if="$vuetify.breakpoint.lgAndUp"
+              style="float: right; margin-left: 20px; margin-right: 50px; min-height: 22vw"
+            >
               <svg
-                :style="
-                  `width:350px; height:350px; fill:${m.Color}; stroke:#fff; stroke-width: 8px;`
-                "
+                :style="`width:22vw; height:22vw; fill:${m.Color}; stroke:#fff; stroke-width: 8px;`"
               >
                 <use :href="m.Logo + '#Content'"></use>
               </svg>
             </div>
             <blockquote class="quote-block fluff-text text--text" v-html="m.Quote" />
             <v-divider class="ma-2" style="width: 800px" />
-            <p class="body-text stark-text--text" v-html="m.Description" />
+            <p
+              class="body-text stark-text--text mb-2"
+              style="min-height: 400px;"
+              v-html="m.Description"
+            />
           </v-card-text>
         </v-card>
       </v-tab-item>

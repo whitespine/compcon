@@ -10,7 +10,7 @@
       <v-divider class="mb-2" />
       <div class="pt-2 heading h3 text-center">
         Roll
-        <v-icon large color="primary">mdi-dice-d20</v-icon>
+        <v-icon large color="accent">mdi-dice-d20</v-icon>
         &nbsp;and add any relevant Skill Trigger bonuses, modifiers, or accuracy
       </div>
       <v-row justify="center">
@@ -22,8 +22,8 @@
             outlined
             dense
             hide-details
-            append-outer-icon="add"
-            prepend-icon="remove"
+            append-outer-icon="mdi-plus-circle-outline"
+            prepend-icon="mdi-minus-circle-outline"
             @click:append-outer="skillRoll++"
             @click:prepend="skillRoll > 1 ? skillRoll-- : ''"
           />
@@ -53,12 +53,19 @@
                 'You buy enough time as you need for now, until the next mission. If you\'ve already gotten this result, it becomes a 10-19 for the same situation next time.'
               "
             />
-            <v-card color="grey lighten-4" flat tile class="ml-5 mr-5">
+            <v-card color="panel" flat tile class="ml-5 mr-5">
               <v-toolbar dark dense color="action--downtime">
                 <v-toolbar-title class="heading h2">Bought Time</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
-                <v-textarea v-model="details" auto-grow rows="1" label="Details" filled />
+                <v-textarea
+                  v-model="details"
+                  color="accent"
+                  auto-grow
+                  rows="1"
+                  label="Details"
+                  filled
+                />
               </v-card-text>
             </v-card>
           </v-col>
@@ -97,7 +104,7 @@ export default Vue.extend({
   }),
   methods: {
     addReserve() {
-      let nr = new Reserve({
+      const nr = new Reserve({
         id: 'reserve_boughttime',
         type: 'Resources',
         name: 'Bought Time',
@@ -112,7 +119,6 @@ export default Vue.extend({
         nr.ResourceCost = 'Only a little time, and only if drastic measures are taken right now'
       else if (this.skillRoll < 20)
         nr.ResourceCost = 'The situation becomes precarious or desperate'
-      console.log(this.pilot.Reserves)
       this.pilot.Reserves.push(nr)
       this.close()
     },

@@ -7,8 +7,8 @@
     <template v-slot:left-column>
       <div v-for="(pSkill, i) in pilot.Skills" :key="`summary_${pSkill.Skill.ID}_${i}`">
         <missing-item v-if="pSkill.Skill.err" @remove="pilot.RemoveSkill(pSkill)" />
-        <v-chip v-else label color="grey lighten-2" style="width: 100%" class="my-1 pa-1">
-          <v-chip dark color="primary" small>
+        <v-chip v-else label color="panel" style="width: 100%" class="my-1 pa-1">
+          <v-chip dark color="accent" small>
             +
             <b>{{ pSkill.Bonus }}</b>
           </v-chip>
@@ -36,7 +36,7 @@
             prominent
             dense
             border="left"
-            color="primary"
+            color="accent"
             icon="warning"
             class="stat-text"
             :value="pilot.MaxSkillPoints > pilot.CurrentSkillPoints"
@@ -48,7 +48,7 @@
             prominent
             dense
             border="left"
-            color="primary"
+            color="accent"
             icon="warning"
             class="stat-text"
             :value="!enoughSelections"
@@ -89,8 +89,8 @@ import MissingItem from './components/_MissingItem.vue'
 import Selector from './components/_SelectorBase.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
+import { Rules, Pilot } from '@/class'
 import { rules } from 'lancer-data'
-import { Pilot } from '@/class'
 
 export default Vue.extend({
   name: 'skill-selector',
@@ -113,7 +113,7 @@ export default Vue.extend({
       return this.pilot.Level === 0
     },
     selectedMin(): number {
-      return rules.minimum_pilot_skills
+      return Rules.MinimumPilotSkills
     },
     enoughSelections(): boolean {
       return !(this.pilot.Skills.length < this.selectedMin)
@@ -123,8 +123,8 @@ export default Vue.extend({
     },
   },
   watch: {
-    selectionComplete() {
-      window.scrollTo(0, document.body.scrollHeight)
+    selectionComplete(bool) {
+      if (bool) window.scrollTo(0, document.body.scrollHeight)
     },
   },
   created() {

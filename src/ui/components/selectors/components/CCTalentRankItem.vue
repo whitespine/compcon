@@ -1,15 +1,15 @@
 <template>
   <v-row dense align="center">
-    <v-col cols="auto" class="text-center">
+    <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="auto" class="text-center">
       <v-icon
         :class="{ 'mr-4': small }"
         :size="small ? 40 : 80"
-        :color="lock ? 'grey lighten-1' : color"
+        :color="lock ? 'light-panel' : color"
         v-html="`cci-rank-${rank}`"
       />
     </v-col>
     <v-col>
-      <p class="effect-text px-3 ma-0 ml-n2" v-html="description" />
+      <p class="body-text px-3 ma-0 ml-n2" v-html="description" />
     </v-col>
   </v-row>
 </template>
@@ -38,7 +38,7 @@ export default Vue.extend({
     color: {
       type: String,
       required: false,
-      default: 'primary',
+      default: 'accent',
     },
   },
 })

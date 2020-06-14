@@ -18,6 +18,13 @@ interface INotification {
   onClick?: () => void
 }
 
+declare interface IErrorReport {
+  time: Date
+  message: string
+  component?: string
+  stack: string
+}
+
 declare interface IDiceStats {
   min: number
   max: number
@@ -47,6 +54,7 @@ declare interface IRankedData {
   id: string
   rank: number
   custom?: boolean
+  custom_desc?: string
 }
 
 declare interface IEquipmentData {
@@ -55,11 +63,16 @@ declare interface IEquipmentData {
   cascading: boolean
   note: string
   uses?: number
+  flavorName?: string
+  flavorDescription?: string
+  customDamageType?: string
 }
 
 declare interface IMechWeaponSaveData extends IEquipmentData {
   loaded: boolean
   mod?: IEquipmentData
+  customDamageType?: string
+  maxUseOverride?: number
 }
 
 declare interface ICounterSaveData {
@@ -69,6 +82,9 @@ declare interface ICounterSaveData {
 
 declare interface IPilotData {
   id: string
+  campaign: string
+  group: string
+  sort_index: number
   cloudID: string
   cloudOwnerID: string
   lastCloudUpdate: string
@@ -77,6 +93,7 @@ declare interface IPilotData {
   name: string
   player_name: string
   status: string
+  mounted: boolean
   factionID: string
   text_appearance: string
   notes: string
@@ -93,13 +110,13 @@ declare interface IPilotData {
   core_bonuses: string[]
   reserves: IReserveData[]
   orgs: IOrganizationData[]
-  loadouts: IPilotLoadoutData[]
-  active_loadout_index: number
+  loadout: IPilotLoadoutData
   mechs: IMechData[]
   active_mech: string | null
   cc_ver: string
   counter_data: ICounterSaveData[]
   custom_counters: object[]
+  brews: string[]
 }
 
 declare interface IReserveData {
@@ -171,10 +188,12 @@ declare interface IMechData {
   active: boolean
   current_structure: number
   current_hp: number
+  overshield: number
   current_stress: number
   current_heat: number
   current_repairs: number
   current_overcharge: number
+  current_core_energy: number
   loadouts: IMechLoadoutData[]
   active_loadout_index: number
   statuses: string[]
@@ -259,6 +278,7 @@ declare interface Faction {
 declare interface Status {
   name: string
   type: string
+  icon: string
   effects: string[]
 }
 

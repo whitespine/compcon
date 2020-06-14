@@ -4,6 +4,7 @@
 // stored anywhere and collected imports are fine as long as their constituents are impored
 // first in this file.
 
+import { Rules } from './classes/utility/Rules'
 import {
   MountType,
   FittingSize,
@@ -21,6 +22,25 @@ import {
   EncounterSide,
 } from './classes/enums'
 import Tag from './classes/Tag'
+import {
+  AIEffect,
+  BasicEffect,
+  ChargeType,
+  Charge,
+  ChargeEffect,
+  DeployableEffect,
+  DroneEffect,
+  GenericEffect,
+  EffectType,
+  ActivationType,
+  ItemEffect,
+  BonusEffect,
+  ProtocolEffect,
+  ReactionEffect,
+  TechEffect,
+  ProfileEffect,
+  OffensiveEffect,
+} from './classes/effects'
 import { CompendiumItem } from './classes/CompendiumItem'
 import { LicensedItem } from './classes/LicensedItem'
 import { CoreBonus } from './classes/pilot/CoreBonus'
@@ -85,6 +105,24 @@ import { ContentPack } from './classes/ContentPack'
 import { Counter } from './classes/Counter'
 
 export {
+  Rules,
+  AIEffect,
+  BasicEffect,
+  ChargeType,
+  Charge,
+  ChargeEffect,
+  DeployableEffect,
+  DroneEffect,
+  GenericEffect,
+  EffectType,
+  ActivationType,
+  ItemEffect,
+  BonusEffect,
+  ProtocolEffect,
+  ReactionEffect,
+  TechEffect,
+  ProfileEffect,
+  OffensiveEffect,
   MountType,
   FittingSize,
   WeaponSize,

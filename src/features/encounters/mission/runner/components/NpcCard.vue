@@ -2,13 +2,21 @@
   <div class="mx-6">
     <v-row dense>
       <v-col>
-        <span class="heading mech" style="line-height: 15px">{{ npc.Name }}</span>
-        <span class="heading h2 light-text--text">
-          <cc-slashes />
-          {{ npc.Side }}
-          {{ typeof npc.Tier === 'number' ? `T${npc.Tier}` : `Custom` }} {{ npc.Class.Name }}
-          {{ npc.Templates.map(t => t.Name).join(' ') }} {{ npc.Tag }}
-        </span>
+        <div>
+          <span class="heading mech" style="line-height: 25px">{{ npc.Name }}</span>
+          <span class="heading h2 light-text--text">
+            <cc-slashes />
+            {{ npc.Side }}
+            {{ typeof npc.Tier === 'number' ? `T${npc.Tier}` : `Custom` }} {{ npc.Class.Name }}
+            {{ npc.Templates.map(t => t.Name).join(' ') }} {{ npc.Tag }}
+          </span>
+        </div>
+        <div class="flavor-text mt-n1 ml-2">{{ npc.Subtitle }}</div>
+      </v-col>
+      <v-col cols="auto" class="ml-auto">
+        <v-btn v-if="npc.Activations === 0" large color="secondary" @click="npc.Activations += 1">
+          Reactivate
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -18,17 +26,17 @@
 
     <v-alert
       v-if="npc.Activations === 0 && !npc.Defeat"
-      prominent
       dark
       dense
       border="left"
       icon="mdi-check"
+      color="panel"
     >
       <span class="heading h2">Turn Complete</span>
     </v-alert>
 
     <v-row dense>
-      <v-col cols="9">
+      <v-col>
         <v-row justify="space-between" dense>
           <v-col cols="3">
             <cc-status-select
@@ -68,9 +76,9 @@
             <v-text-field
               v-model="npc.Burn"
               type="number"
-              append-outer-icon="add"
+              append-outer-icon="mdi-plus-circle-outline"
               append-icon="mdi-fire"
-              prepend-icon="remove"
+              prepend-icon="mdi-minus-circle-outline"
               style="width: 115px"
               class="hide-input-spinners"
               hint="BURN"
@@ -95,7 +103,7 @@
               @update="npc.CurrentStructure = $event"
             >
               <span class="heading h3">
-                Structure: {{ npc.CurrentStructure }}/{{ npc.MaxStructure }}
+                Structure
               </span>
             </cc-tick-bar>
           </v-col>
@@ -109,7 +117,7 @@
               full-icon="mdi-shield"
               readonly
             >
-              <span class="heading h3">Armor: {{ npc.Armor }}</span>
+              <span class="heading h3">Armor</span>
             </cc-tick-bar>
           </v-col>
           <v-col cols="auto" class="ml-1">
@@ -122,13 +130,13 @@
               rollover
               @update="npc.CurrentHP = $event"
             >
-              <span class="heading h3">HP: {{ npc.CurrentHP }}/{{ npc.MaxHP }}</span>
+              <span class="heading h3">HP</span>
             </cc-tick-bar>
           </v-col>
         </v-row>
 
         <v-row dense>
-          <v-col v-if="npc.MaxStress > 1" cols="auto" class="mr-n6">
+          <v-col v-if="npc.MaxStress > 1" cols="auto">
             <cc-tick-bar
               :key="npc.CurrentStress"
               :current="npc.CurrentStress"
@@ -139,7 +147,7 @@
               :class="{ rolledOver: stressRolledOver }"
               @update="npc.CurrentStress = $event"
             >
-              <span class="heading h3">Reactor: {{ npc.CurrentStress }}/{{ npc.MaxStress }}</span>
+              <span class="heading h3">Reactor</span>
             </cc-tick-bar>
           </v-col>
           <v-col cols="auto" class="mr-4">
@@ -155,10 +163,10 @@
               clearable
               @update="npc.CurrentHeat = $event"
             >
-              <span class="heading h3">HEAT: {{ npc.CurrentHeat }}/{{ npc.HeatCapacity }}</span>
+              <span class="heading h3">HEAT</span>
             </cc-tick-bar>
           </v-col>
-          <v-col class="mr-4">
+          <v-col cols="auto" class="mr-4">
             <cc-tick-bar
               :key="npc.CurrentMove"
               :current="npc.CurrentMove"
@@ -168,7 +176,20 @@
               full-icon="$vuetify.icons.move"
               @update="npc.CurrentMove = $event"
             >
-              <span class="heading h3">MOVES: {{ npc.CurrentMove }}/{{ npc.MaxMove }}</span>
+              <span class="heading h3">MOVES</span>
+            </cc-tick-bar>
+          </v-col>
+          <v-col class="mr-4">
+            <cc-tick-bar
+              :key="npc.Activations"
+              :current="npc.Activations"
+              :max="npc.Activations"
+              large
+              color="secondary"
+              full-icon="cci-activate"
+              readonly
+            >
+              <span class="heading h3">ACTIVATIONS</span>
             </cc-tick-bar>
           </v-col>
         </v-row>
@@ -228,11 +249,11 @@
             </v-row>
           </v-col>
           <v-col cols="auto">
-            <v-icon size="120" :color="npc.Class.Color">cci-size-{{ npc.Stats.Size }}</v-icon>
+            <v-icon size="120" :color="npc.Class.Color">{{ npc.SizeIcon }}</v-icon>
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="3">
+      <v-col v-if="npc.HasImage">
         <v-card flat outlined>
           <v-card-text class="pa-1">
             <v-img v-if="npc.Image" :key="npc.Image" :src="npc.Image" aspect-ratio="1" />
@@ -240,11 +261,49 @@
         </v-card>
       </v-col>
     </v-row>
-    <div class="overline">FEATURES</div>
-    <v-row dense>
-      <v-col v-for="(i, idx) in npc.Items" :key="i.Feature.ID + idx" cols="6">
-        <cc-npc-item-card :item="i" active @add-reaction="npc.AddReaction($event)" />
+
+    <div class="overline">COUNTERS</div>
+    <cc-counter-set :actor="npc" />
+
+    <v-row no-gutters>
+      <v-col cols="auto">
+        <div class="overline">FEATURES</div>
       </v-col>
+      <v-col cols="auto" class="ml-auto">
+        <v-btn-toggle v-model="profile.NpcView" mandatory>
+          <v-btn small icon value="list">
+            <v-icon color="accent">mdi-view-list</v-icon>
+          </v-btn>
+          <v-btn small icon value="chips">
+            <v-icon color="accent">mdi-view-comfy</v-icon>
+          </v-btn>
+        </v-btn-toggle>
+      </v-col>
+      <v-col cols="auto" class="ml-2">
+        <recharge-menu :npc="npc" />
+      </v-col>
+    </v-row>
+    <v-row v-if="profile.NpcView === 'list'" dense>
+      <v-col v-for="(i, idx) in npc.Items" :key="i.Feature.ID + idx" md="12" lg="6" xl="4">
+        <cc-npc-item-card
+          :item="i"
+          active
+          @remove-feature="npc.RemoveFeature(i.Feature)"
+          @recalc="npc.RecalcBonuses()"
+        />
+      </v-col>
+    </v-row>
+    <v-row v-else-if="profile.NpcView === 'chips'" dense>
+      <v-chip-group column>
+        <cc-npc-item-chip
+          v-for="(i, idx) in npc.Items"
+          :key="i.Feature.ID + idx"
+          :item="i"
+          active
+          @remove-feature="npc.RemoveFeature(i.Feature)"
+          @recalc="npc.RecalcBonuses()"
+        />
+      </v-chip-group>
     </v-row>
     <v-divider class="my-3" />
     <cc-title small :color="npc.Class.Color">
@@ -253,48 +312,24 @@
     </cc-title>
     <p v-html="npc.Note" />
     <v-divider class="my-3" />
-    <v-row v-if="npc.Reactions.length" dense justify="center">
+    <v-row v-if="reactions.length" dense justify="center">
       <v-col cols="10">
         <div class="overline">STAGED REACTIONS</div>
-        <v-chip
-          v-for="(r, i) in npc.Reactions"
-          :key="r + i"
-          dark
-          color="action--reaction"
-          close
-          close-icon="mdi-close"
-          class="mx-1"
-          @click:close="npc.RemoveReaction(r)"
-        >
-          <v-icon left dark>mdi-redo-variant</v-icon>
-          <span class="heading h3">{{ r }}</span>
-        </v-chip>
-      </v-col>
-    </v-row>
-    <v-row dense justify="start" class="mt-3 mb-10">
-      <v-col v-if="!npc.Defeat">
-        <v-btn
-          block
-          x-large
-          color="secondary"
-          :disabled="npc.Activations === 0"
-          @click="npc.Activations -= 1"
-        >
-          End Turn
-        </v-btn>
-        <v-slide-y-transition leave-absolute>
-          <v-btn
-            v-if="npc.Activations === 0"
-            block
-            outlined
-            small
-            color="primary"
-            class="mt-1"
-            @click="npc.Activations += 1"
+        <v-chip-group :key="'cr_' + reactions.length">
+          <v-chip
+            v-for="(r, i) in reactions"
+            :key="r + i"
+            dark
+            color="action--reaction"
+            close
+            close-icon="mdi-close"
+            class="mx-1"
+            @click:close="npc.RemoveReaction(r)"
           >
-            Reactivate
-          </v-btn>
-        </v-slide-y-transition>
+            <v-icon left dark>cci-reaction</v-icon>
+            <span class="heading h3">{{ r }}</span>
+          </v-chip>
+        </v-chip-group>
       </v-col>
     </v-row>
     <cc-ref-stress-table ref="stressTable" />
@@ -307,9 +342,12 @@ import Vue from 'vue'
 import sleep from '@/util/sleep'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
+import RechargeMenu from './RechargeMenu.vue'
+import { UserProfile } from '@/io/User'
 
 export default Vue.extend({
   name: 'npc-card',
+  components: { RechargeMenu },
   props: {
     npc: {
       type: Object,
@@ -341,6 +379,13 @@ export default Vue.extend({
     conditions() {
       const store = getModule(CompendiumStore, this.$store)
       return store.Statuses.filter(x => x.type === 'Condition')
+    },
+    reactions() {
+      return this.npc.Reactions
+    },
+    profile(): UserProfile {
+      const store = getModule(CompendiumStore, this.$store)
+      return store.UserProfile
     },
   },
   watch: {

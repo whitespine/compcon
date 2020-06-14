@@ -1,110 +1,191 @@
 <template>
   <div>
     <v-container fluid>
-      <div class="heading mech text-center mt-n2 mb-n2">COMPENDIUM</div>
-      <v-row justify="center">
-        <v-col cols="8">
+      <div
+        class="font-weight-light text-center my-n2"
+        :style="
+          $vuetify.breakpoint.mdAndDown
+            ? 'letter-spacing: 1vw!important; font-size: 7vw!important;'
+            : 'letter-spacing: 2vw!important; font-size: 4vw!important;'
+        "
+      >
+        COMPENDIUM
+      </div>
+      <v-row dense justify="center">
+        <v-col lg="8" xs="12">
           <search-bar />
         </v-col>
       </v-row>
     </v-container>
-    <div class="ml-5 mr-5">
+    <div>
       <v-container fluid grid-list-lg class="mt-0 pt-0">
-        <v-row wrap justify="center">
-          <cc-major-btn
-            icon="mdi-factory"
+        <v-row
+          dense
+          :justify="$vuetify.breakpoint.smAndDown ? 'space-between' : 'space-around'"
+          align="center"
+        >
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
+            icon="cci-manufacturer"
             name="Manufacturers"
-            @clicked="$router.push('manufacturers')"
+            @clicked="$router.push('compendium/manufacturers')"
           />
-          <cc-major-btn
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
             color="primary"
-            icon="mdi-view-week"
+            icon="cci-license"
             name="Licenses"
-            @clicked="$router.push('licenses')"
+            @clicked="$router.push('compendium/licenses')"
           />
-          <cc-major-btn
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
             icon="cci-corebonus"
             name="CORE Bonuses"
-            @clicked="$router.push('corebonuses')"
+            @clicked="$router.push('compendium/corebonuses')"
           />
-        </v-row>
-        <v-row wrap justify="center">
-          <cc-major-btn
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
             color="frame"
             icon="cci-frame"
             name="Frames"
-            @clicked="$router.push('frames')"
+            @clicked="$router.push('compendium/frames')"
           />
-          <cc-major-btn
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
             color="weapon"
             icon="cci-melee"
             name="Mech Weapons"
-            @clicked="$router.push('weapons')"
+            @clicked="$router.push('compendium/weapons')"
           />
-          <cc-major-btn
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
             color="system"
             icon="mdi-chip"
             name="Mech Systems"
-            @clicked="$router.push('systems')"
+            @clicked="$router.push('compendium/systems')"
           />
-        </v-row>
-        <v-row wrap justify="center">
-          <cc-major-btn
+          <compendium-page-button
+            lg="3"
+            md="6"
+            sm="12"
             color="secondary"
             icon="cci-pilot"
             name="Pilot Gear"
-            @clicked="$router.push('pilot_gear')"
+            @clicked="$router.push('compendium/pilot_gear')"
           />
-          <cc-major-btn
+          <compendium-page-button
+            lg="3"
+            md="6"
+            sm="12"
             color="secondary"
             icon="public"
             name="Backgrounds"
-            @clicked="$router.push('backgrounds')"
+            @clicked="$router.push('compendium/backgrounds')"
           />
-          <cc-major-btn
+          <compendium-page-button
+            lg="3"
+            md="6"
+            sm="12"
             color="secondary"
             icon="cci-accuracy"
             name="Skill Triggers"
-            @clicked="$router.push('skills')"
+            @clicked="$router.push('compendium/skills')"
           />
-          <cc-major-btn
+          <compendium-page-button
+            lg="3"
+            md="6"
+            sm="12"
             color="secondary"
             icon="cci-rank-3"
             name="Talents"
-            @clicked="$router.push('talents')"
+            @clicked="$router.push('compendium/talents')"
           />
-        </v-row>
-        <!-- <v-row wrap justify="center">
-          <cc-major-btn
-            color="template"
-            icon="cci-role-striker"
-            @clicked="$router.push('backgrounds')"
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
+            color="primary"
+            icon="cci-npc-class"
             name="NPC Classes"
+            @clicked="$router.push('compendium/npc_classes')"
           />
-          <cc-major-btn
-            color="template"
-            icon="cci-reticule"
-            @clicked="$router.push('backgrounds')"
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
+            color="primary"
+            icon="cci-npc-feature"
+            name="NPC Features"
+            @clicked="$router.push('compendium/npc_features')"
+          />
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
+            color="primary"
+            icon="cci-npc-template"
             name="NPC Templates"
+            @clicked="$router.push('compendium/npc_templates')"
           />
-          <cc-major-btn color="template" icon="cci-large-beam" @clicked="$router.push('skills')" name="NPC Systems" />
-        </v-row>-->
-        <v-row wrap justify="center">
-          <cc-major-btn
-            icon="mdi-gauge"
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
+            icon="cci-status-exposed"
             name="Statuses & Conditions"
-            @clicked="$router.push('statuses')"
+            @clicked="$router.push('compendium/statuses')"
           />
-          <cc-major-btn icon="cci-barrage" name="Reserves" @clicked="$router.push('reserves')" />
-          <cc-major-btn icon="mdi-map" name="Action Economy" @clicked="$router.push('actions')" />
-        </v-row>
-        <v-row wrap justify="center">
-          <cc-major-btn icon="mdi-tag" name="Equipment Tags" @clicked="$router.push('tags')" />
-          <cc-major-btn icon="mdi-map" name="Reference" @clicked="$router.push('reference')" />
-          <cc-major-btn
-            icon="mdi-library-books"
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
+            icon="cci-reserve-tac"
+            name="Reserves"
+            @clicked="$router.push('compendium/reserves')"
+          />
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
+            icon="cci-activate"
+            name="Action Economy"
+            @clicked="$router.push('compendium/actions')"
+          />
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
+            icon="mdi-tag"
+            name="Equipment Tags"
+            @clicked="$router.push('compendium/tags')"
+          />
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
+            icon="cci-accuracy"
+            name="Reference"
+            @clicked="$router.push('compendium/reference')"
+          />
+          <compendium-page-button
+            lg="4"
+            md="6"
+            sm="12"
+            icon="cci-compendium"
             name="Glossary"
-            @clicked="$router.push('glossary')"
+            @clicked="$router.push('compendium/glossary')"
           />
         </v-row>
       </v-container>
@@ -115,9 +196,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import SearchBar from '../SearchBar.vue'
+import CompendiumPageButton from '../components/CompendiumPageButton.vue'
 
 export default Vue.extend({
   name: 'compendium-home',
-  components: { SearchBar },
+  components: { SearchBar, CompendiumPageButton },
 })
 </script>

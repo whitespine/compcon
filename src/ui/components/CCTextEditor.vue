@@ -18,6 +18,7 @@
         :extensions="extensions"
         :card-props="{ flat: true, tile: true, elevation: 0 }"
         class="mt-4"
+        :toolbar-attributes="$vuetify.theme.dark ? { color: 'black', dark: true } : {}"
       />
     </cc-solo-dialog>
   </div>
@@ -48,7 +49,8 @@ export default Vue.extend({
   props: {
     original: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     label: {
       type: String,
@@ -82,11 +84,11 @@ export default Vue.extend({
     ],
   }),
   created() {
-    this.notes = this.original || ''
+    this.text = this.original || ''
   },
   methods: {
     show() {
-      this.notes = this.original || ''
+      this.text = this.original || ''
       this.$refs.dialog.show()
     },
   },

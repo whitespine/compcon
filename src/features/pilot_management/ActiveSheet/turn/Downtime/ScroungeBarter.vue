@@ -22,8 +22,8 @@
             outlined
             dense
             hide-details
-            append-outer-icon="add"
-            prepend-icon="remove"
+            append-outer-icon="mdi-plus-circle-outline"
+            prepend-icon="mdi-minus-circle-outline"
             @click:append-outer="skillRoll++"
             @click:prepend="skillRoll > 1 ? skillRoll-- : ''"
           />
@@ -50,7 +50,7 @@
           </v-col>
           <v-row dense>
             <v-col>
-              <v-card color="grey lighten-4" class="ml-5 mr-5 mt-2">
+              <v-card color="panel" class="ml-5 mr-5 mt-2">
                 <v-toolbar dark dense color="action--downtime">
                   <v-toolbar-title>New Asset</v-toolbar-title>
                 </v-toolbar>
@@ -107,7 +107,7 @@ export default Vue.extend({
   }),
   methods: {
     addReserve() {
-      let nr = new Reserve({
+      const nr = new Reserve({
         id: 'reserve_scroungebarter',
         type: 'Resources',
         name: 'Asset',

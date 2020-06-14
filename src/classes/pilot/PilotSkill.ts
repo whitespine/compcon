@@ -1,5 +1,4 @@
-import { Skill, CustomSkill } from '@/class'
-import { rules } from 'lancer-data'
+import { Rules, Skill, CustomSkill } from '@/class'
 
 class PilotSkill {
   private _skill: Skill | CustomSkill
@@ -25,7 +24,7 @@ class PilotSkill {
   }
 
   public get Bonus(): number {
-    return this._rank * rules.trigger_bonus_per_rank
+    return this._rank * Rules.TriggerBonusPerRank
   }
 
   public get IsCustom(): boolean {
@@ -33,7 +32,7 @@ class PilotSkill {
   }
 
   public Increment(): boolean {
-    if (this._rank >= rules.max_trigger_rank) return false
+    if (this._rank >= Rules.MaxTriggerRank) return false
     this._rank += 1
     return true
   }
@@ -45,12 +44,19 @@ class PilotSkill {
   }
 
   public static Serialize(item: PilotSkill): IRankedData {
-    if (item.IsCustom) return { id: item.Skill.Name, rank: item.Rank, custom: true }
+    if (item.IsCustom)
+      return {
+        id: item.Skill.Name,
+        rank: item.Rank,
+        custom: true,
+        custom_desc: item.Skill.Description,
+      }
     return { id: item.Skill.ID, rank: item.Rank }
   }
 
   public static Deserialize(itemData: IRankedData): PilotSkill {
-    if (itemData.custom) return new PilotSkill(new CustomSkill(itemData.id), itemData.rank)
+    if (itemData.custom)
+      return new PilotSkill(new CustomSkill(itemData.id, itemData.custom_desc), itemData.rank)
     return new PilotSkill(Skill.Deserialize(itemData.id), itemData.rank)
   }
 }

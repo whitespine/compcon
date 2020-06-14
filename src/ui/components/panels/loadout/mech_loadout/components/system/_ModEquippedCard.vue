@@ -4,7 +4,10 @@
       <div slot="header">
         <span v-if="mod">
           <equipment-options :item="mod" />
-          <span v-if="!mod.Destroyed" class="ml-n2">{{ mod.Name }}</span>
+          <span v-if="!mod.Destroyed" class="ml-n2">
+            {{ mod.Name }}
+            <span v-if="mod.FlavorName" class="caption ml-2 my-n1">//{{ mod.TrueName }}</span>
+          </span>
           <span v-else class="py-1 error" style="letter-spacing: 3px">
             &emsp;/ / {{ mod.Name }} DESTROYED / /&emsp;
           </span>
@@ -28,7 +31,7 @@
             / / AI IN CASCADE / /
           </v-alert>
           <div class="overline">APPLIED TO</div>
-          <div class="heading h3 grey--text text--darken-2 ml-3 mt-n1">{{ weapon.Name }}</div>
+          <div class="heading h3 subtle--text text--darken-2 ml-3 mt-n1">{{ weapon.Name }}</div>
         </v-col>
         <v-col cols="auto" class="ml-auto mr-3">
           <span class="heading h2" :style="`color: ${color}`">{{ mod.SP }}</span>

@@ -95,13 +95,18 @@
           <div class="overline mt-n1">{{ npc.Class.Role }}</div>
         </div>
         <v-divider class="my-1" />
-        <div>
-          <b class="caption">POWER RATING</b>
-          <br />
-          <span class="heading h2 primary--text">
-            {{ npc.Power.toString().padStart(4, '0') }}
-          </span>
-        </div>
+        <cc-tooltip
+          title="Power Rating"
+          content="The Power Rating is an attempt to calculate the relative strength of an NPC (or encounters’ worth of NPCs) based on tier and applied templates, compared to mission’s Pilot and their current level. It should, generally, produce results more or less in line with the Balancing Combat section on pp. 283 of the LANCER Core Book.<br> That said, this is an experimental feature that is still very heavily in development, and does not (yet) always produce reliable results. Moreover, this tool doesn’t consider NPC or player team composition, synergies, strengths, and weaknesses. Nor does this tool consider map layout, mission objectives, or reinforcement schedules.<br>While we will continue to work on this tool to produce more accurate, actionable results, please use it only as a general indicator of relative NPC strength."
+        >
+          <div>
+            <b class="caption">POWER RATING</b>
+            <br />
+            <span class="heading h2 accent--text">
+              {{ npc.Power.toString().padStart(4, '0') }}
+            </span>
+          </div>
+        </cc-tooltip>
       </v-col>
       <v-divider vertical />
       <v-col cols="3">
@@ -110,18 +115,19 @@
     </v-row>
     <v-row dense no-gutters class="my-2">
       <v-col cols="2"><v-divider class="mt-3" /></v-col>
-      <span class="heading h3 primary--text px-2">FEATURES</span>
+      <span class="heading h3 accent--text px-2">FEATURES</span>
       <v-col><v-divider class="mt-3" /></v-col>
     </v-row>
     <v-row dense class="mr-2 mt-n1 ml-2">
       <v-col v-for="(item, j) in npc.Items" :key="`${npc.ID}_${item.Name}_${j}`" cols="auto">
-        <cc-dialog no-confirm small-btn :color="$_.kebabCase(item.Feature.ItemType)" large>
+        <cc-dialog no-confirm small-btn :color="item.Feature.Color" large>
           <span slot="button" class="white--text" style="width: 100%">
+            <v-icon left dark>{{ item.Feature.Icon }}</v-icon>
             {{ item.Name }}
           </span>
 
           <span slot="title">
-            <v-icon left large dark>cci-{{ $_.kebabCase(item.ItemType) }}</v-icon>
+            <v-icon left large dark>{{ item.Feature.Icon }}</v-icon>
             {{ item.Name }}
           </span>
           <v-chip slot="title-items" color="white" class="stat-text mt-4 mr-6" outlined label>

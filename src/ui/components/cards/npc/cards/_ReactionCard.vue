@@ -4,6 +4,7 @@
     :active="active"
     :readonly="readonly"
     @remove-feature="$emit('remove-feature', $event)"
+    @recalc="$emit('recalc')"
   >
     <span class="overline">TRIGGER</span>
     <p class="panel body-1 mb-0" v-html="item.Feature.Trigger" />
@@ -14,7 +15,7 @@
       <cc-tooltip simple :content="`Stage Reaction: ${item.Name}`">
         <v-btn outlined small color="action--reaction" @click="$emit('add-reaction', item.Name)">
           <v-icon>mdi-plus</v-icon>
-          <v-icon>mdi-redo-variant</v-icon>
+          <v-icon>cci-reaction</v-icon>
         </v-btn>
       </cc-tooltip>
     </v-col>

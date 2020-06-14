@@ -6,11 +6,6 @@
       <cc-slashes />
       &nbsp;RM-4 Personnel::Pilot (C)
     </h2>
-    <div style="position: absolute; right: 16px; top: 16px">
-      <cc-tooltip simple content="Feature In Development">
-        <v-btn small outlined disabled>Select Premade Template</v-btn>
-      </cc-tooltip>
-    </div>
     <v-container class="flavor-text" style="font-size: 14px">
       <span>
         Welcome to the Union Administrative Department's IDENT registration service. IDENT is the
@@ -20,7 +15,7 @@
         RM-4 IDENT fingerprint should not complete this form unless instructed to by their
         commanding officer.
       </span>
-      <v-alert type="warning" color="primary" outlined class="mt-2" dense>
+      <v-alert type="warning" color="accent" outlined class="mt-2" dense>
         <b>
           All fields marked with the
           <v-icon small color="error">mdi-alert</v-icon>
@@ -160,6 +155,19 @@
         </div>
       </v-col>
     </v-row>
+    <div slot="other" class="text-center">
+      <v-btn
+        color="accent"
+        class="mx-2"
+        :disabled="!pilot.HasIdent"
+        large
+        outlined
+        @click="$emit('templates')"
+      >
+        Select Character Template
+      </v-btn>
+      <div class="overline stark--text">Recommended for New Players</div>
+    </div>
   </cc-stepper-content>
 </template>
 
