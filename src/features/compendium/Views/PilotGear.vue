@@ -30,7 +30,7 @@ import Component from 'vue-class-component'
 import CompendiumBrowser from '../components/CompendiumBrowser.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { ItemType } from '@/class'
+import { ItemType } from 'compcon_data'
 
 @Component({
   components: { CompendiumBrowser },

@@ -65,7 +65,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Counter } from '@/class'
+import { Counter } from  'compcon_data'
 
 @Component({
   props: {

@@ -78,7 +78,7 @@ import Vue from 'vue'
 import SlotCardBase from '../_SlotCardBase.vue'
 import SystemSelector from './_SystemSelector.vue'
 import EquipmentOptions from '../_EquipmentOptions.vue'
-import { MechSystem } from '@/class'
+import { MechSystem } from 'compcon_data'
 
 export default Vue.extend({
   name: 'system-slot-card',

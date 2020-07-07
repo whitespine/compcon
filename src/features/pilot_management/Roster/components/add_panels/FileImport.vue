@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Pilot } from '@/class'
+import { Pilot } from  'compcon_data'
 import { importData } from '@/io/Data'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'

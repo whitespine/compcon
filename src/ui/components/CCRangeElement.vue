@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { Range } from '@/class'
+import { Range } from 'compcon_data'
 
 @Component({ name: 'cc-range-element' })
 export default class CCRangeElement extends Vue{

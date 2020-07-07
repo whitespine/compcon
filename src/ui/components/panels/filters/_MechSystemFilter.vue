@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Tag, SystemType, Manufacturer } from '@/class'
+import { Tag, SystemType, Manufacturer } from 'compcon_data'
 
 const nameSort = function(a, b) {
   if (a.text.toUpperCase() < b.text.toUpperCase()) return -1

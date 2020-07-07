@@ -112,7 +112,7 @@ import Vue from 'vue'
 import PanelView from '../../components/PanelView.vue'
 import { getModule } from 'vuex-module-decorators'
 import { MissionStore } from '@/store'
-import { Mission } from '@/class'
+import { Mission } from 'compcon_data'
 
 export default Vue.extend({
   name: 'mission-manager',

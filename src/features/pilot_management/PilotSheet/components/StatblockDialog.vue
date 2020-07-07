@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop} from 'vue-property-decorator'
-import { Mech, Pilot, Statblock } from '@/class'
+import { Mech, Pilot, Statblock } from 'compcon_data'
 import CCSoloDialog from '@/ui/components/CCSoloDialog.vue'
 
 @Component({ name: 'statblock-dialog' })

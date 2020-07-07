@@ -121,7 +121,7 @@ import EncounterGroup from './components/EncounterGroup.vue'
 import EncounterCard from './components/EncounterCard.vue'
 import { getModule } from 'vuex-module-decorators'
 import { EncounterStore } from '@/store'
-import { Encounter } from '@/class'
+import { Encounter } from 'compcon_data'
 
 export default Vue.extend({
   name: 'encounter-manager',

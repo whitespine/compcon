@@ -138,7 +138,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import TableWindowItem from './_TableWindowItem.vue'
 import ResultData from './_stress_results.json'
-import { Mech } from '@/class'
+import { Mech } from 'compcon_data'
 
 @Component({
   name: 'stress-table',

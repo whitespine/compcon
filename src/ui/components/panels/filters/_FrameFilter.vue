@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { MechType, MountType, Manufacturer } from '@/class'
+import { MechType, MountType, Manufacturer } from  'compcon_data'
 
 const nameSort = function(a, b) {
   if (a.text.toUpperCase() < b.text.toUpperCase()) return -1

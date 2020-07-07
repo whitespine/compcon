@@ -115,7 +115,7 @@ import Vue from 'vue'
 import PilotSelector from './PilotSelector.vue'
 import { getModule } from 'vuex-module-decorators'
 import { MissionStore } from '@/store'
-import { Pilot, ActiveMission } from '@/class'
+import { Pilot, ActiveMission } from 'compcon_data'
 
 export default Vue.extend({
   name: 'mission-briefing',

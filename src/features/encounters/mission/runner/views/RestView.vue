@@ -68,7 +68,7 @@ import Vue from 'vue'
 import SlideItem from '../components/SlideItem.vue'
 import PlayerCard from '../components/PlayerCard.vue'
 import EncounterNav from '../components/EncounterNav.vue'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 
 export default Vue.extend({
   name: 'rest-view',

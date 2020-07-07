@@ -91,8 +91,7 @@ import MissingItem from './components/_MissingItem.vue'
 import TalentSelectItem from './components/_TalentSelectItem.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { Rules, Pilot, Talent } from '@/class'
-import { accentInclude } from '@/classes/utility/accent_fold'
+import { Rules, Pilot, Talent , accentInclude } from 'compcon_data'
 
 export default Vue.extend({
   name: 'talent-selector',

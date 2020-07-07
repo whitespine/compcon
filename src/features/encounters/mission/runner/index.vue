@@ -164,7 +164,7 @@
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
 import { MissionStore } from '@/store'
-import { ActiveMission } from '@/class'
+import { ActiveMission } from 'compcon_data'
 
 export default Vue.extend({
   name: 'active-mission-landing',

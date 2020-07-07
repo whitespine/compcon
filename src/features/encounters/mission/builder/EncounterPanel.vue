@@ -95,7 +95,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import NpcChip from '../../encounter/components/NpcChip.vue'
-import { EncounterSide } from '@/class'
+import { EncounterSide } from 'compcon_data'
 
 export default Vue.extend({
   name: 'encounter-panel',

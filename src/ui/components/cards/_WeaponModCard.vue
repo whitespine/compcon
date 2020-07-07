@@ -36,7 +36,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import EquipmentCardBase from './_EquipmentCardBase.vue'
-import { WeaponMod } from '@/class'
+import { WeaponMod } from 'compcon_data'
 
 @Component({ components: { EquipmentCardBase }, })
 export default class WeaponModCard extends Vue {

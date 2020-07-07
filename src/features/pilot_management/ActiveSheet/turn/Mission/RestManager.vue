@@ -266,7 +266,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import DestroyedAlert from './components/DestroyedAlert.vue'
-import { MechEquipment } from '@/class'
+import { MechEquipment } from 'compcon_data'
 
 function normalize(current, max): number {
   if (!max) return 1

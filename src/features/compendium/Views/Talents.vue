@@ -27,7 +27,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { Talent } from '@/class'
+import { Talent } from 'compcon_data'
 
 @Component
 export default class Talents extends Vue {

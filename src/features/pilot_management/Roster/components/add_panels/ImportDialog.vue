@@ -57,7 +57,7 @@ import TypeIt from 'typeit'
 import { tracert } from '@/io/Generators'
 
 import uuid from 'uuid/v4'
-import { Pilot } from '@/class'
+import { Pilot } from  'compcon_data'
 
 @Component
 export default class ImportDialog extends Vue {

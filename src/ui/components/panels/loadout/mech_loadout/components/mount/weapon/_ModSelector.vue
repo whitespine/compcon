@@ -93,7 +93,7 @@
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { MechWeapon } from '@/class'
+import { MechWeapon } from 'compcon_data'
 import { flavorID } from '@/io/Generators'
 
 export default Vue.extend({

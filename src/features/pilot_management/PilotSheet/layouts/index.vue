@@ -9,7 +9,7 @@
 <script lang="ts">
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 import { UserProfile } from '@/io/User'
 import TabbedLayout from './Tabbed.vue'
 import ClassicLayout from './Classic.vue'

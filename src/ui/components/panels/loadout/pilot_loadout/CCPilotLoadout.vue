@@ -51,7 +51,7 @@ import Vue from 'vue'
 import PilotArmorCard from './_PLArmorCard.vue'
 import PilotWeaponCard from './_PLWeaponCard.vue'
 import PilotGearCard from './_PLGearCard.vue'
-import { PilotArmor, PilotWeapon, PilotGear } from '@/class'
+import { PilotArmor, PilotWeapon, PilotGear } from 'compcon_data'
 
 export default Vue.extend({
   name: 'cc-pilot-loadout',

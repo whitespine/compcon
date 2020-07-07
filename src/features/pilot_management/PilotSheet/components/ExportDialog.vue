@@ -65,7 +65,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { saveFile } from '@/io/Dialog'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 import { Plugins } from '@capacitor/core'
 const { Clipboard } = Plugins
 

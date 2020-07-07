@@ -45,7 +45,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { EquippableMount } from '@/class'
+import { EquippableMount } from 'compcon_data'
 
 export default Vue.extend({
   name: 'sh-lock-dialog',

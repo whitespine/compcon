@@ -62,7 +62,7 @@
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { NpcFeature } from '@/class'
+import { NpcFeature } from 'compcon_data'
 
 export default Vue.extend({
   name: 'npc-template-selector',

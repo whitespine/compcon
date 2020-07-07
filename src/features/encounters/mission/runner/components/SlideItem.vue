@@ -172,7 +172,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { EncounterSide } from '@/class'
+import { EncounterSide } from 'compcon_data'
 
 export default Vue.extend({
   name: 'slide-item',

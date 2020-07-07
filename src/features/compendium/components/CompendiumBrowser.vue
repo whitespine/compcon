@@ -52,8 +52,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ItemFilter from '@/classes/utility/ItemFilter'
-import { accentInclude } from '@/classes/utility/accent_fold'
+import ItemFilter from 'compcon_data'
+import { accentInclude } from 'compcon_data'
 import CompendiumMobileView from './views/CompendiumMobileView.vue'
 import CompendiumSplitView from './views/CompendiumSplitView.vue'
 import CompendiumTableView from './views/CompendiumTableView.vue'

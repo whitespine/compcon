@@ -191,7 +191,7 @@ import MissionStepElement from './MissionStepElement.vue'
 import { getModule } from 'vuex-module-decorators'
 import { mission } from '@/io/Generators'
 import { MissionStore } from '@/store'
-import { Encounter } from '@/class'
+import { Encounter } from 'compcon_data'
 
 export default Vue.extend({
   name: 'mission-card',

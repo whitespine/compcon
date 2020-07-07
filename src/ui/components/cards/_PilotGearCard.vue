@@ -10,7 +10,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import EquipmentCardBase from './_EquipmentCardBase.vue'
-import { PilotGear } from '@/class'
+import { PilotGear } from 'compcon_data'
 
 @Component({
   components: { EquipmentCardBase },

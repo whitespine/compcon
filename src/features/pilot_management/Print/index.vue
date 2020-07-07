@@ -26,7 +26,7 @@ import MechPrint from './MechPrint.vue'
 import PrintFooter from './PrintFooter.vue'
 import { getModule } from 'vuex-module-decorators'
 import { PilotManagementStore } from '@/store'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 
 export default Vue.extend({
   name: 'combined-print',

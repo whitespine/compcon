@@ -12,7 +12,7 @@ import Component from 'vue-class-component'
 import CompendiumBrowser from '../components/CompendiumBrowser.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { NpcFeature } from '@/class'
+import { NpcFeature } from 'compcon_data'
 
 @Component({
   components: { CompendiumBrowser },

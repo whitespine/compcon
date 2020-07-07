@@ -106,8 +106,8 @@ import Component from 'vue-class-component'
 import CompendiumBrowser from '../components/CompendiumBrowser.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { NpcClass } from '@/class'
-import { accentInclude } from '@/classes/utility/accent_fold'
+import { NpcClass } from 'compcon_data'
+import { accentInclude } from  'compcon_data'
 
 @Component({
   components: { CompendiumBrowser },

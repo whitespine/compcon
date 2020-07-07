@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { Tag } from '@/class'
+import { Tag } from 'compcon_data'
 
 @Component({ name: 'cc-tag' })
 export default class CCExtendedTag extends Vue {

@@ -11,7 +11,7 @@ import Component from 'vue-class-component'
 import CompendiumBrowser from '../components/CompendiumBrowser.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { MechType, Frame } from '@/class'
+import { MechType, Frame } from 'compcon_data'
 
 @Component({
   components: { CompendiumBrowser },

@@ -120,7 +120,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { OrgType } from '@/class'
+import { OrgType } from  'compcon_data'
 
 export default Vue.extend({
   name: 'cc-org-item',

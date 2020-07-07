@@ -96,7 +96,7 @@ import CoreBonusSelectItem from './components/_CoreBonusSelectItem.vue'
 
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { Pilot, CoreBonus, Manufacturer } from '@/class'
+import { Pilot, CoreBonus, Manufacturer } from 'compcon_data'
 
 @Component({
   components: { Selector, CoreBonusSelectItem, MissingItem },

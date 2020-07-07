@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { NpcItem } from '@/class'
+import { NpcItem } from 'compcon_data'
 export default Vue.extend({
   name: 'recharge-menu',
   props: {

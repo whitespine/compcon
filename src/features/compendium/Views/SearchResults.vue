@@ -47,8 +47,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { CompendiumItem } from '@/class'
-import { accentInclude } from '@/classes/utility/accent_fold'
+import { CompendiumItem } from 'compcon_data'
+import { accentInclude } from  'compcon_data'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
 

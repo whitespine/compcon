@@ -89,7 +89,7 @@ import MissingItem from './components/_MissingItem.vue'
 import Selector from './components/_SelectorBase.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { Rules, Pilot } from '@/class'
+import { Rules, Pilot } from 'compcon_data'
 import { rules } from 'lancer-data'
 
 export default Vue.extend({

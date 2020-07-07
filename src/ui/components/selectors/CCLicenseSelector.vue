@@ -66,7 +66,7 @@ import MissingItem from './components/_MissingItem.vue'
 import LicenseSelectItem from './components/_LicenseSelectItem.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 
 export default Vue.extend({
   name: 'cc-license-selector',

@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { Pilot, Tag } from '@/class'
+import { Pilot, Tag } from 'compcon_data'
 
 @Component({ name: 'cc-tag' })
 export default class CCTag extends Vue {

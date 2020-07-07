@@ -107,7 +107,7 @@ import CoreBonusPage from './pages/CoreBonusPage.vue'
 import ConfirmPage from './pages/ConfirmPage.vue'
 import { getModule } from 'vuex-module-decorators'
 import { PilotManagementStore } from '@/store'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 
 export default Vue.extend({
   name: 'pilot-wizard',

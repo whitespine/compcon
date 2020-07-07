@@ -370,7 +370,7 @@ import NpcChip from './NpcChip.vue'
 import NpcSelector from './NpcSelector.vue'
 import { getModule } from 'vuex-module-decorators'
 import { EncounterStore, CompendiumStore } from '@/store'
-import { Npc, EncounterSide } from '@/class'
+import { Npc, EncounterSide } from 'compcon_data'
 
 export default Vue.extend({
   name: 'encounter-card',

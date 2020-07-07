@@ -66,7 +66,7 @@ import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
 import TemplateItem from './components/TemplateItem.vue'
 import Templates from '../pregens.json'
-import { MechSkills, Mech } from '@/class'
+import { MechSkills, Mech } from 'compcon_data'
 import { mechname } from '@/io/Generators'
 
 export default Vue.extend({

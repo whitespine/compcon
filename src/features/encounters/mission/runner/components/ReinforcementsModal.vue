@@ -106,7 +106,7 @@ import Vue from 'vue'
 import NpcChip from '../../../encounter/components/NpcChip.vue'
 import NpcSelector from '../../../encounter/components/NpcSelector.vue'
 import PilotSelector from '../PilotSelector.vue'
-import { Pilot, Npc, EncounterSide } from '@/class'
+import { Pilot, Npc, EncounterSide } from 'compcon_data'
 
 export default Vue.extend({
   name: 'reinforcements-modal',

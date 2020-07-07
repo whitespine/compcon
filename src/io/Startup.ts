@@ -11,8 +11,13 @@ import {
 import { getModule } from 'vuex-module-decorators'
 import { validateImageFolders } from './ImageManagement'
 import { ensureDataDir } from './Data'
+import {setup_hooks} from './Hooks'
+
 
 export default function(lancerVer: string, ccVer: string, store: any): void {
+  // Connect data hooks
+  setup_hooks()
+
   ensureDataDir()
 
   const dataStore = getModule(CompendiumStore, store)

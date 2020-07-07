@@ -18,7 +18,7 @@
 import Vue from 'vue'
 import CounterComponent from './_Counter.vue'
 import NewCounter from './_NewCounter.vue'
-import { Counter } from '@/class'
+import { Counter } from 'compcon_data'
 
 export default Vue.extend({
   name: 'cc-counter-set',

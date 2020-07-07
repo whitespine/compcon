@@ -352,7 +352,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { OrgType, Organization } from '@/class'
+import { OrgType, Organization } from 'compcon_data'
 export default Vue.extend({
   name: 'get-organized',
   props: {

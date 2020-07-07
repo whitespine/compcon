@@ -61,7 +61,7 @@ import MechTable from './components/MechTable.vue'
 import NewMechMenu from './components/NewMechMenu.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore, PilotManagementStore } from '@/store'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 import { UserProfile } from '@/io/User'
 
 export default Vue.extend({

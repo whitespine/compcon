@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { MechEquipment, PilotGear } from '@/class'
+import { MechEquipment, PilotGear } from 'compcon_data'
 
 @Component({ name: 'cc-item-uses' })
 export default class CCItemUses extends Vue {

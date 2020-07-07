@@ -57,7 +57,7 @@
 import Vue from 'vue'
 import data from 'lancer-data'
 import _ from 'lodash'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 
 export default Vue.extend({
   name: 'cloud-dialog',

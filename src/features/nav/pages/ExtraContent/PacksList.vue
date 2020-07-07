@@ -96,11 +96,11 @@ import Component from 'vue-class-component'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
 
-import { ContentPack } from '@/class'
+import { ContentPack } from 'compcon_data'
 
 @Component
 export default class PacksList extends Vue {
-  private expanded
+  private expanded = []
   private compendiumStore = getModule(CompendiumStore, this.$store)
 
   public async toggleActive(packID: string, active: boolean): Promise<void> {

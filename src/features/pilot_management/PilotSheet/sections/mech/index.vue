@@ -112,7 +112,7 @@ import LicenseRequirementBlock from './sections/license_requirements/index.vue'
 import TraitBlock from './sections/traits/index.vue'
 import AttributesBlock from './sections/attributes/index.vue'
 import DeleteMechDialog from '../hangar/components/DeleteMechDialog.vue'
-import { Pilot, Mech } from '@/class'
+import { Pilot, Mech } from 'compcon_data'
 
 export default Vue.extend({
   name: 'mech-sheet',

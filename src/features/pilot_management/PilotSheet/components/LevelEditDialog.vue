@@ -71,7 +71,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Rules } from '@/class'
+import { Rules } from 'compcon_data'
 
 export default Vue.extend({
   name: 'cloud-dialog',

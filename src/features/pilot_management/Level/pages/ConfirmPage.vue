@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 import PilotRegistrationCard from '../../PilotSheet/components/PilotRegistrationCard.vue'
 
 export default Vue.extend({

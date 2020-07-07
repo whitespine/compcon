@@ -347,7 +347,7 @@
 
 <script lang="ts">
 import sleep from '@/util/sleep'
-import { Mech, MechLoadout } from '@/class'
+import { Mech, MechLoadout } from 'compcon_data'
 import MechSelectButton from '../components/MechSelectButton.vue'
 import LargePipLayout from './LargePipLayout.vue'
 import MedPipLayout from './MedPipLayout.vue'

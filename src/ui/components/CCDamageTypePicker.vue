@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { DamageType } from '@/class'
+import { DamageType } from  'compcon_data'
 
 @Component({
   name: 'cc-damage-type-picker',

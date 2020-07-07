@@ -56,10 +56,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ItemFilter from '@/classes/utility/ItemFilter'
 import SelectorTableView from './views/_SelectorTableView.vue'
 import SelectorSplitView from './views/_SelectorSplitView.vue'
-import { accentInclude } from '@/classes/utility/accent_fold'
+import { accentInclude, ItemFilter } from 'compcon_data'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
 import { UserProfile } from '@/io/User'

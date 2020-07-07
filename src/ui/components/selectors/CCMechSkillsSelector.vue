@@ -209,7 +209,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Pilot, HASE } from '@/class'
+import { Pilot, HASE } from 'compcon_data'
 
 export default Vue.extend({
   name: 'cc-mech-skills-selector',

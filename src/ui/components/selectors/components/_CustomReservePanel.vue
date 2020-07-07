@@ -45,7 +45,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Reserve } from '@/class'
+import { Reserve } from  'compcon_data'
 
 export default Vue.extend({
   name: 'custom-reserve-panel',

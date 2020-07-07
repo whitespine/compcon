@@ -57,7 +57,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import ReserveSelector from './ReserveSelector.vue'
-import { Reserve } from '@/class'
+import { Reserve } from 'compcon_data'
 
 export default Vue.extend({
   name: 'power-at-cost',

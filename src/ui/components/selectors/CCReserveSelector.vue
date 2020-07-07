@@ -81,7 +81,7 @@ import ReserveItem from './components/_ReserveItem.vue'
 import CustomReservePanel from './components/_CustomReservePanel.vue'
 import DowntimeProjectPanel from './components/_DowntimeProjectPanel.vue'
 import OrganizationPanel from './components/_OrganizationPanel.vue'
-import { Reserve, Organization } from '@/class'
+import { Reserve, Organization } from 'compcon_data'
 
 export default Vue.extend({
   name: 'downtime-selector',

@@ -92,7 +92,7 @@ import PanelView from '../../components/PanelView.vue'
 import ClassCard from './ClassCard.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore, NpcStore } from '@/store'
-import { Npc } from '@/class'
+import { Npc } from 'compcon_data'
 
 export default Vue.extend({
   name: 'npc-manager',

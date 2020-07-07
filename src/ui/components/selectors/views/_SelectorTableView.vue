@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { MechWeapon, PilotWeapon } from '@/class'
+import { MechWeapon, PilotWeapon } from 'compcon_data'
 
 @Component({ name: 'selector-table-view' })
 export default class SelectorTableView extends Vue {

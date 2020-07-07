@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { Damage, DamageType } from '@/class'
+import { Damage, DamageType } from  'compcon_data'
 
 @Component({ name: 'cc-damage-element' })
 export default class CCDamageElement extends Vue {

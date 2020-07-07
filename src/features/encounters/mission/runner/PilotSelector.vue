@@ -105,7 +105,7 @@ import Vue from 'vue'
 import gistApi from '@/io/apis/gist'
 import { getModule } from 'vuex-module-decorators'
 import { PilotManagementStore } from '@/store'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 import { importData } from '@/io/Data'
 
 export default Vue.extend({

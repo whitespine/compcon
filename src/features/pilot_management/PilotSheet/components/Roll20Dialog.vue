@@ -19,7 +19,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import roll20ToPilot from '@/io/Roll20'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 import { Plugins } from '@capacitor/core'
 const { Clipboard } = Plugins
 

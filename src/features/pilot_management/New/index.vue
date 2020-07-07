@@ -86,7 +86,7 @@ import TalentsPage from './pages/TalentsPage.vue'
 import MechSkillsPage from './pages/MechSkillsPage.vue'
 import ConfirmPage from './pages/ConfirmPage.vue'
 import TemplatesPage from './pages/TemplatesPage.vue'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 
 export default Vue.extend({
   name: 'pilot-wizard',

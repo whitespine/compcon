@@ -121,7 +121,7 @@ import {
   EquippableMount,
   PilotTalent,
   WeaponType,
-} from '@/class'
+} from 'compcon_data'
 
 export default Vue.extend({
   name: 'weapon-slot-card',

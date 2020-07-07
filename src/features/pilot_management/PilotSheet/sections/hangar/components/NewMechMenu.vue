@@ -113,7 +113,7 @@ import Vue from 'vue'
 import _ from 'lodash'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { Pilot, Frame, Mech, MechType } from '@/class'
+import { Pilot, Frame, Mech, MechType } from 'compcon_data'
 import { mechname } from '@/io/Generators'
 
 export default Vue.extend({

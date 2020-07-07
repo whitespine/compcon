@@ -179,7 +179,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import TableWindowItem from './_TableWindowItem.vue'
 import ResultData from './_structure_results.json'
-import { Mech, MechLoadout, MechSystem } from '@/class'
+import { Mech, MechLoadout, MechSystem } from 'compcon_data'
 
 @Component({
   name: 'structure-table',

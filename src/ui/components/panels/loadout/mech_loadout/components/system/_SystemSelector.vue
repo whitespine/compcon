@@ -94,7 +94,7 @@ import Vue from 'vue'
 import _ from 'lodash'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { MechSystem } from '@/class'
+import { MechSystem } from 'compcon_data'
 import { flavorID } from '@/io/Generators'
 
 export default Vue.extend({

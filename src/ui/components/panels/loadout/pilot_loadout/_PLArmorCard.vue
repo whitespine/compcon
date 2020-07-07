@@ -87,7 +87,7 @@ import Vue from 'vue'
 import PlCardBase from './_PLCardBase.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
-import { PilotArmor, CompendiumItem, ItemType } from '@/class'
+import { PilotArmor, CompendiumItem, ItemType } from 'compcon_data'
 import { flavorID } from '@/io/Generators'
 
 export default Vue.extend({

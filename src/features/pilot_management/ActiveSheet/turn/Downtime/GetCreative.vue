@@ -248,7 +248,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Project } from '@/class'
+import { Project } from 'compcon_data'
 export default Vue.extend({
   name: 'get-creative',
   props: {

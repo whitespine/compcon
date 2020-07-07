@@ -54,7 +54,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import gistApi from '@/io/apis/gist'
-import { Pilot } from '@/class'
+import { Pilot } from 'compcon_data'
 import { getModule } from 'vuex-module-decorators'
 import { PilotManagementStore, CompendiumStore } from '@/store'
 
