@@ -1,4 +1,4 @@
-import {hooks, Pilot} from "compcon_data";
+import {hooks, Pilot, Npc, Encounter} from "compcon_data";
 import Vue from 'vue';
 import { addImage, getImagePath, getImagePaths, removeImage, validateImageFolders } from './ImageManagement';
 import { store } from '@/store';
@@ -27,9 +27,6 @@ export function setup_hooks() {
 }
 
 class MyStoreShim implements hooks.StoreShim {
-    addPilot(newPilot: Pilot) {
-      store.dispatch('addPilot', newPilot)
-    }
     
     getItemCollection(category: string) {
         return store.getters.getItemCollection(category);
@@ -51,8 +48,21 @@ class MyStoreShim implements hooks.StoreShim {
         return store.getters.referenceByID(category, id);
     }
 
+    addPilot(newPilot: Pilot) {
+      store.dispatch('addPilot', newPilot)
+    }
+
+    getPilots(): Pilot[] {
+        return store.getters["getPilots"];
+    }
+
     saveEncounterData() {
         store.dispatch('encounter/saveEncounterData')
+    }
+
+    getEncounters(): Encounter[] {
+        // return store['encounter/getEncounters'];
+        return store.getters["encounter/getEncounters"];
     }
 
     saveMissionData() {
@@ -61,6 +71,10 @@ class MyStoreShim implements hooks.StoreShim {
 
     saveActiveMissionData() {
         store.dispatch('mission/saveActiveMissionData')
+    }
+
+    getNpcs(): Npc[] {
+        return store.getters["npc/getNpcs"];
     }
 
     saveNpcData() {
