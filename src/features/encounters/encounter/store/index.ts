@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import _ from 'lodash'
-import { Encounter } from '@/class'
-import { IEncounterData } from '@/interface'
+import { Encounter } from 'compcon_data'
+import { IEncounterData } from 'compcon_data'
 import { loadData, saveData } from '@/io/Data'
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 

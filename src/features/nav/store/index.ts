@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
+import { IErrorReport } from 'compcon_data'
 
 export const SET_NAV_MODE = 'SET_NAV_MODE'
 export const SET_DARK_MODE = 'SET_DARK_MODE'

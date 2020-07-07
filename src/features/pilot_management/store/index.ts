@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import _ from 'lodash'
 import { saveData, loadData } from '@/io/Data'
-import { Pilot } from '@/class'
+import { Pilot, PrintOptions, IPilotData } from 'compcon_data'
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
 
 async function savePilots(pilots: Pilot[]) {

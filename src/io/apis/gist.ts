@@ -1,4 +1,4 @@
-import { Pilot } from '@/class'
+import { Pilot, IPilotData } from 'compcon_data'
 import axios from 'axios'
 
 // this token is scoped to only allow for the creation of gists on a burner account

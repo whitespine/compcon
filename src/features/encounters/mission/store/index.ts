@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import _ from 'lodash'
-import { Mission, ActiveMission } from '@/class'
-import { IMissionData, IActiveMissionData } from '@/interface'
+import { Mission, ActiveMission } from 'compcon_data'
+import { IMissionData, IActiveMissionData } from 'compcon_data'
 import { loadData, saveData } from '@/io/Data'
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 

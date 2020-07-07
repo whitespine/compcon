@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import _ from 'lodash'
-import { Npc } from '@/class'
-import { INpcData } from '@/interface'
+import { Npc } from 'compcon_data'
+import { INpcData } from 'compcon_data'
 import { loadData, saveData } from '@/io/Data'
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 

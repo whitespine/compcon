@@ -27,7 +27,7 @@ import mixins from './mixins'
 import externalLinkDirective from './mixins/externalLinkDirective'
 
 import _ from 'lodash'
-import Startup from './io/Startup'
+import Startup from '@/io/Startup'
 
 import { Capacitor } from '@capacitor/core'
 
@@ -90,3 +90,8 @@ new Vue({
   },
   render: h => h(App),
 }).$mount('#app')
+
+
+// Init compcon data
+import * as ccd from "compcon_data";
+

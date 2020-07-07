@@ -16,7 +16,7 @@ import {
   INpcFeatureData,
   INpcTemplateData,
   ICompendiumItemData,
-} from '@/interface'
+} from "compcon_data";
 import ExtLog from './ExtLog'
 
 

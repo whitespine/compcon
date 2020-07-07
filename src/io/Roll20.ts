@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { Pilot, RangeType } from '@/class'
-import Mech from '@/classes/mech/Mech'
+import { Mech, Pilot, RangeType } from 'compcon_data'
 
 interface IRoll20Data {
   ////////

@@ -23,8 +23,6 @@ import {
   NpcFeature,
   ContentPack,
   CompendiumItem,
-} from '@/class'
-import {
   ICoreBonusData,
   ITalentData,
   IFrameData,
@@ -39,7 +37,11 @@ import {
   IFactionData,
   IContentPack,
   ITagCompendiumData,
-} from '@/interface'
+  Status,
+  Environment,
+  Sitrep,
+  IReserveData
+} from 'compcon_data'
 import ExtLog from '@/io/ExtLog'
 import { saveData as saveUserData, loadData as loadUserData } from '@/io/Data'
 

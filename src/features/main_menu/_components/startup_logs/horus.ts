@@ -34,7 +34,7 @@ const HorusStart = typer => {
     .break()
     .options({ speed: 3, lifeLike: false })
     .pause(250)
-    .type('>// run ./usr/startup/autoconnect.sh')
+    .type('>// run ./uscompcon_data/autoconnect.sh')
     .break()
     .type(`Connecting to 1489.2551.1461.1880.4851.03`)
     .break()

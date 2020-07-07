@@ -6,7 +6,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 
 import CounterComponent from './Counter.vue'
-import { ICounterData } from '@/interface'
+import { ICounterData } from 'compcon_data'
 
 Vue.use(Vuetify)
 
