@@ -1,3 +1,4 @@
+// @ts-nocheck
 export default {
   methods: {
     getTextColor(): string {

@@ -106,8 +106,9 @@ import LicensePage from './pages/LicensePage.vue'
 import CoreBonusPage from './pages/CoreBonusPage.vue'
 import ConfirmPage from './pages/ConfirmPage.vue'
 import { getModule } from 'vuex-module-decorators'
-import { PilotManagementStore } from '@/store'
-import { Pilot } from 'compcon_data'
+import { Pilot, CCDataStore } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
+import ExtLog from '../../../io/ExtLog'
 
 export default Vue.extend({
   name: 'pilot-wizard',
@@ -127,9 +128,14 @@ export default Vue.extend({
   }),
   computed: {
     currentPilot(): Pilot {
-      return getModule(PilotManagementStore, this.$store).Pilots.find(
+      let v = getModule(CCDSInterface, this.$store).pilots.Pilots.find(
         p => p.ID === this.$route.params.pilotID
-      )
+      ) 
+      if(!v) {
+        ExtLog("Routed to nonexistent pilot " + this.$route.params.pilotID);
+        this.$router.push('/pilot_management');
+      }
+      return v // this can actually be undefined - however, we routed away to escape so shouldn't matter
     },
   },
   watch: {

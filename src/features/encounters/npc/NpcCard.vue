@@ -390,10 +390,9 @@ import EditableAttribute from './components/EditableAttribute.vue'
 import SizeAttribute from './components/SizeAttribute.vue'
 import FeatureSelector from './components/FeatureSelector.vue'
 import TemplateSelector from './components/TemplateSelector.vue'
-import { NpcFeature, NpcTemplate } from 'compcon_data'
+import { NpcFeature, NpcTemplate, UserProfileStore } from 'compcon_data'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore, NpcStore } from '@/store'
-import { UserProfile } from '@/io/User'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'npc-card',
@@ -418,26 +417,25 @@ export default Vue.extend({
   }),
   computed: {
     labels() {
-      const store = getModule(NpcStore, this.$store)
+      const store = getModule(CCDSInterface, this.$store).npcs
       return store.Npcs.flatMap(x => x.Labels).filter(x => x)
     },
     campaigns() {
-      const store = getModule(NpcStore, this.$store)
+      const store = getModule(CCDSInterface, this.$store).npcs
       return store.Npcs.map(x => x.Campaign).filter(x => x)
     },
-    profile(): UserProfile {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.UserProfile
+    profile(): UserProfileStore {
+      return getModule(CCDSInterface, this.$store).user
     },
   },
   methods: {
     equip(feat: NpcFeature) {
       this.npc.AddFeature(feat)
-      this.$refs.featureDialog.hide()
+      (this.$refs.featureDialog as Element).hide()
     },
     assign(temp: NpcTemplate) {
       this.npc.AddTemplate(temp)
-      this.$refs.templateDialog.hide()
+      (this.$refs.templateDialog as Element).hide()
     },
   },
 })

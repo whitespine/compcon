@@ -6,7 +6,7 @@ import { Capacitor } from '@capacitor/core'
 const LOG_FILE_NAME = 'compcon.log'
 const LOG_FILE_PATH = path.join(USER_DATA_PATH, LOG_FILE_NAME)
 
-const logErrorMsg = err =>
+const logErrorMsg = (err: any) =>
   `Critical Error: COMP/CON unable to create error log at ${LOG_FILE_PATH}: \n ${err}`
 
 const logPrefixStyles = [
@@ -35,7 +35,7 @@ async function ExtLog(s: string): Promise<void> {
     log += `\n${Vue.prototype.version} - ${new Date().toLocaleString()}: ${s}`
 
     try {
-      await writeFile(LOG_FILE_NAME, log)
+      await writeFile(LOG_FILE_NAME, ""+log) // This add coerces nullish/numeric to string
     } catch (err) {
       alert(logErrorMsg(err))
       return

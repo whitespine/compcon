@@ -8,11 +8,11 @@ if (PLATFORM == 'electron') {
   electron = require('electron')
 }
 
-const saveFile = function(filename, data, label = 'Save') {
+const saveFile = function(filename: string, data: BlobPart, label = 'Save') {
   switch (PLATFORM) {
     case 'web':
       const blob = new Blob([data])
-      if (window.navigator.msSaveOrOpenBlob) {
+      if (window.navigator.msSaveOrOpenBlob(blob)) {
         window.navigator.msSaveBlob(blob, filename)
       } else {
         const elem = window.document.createElement('a')

@@ -91,33 +91,35 @@ import Vue from 'vue'
 import PanelView from '../../components/PanelView.vue'
 import ClassCard from './ClassCard.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore, NpcStore } from '@/store'
-import { Npc } from 'compcon_data'
+import { Npc, CCDataStore, NpcClass } from 'compcon_data'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'npc-manager',
   components: { PanelView, ClassCard },
   data: () => ({
     search: '',
-    selectedClass: null,
+    selectedClass: null as null | NpcClass,
     grouping: null,
     headers: [{ text: 'Name', value: 'Name', align: 'left' }],
-    classes: [],
+    classes: [] as NpcClass[],
   }),
   watch: {
     selectedClass() {
-      this.$refs.view.resetScroll()
+      a(this.$refs.view as Element).resetScroll()
     },
   },
   created() {
-    const store = getModule(CompendiumStore, this.$store)
-    this.classes = store.NpcClasses
+    const store = getModule(CCDSInterface, this.$store).compendium
+    this.classes = store.getItemCollection("NpcClasses");
   },
   methods: {
     AddNpc() {
-      const store = getModule(NpcStore, this.$store)
-      store.addNpc(new Npc(this.selectedClass, this.$refs.card.tierPreview))
-      this.$router.push('./npc-roster')
+      if(this.selectedClass != null) {
+        const store = getModule(CCDSInterface, this.$store)
+        store.mut(s => s.npc.addNpc(new Npc(this.selectedClass!, (this.$refs.card as any).tierPreview)));
+        this.$router.push('./npc-roster')
+      }
     },
   },
 })

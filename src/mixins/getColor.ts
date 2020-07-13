@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Vue, Component } from 'vue-property-decorator'
 import { Framework } from 'vuetify'
 

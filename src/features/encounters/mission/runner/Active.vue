@@ -25,7 +25,8 @@ import Vue from 'vue'
 import EncounterView from './views/EncounterView.vue'
 import RestView from './views/RestView.vue'
 import { getModule } from 'vuex-module-decorators'
-import { MissionStore } from '@/store'
+import { CCDSInterface } from '../../../../io/ccdata_store'
+import { ActiveMission, Mission } from 'compcon_data'
 
 export default Vue.extend({
   name: 'active-mission-runner',
@@ -37,12 +38,17 @@ export default Vue.extend({
     },
   },
   computed: {
-    activeMission() {
-      const store = getModule(MissionStore, this.$store)
-      return store.ActiveMissions.find(x => x.ID === this.id)
+    activeMission(): ActiveMission {
+      const store = getModule(CCDSInterface, this.$store) as CCDSInterface
+      let amission = store.mission.ActiveMissions.find(x => x.ID === this.id)
+      if(!amission) {
+        this.$router.push("/gm/mission"); // TODO: Decide where this really ought to go
+      }
+
+      return amission!;
     },
-    mission() {
-      return this.activeMission.Mission
+    mission(): Mission | null {
+      return this.activeMission?.Mission || null
     },
   },
   methods: {

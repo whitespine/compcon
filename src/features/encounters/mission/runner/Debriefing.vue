@@ -40,7 +40,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
-import { MissionStore } from '@/store'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'mission-debriefing',
@@ -55,8 +55,8 @@ export default Vue.extend({
   }),
   computed: {
     mission() {
-      const store = getModule(MissionStore, this.$store)
-      return store.ActiveMissions.find(x => x.ID === this.id)
+      const store = getModule(CCDSInterface, this.$store)
+      return store.mission.ActiveMissions.find(x => x.ID === this.id)
     },
   },
 })

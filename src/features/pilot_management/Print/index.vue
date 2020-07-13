@@ -25,8 +25,8 @@ import BlankMechPrint from './BlankMechPrint.vue'
 import MechPrint from './MechPrint.vue'
 import PrintFooter from './PrintFooter.vue'
 import { getModule } from 'vuex-module-decorators'
-import { PilotManagementStore } from '@/store'
-import { Pilot } from 'compcon_data'
+import { Pilot, Mech } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'combined-print',
@@ -43,16 +43,21 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    pilot: null,
-    mech: null,
+    pilot: null as Pilot | null,
+    mech: null as Mech | null,
     blank: false,
   }),
   created() {
     if (this.pilotID === 'blank') this.blank = true
-    this.pilot = getModule(PilotManagementStore, this.$store).Pilots.find(
+    let pilot = getModule(CCDSInterface, this.$store).pilots.Pilots.find(
       p => p.ID === this.pilotID
     )
-    this.mech = !this.mechID ? null : (this.pilot as Pilot).Mechs.find(m => m.ID === this.mechID)
+    if(!pilot) {
+      this.blank = true;
+    } else {
+      this.pilot = pilot;
+      this.mech = !this.mechID ? null : (this.pilot as Pilot).Mechs.find(m => m.ID === this.mechID) || null;
+    }
   },
 })
 </script>

@@ -60,6 +60,7 @@ import CompendiumTableView from './views/CompendiumTableView.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
 import { UserProfile } from '@/io/User'
+import { CCDataInterface } from '../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'compendium-browser',
@@ -85,7 +86,7 @@ export default Vue.extend({
   }),
   computed: {
     profile(): UserProfile {
-      const store = getModule(CompendiumStore, this.$store)
+      const store = getModule(CCDataInterface, this.$store)
       return store.UserProfile
     },
     fItems() {

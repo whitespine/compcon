@@ -114,8 +114,8 @@
 import Vue from 'vue'
 import PilotSelector from './PilotSelector.vue'
 import { getModule } from 'vuex-module-decorators'
-import { MissionStore } from '@/store'
-import { Pilot, ActiveMission } from 'compcon_data'
+import { Pilot, ActiveMission, Mission } from 'compcon_data'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'mission-briefing',
@@ -127,12 +127,12 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    pilots: [],
+    pilots: [] as Pilot[],
   }),
   computed: {
-    mission() {
-      const store = getModule(MissionStore, this.$store)
-      return store.Missions.find(x => x.ID === this.id)
+    mission(): Mission {
+      const store = getModule(CCDSInterface, this.$store)
+      return store.mission.Missions.find(x => x.ID === this.id)!
     },
     pilotPower() {
       return this.pilots
@@ -165,8 +165,8 @@ export default Vue.extend({
   },
   methods: {
     addPilot(pilot: Pilot) {
-      this.pilots.push(pilot)
-      this.$refs.pilotDialog.hide()
+      this.pilots.push(pilot);
+      (this.$refs.pilotDialog as any).hide()
     },
     removePilot(pilot: Pilot) {
       const idx = this.pilots.findIndex(x => x.ID === pilot.ID)
@@ -174,8 +174,8 @@ export default Vue.extend({
     },
     startMission() {
       const m = new ActiveMission(this.mission, this.pilots)
-      const store = getModule(MissionStore, this.$store)
-      store.addActiveMission(m)
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.mission.addActiveMission(m));
       this.$router.push({ name: 'mission-runner', params: { id: m.ID } })
     },
   },

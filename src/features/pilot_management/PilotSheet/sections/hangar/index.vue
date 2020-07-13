@@ -60,9 +60,9 @@ import MechListItem from './components/MechListItem.vue'
 import MechTable from './components/MechTable.vue'
 import NewMechMenu from './components/NewMechMenu.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore, PilotManagementStore } from '@/store'
 import { Pilot } from 'compcon_data'
 import { UserProfile } from '@/io/User'
+import { Interface } from 'readline'
 
 export default Vue.extend({
   name: 'mech-hangar-view',
@@ -75,7 +75,7 @@ export default Vue.extend({
   },
   computed: {
     profile(): UserProfile {
-      const store = getModule(CompendiumStore, this.$store)
+      const store = getModule(Interface, this.$store)
       return store.UserProfile
     },
   },

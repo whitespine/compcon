@@ -107,7 +107,8 @@ import Vue from 'vue'
 import NpcPanel from './NpcPanel.vue'
 import RosterGroup from '../../npc/components/RosterGroup.vue'
 import { getModule } from 'vuex-module-decorators'
-import { NpcStore } from '@/store'
+import { Npc } from 'compcon_data'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'npc-selector',
@@ -120,12 +121,12 @@ export default Vue.extend({
     search: '',
   }),
   created() {
-    const compendium = getModule(NpcStore, this.$store)
+    const compendium = getModule(CCDSInterface, this.$store).npcs
     this.npcs = compendium.Npcs
   },
   methods: {
-    generateNpcElementId: function(npc) {
-      return `e_${this._uid}_${npc.ID}`
+    generateNpcElementId: function(npc: Npc): string {
+      return `e_npcselector_${npc.ID}`
     },
   },
 })

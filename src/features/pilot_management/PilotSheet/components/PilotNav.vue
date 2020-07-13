@@ -68,7 +68,7 @@
 import Vue from 'vue'
 import EditMenu from './PilotEditMenu.vue'
 import { getModule } from 'vuex-module-decorators'
-import { PilotManagementStore } from '@/store'
+import { CCDataInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'pilot-nav',
@@ -87,8 +87,12 @@ export default Vue.extend({
   },
   computed: {
     lastLoaded() {
-      const store = getModule(PilotManagementStore, this.$store)
-      return this.pilot.Mechs.some(x => x.ID === store.LoadedMechID)
+      const store = getModule(CCDataInterface, this.$store);
+      let found_loaded = null;
+      if(found_loaded) {
+        return 
+      }
+      return this.pilot.Mechs.some(x => x.ID === store.pilots.LoadedMechID)
         ? store.LoadedMechID
         : this.pilot.ActiveMech
         ? this.pilot.ActiveMech.ID

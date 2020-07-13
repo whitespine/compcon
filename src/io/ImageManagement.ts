@@ -2,6 +2,7 @@ import path from 'path'
 import { promisify } from 'util'
 import extlog from './ExtLog'
 import { Capacitor } from '@capacitor/core'
+// import { Stats } from 'fs'
 
 const PLATFORM = Capacitor.platform
 const isWeb = PLATFORM === 'web'
@@ -10,19 +11,19 @@ let fs: typeof import('fs')
 let electron: typeof import('electron')
 let userDataPath: string
 
-let exists
-let mkdir
-let readdir
-let unlink
-let copyFile
-let stat
+let exists: (path: string) => Promise<boolean>;
+let mkdir: (path: string) => Promise<void>;
+let readdir: (path: string) => Promise<string[]>;
+let unlink: (path: string) => Promise<void>;
+let copyFile: (path1: string, path2: string) => Promise<void>;
+let stat: (path: string) => Promise<any>; // It is actually fs.Stats, but that import would get borked if we were on web
 
 if (PLATFORM == 'electron') {
   fs = require('fs')
   electron = require('electron')
   userDataPath = path.join((electron.app || electron.remote.app).getPath('userData'), 'data')
 
-  exists = promisify(fs.exists)
+  let exists = promisify(fs.exists)
   mkdir = promisify(fs.mkdir)
   readdir = promisify(fs.readdir)
   unlink = promisify(fs.unlink)
@@ -107,7 +108,7 @@ function getImagePath(subdir: ImageTag, fileName: string, defaults: boolean = fa
 // }
 
 async function getImagePaths(subdir: ImageTag, defaults: boolean = false): Promise<string[]> {
-  if (isWeb) return
+  if (isWeb) return [];
   const imageDir = getImageDir(subdir, defaults)
   const dirExists = await exists(imageDir)
   if (!dirExists) {
@@ -149,7 +150,7 @@ async function copyDefaults(origin: string): Promise<void> {
 
 async function validateImageFolders(): Promise<void> {
   if (isWeb) return
-  let subdirs = Object.keys(ImageTag).map(k => ImageTag[k as string])
+  let subdirs = Object.values(ImageTag);
 
   const imgPath = path.join(userDataPath, 'img')
   const imgPathExists = await exists(imgPath)

@@ -72,11 +72,11 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 
 import PromisifyFileReader from 'promisify-file-reader'
-import { parseContentPack } from '@/io/ContentPackParser'
+import { parseContentPack } from 'compcon_data'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
 
-import { IContentPack } from '@/interface'
+import { IContentPack } from 'compcon_data'
 
 import PackInfo from './PackInfo.vue'
 

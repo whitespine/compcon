@@ -104,9 +104,9 @@
 import Vue from 'vue'
 import gistApi from '@/io/apis/gist'
 import { getModule } from 'vuex-module-decorators'
-import { PilotManagementStore } from '@/store'
 import { Pilot } from 'compcon_data'
 import { importData } from '@/io/Data'
+import { CCDataInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'pilot-selector',
@@ -126,8 +126,8 @@ export default Vue.extend({
   }),
   computed: {
     pilots() {
-      const store = getModule(PilotManagementStore, this.$store)
-      return store.Pilots.filter(x => !this.selectedPilots.some(y => y.ID === x.ID))
+      const store = getModule(CCDataInterface, this.$store);
+      return store.pilots.pilots.filter(x => !this.selectedPilots.some(y => y.ID === x.ID))
     },
   },
   methods: {

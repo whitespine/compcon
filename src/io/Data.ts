@@ -5,7 +5,7 @@ import PromisifyFileReader from 'promisify-file-reader'
 
 import ExtLog from './ExtLog'
 
-const PLATFORM = Capacitor.platform
+const PLATFORM = Capacitor.platform || "web"; // If electron cannot self identify, then we're kinda sunk. But it's probably web
 const platformNotSupportedMessage = `ERROR - PLATFORM NOT SUPPORTED: "${PLATFORM}" `
 
 // variables used by electron
@@ -48,7 +48,7 @@ const writeFile = async function(name: string, data: string): Promise<void> {
   }
 }
 
-const readFile = async function(name: string): Promise<string> {
+const readFile = async function(name: string): Promise<string | null> {
   switch (PLATFORM) {
     case 'web':
       return localStorage.getItem(name)
@@ -74,13 +74,13 @@ const saveData = async function<T>(fileName: string, data: T): Promise<void> {
   return writeFile(fileName, JSON.stringify(data))
 }
 
-const loadData = async function<T>(fileName: string): Promise<T[]> {
+const loadData = async function<T>(fileName: string): Promise<T | null> {
   const fileExists = await exists(fileName)
   if (fileExists) {
     const dataText = await readFile(fileName)
-    return (JSON.parse(dataText) || []) as T[]
+    return (JSON.parse(dataText) as T) || null;
   } else {
-    return []
+    return null;
   }
 }
 
@@ -89,12 +89,16 @@ const importData = async function<T>(file: File): Promise<T> {
   return JSON.parse(text) as T
 }
 
-const dataPathMap = {
-  web: 'localStorage',
-  electron: userDataPath,
+function dataPathMap(platform: string): string {
+  if(platform === "web") {
+    return "localStorage";
+  } else {
+    // We know this was set because it would have been in the other non-web code above
+    return userDataPath!; 
+  }
 }
 
-const USER_DATA_PATH = dataPathMap[PLATFORM]
+const USER_DATA_PATH = dataPathMap(PLATFORM);
 
 export {
   ensureDataDir,

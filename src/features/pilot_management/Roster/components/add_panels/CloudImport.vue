@@ -56,9 +56,9 @@ import Vue from 'vue'
 import gistApi from '@/io/apis/gist'
 import { Pilot } from 'compcon_data'
 import { getModule } from 'vuex-module-decorators'
-import { PilotManagementStore, CompendiumStore } from '@/store'
 
 import ImportDialog from './ImportDialog.vue'
+import { CCDataInterface } from '../../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'cloud-import',
@@ -90,7 +90,7 @@ export default Vue.extend({
       try {
         const pilotData = await gistApi.loadPilot(this.importID)
         if (!pilotData.brews) pilotData.brews = []
-        const installedPacks = getModule(CompendiumStore, this.$store).ContentPacks.map(
+        const installedPacks = getModule(CCDataInterface, this.$store).compendium.ContentPacks.map(
           x => `${x.Name} @ ${x.Version}`
         )
         const missingPacks = this.$_.pullAll(pilotData.brews, installedPacks)

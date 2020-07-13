@@ -63,9 +63,9 @@ function flavorID(template: string): string {
   let output = ''
   while (i--) {
     output += template[i]
-      .replace(/A/, _.sample(uc))
-      .replace(/a/, _.sample(lc))
-      .replace(/N/, _.sample(num))
+      .replace(/A/, _.sample(uc)!)
+      .replace(/a/, _.sample(lc)!)
+      .replace(/N/, _.sample(num)!)
   }
   return output
 }

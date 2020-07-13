@@ -144,7 +144,7 @@ export default function pilotToRoll20(pilot: Pilot, mech: Mech): IRoll20Data {
               bonusHP: armor.HPBonus,
             }
           : null
-      )[0],
+      )[0]!,
       weapons: pilot.Loadout.Weapons.map(weapon =>
         weapon
           ? {
@@ -156,7 +156,7 @@ export default function pilotToRoll20(pilot: Pilot, mech: Mech): IRoll20Data {
               tags: weapon.Tags.map(tag => tag.GetName(pilot.LimitedBonus)).join(', '),
             }
           : null
-      ).slice(0, 2),
+      ).slice(0, 2) as any, // TODO: Why the heck are there nulls in this list / why don't we handle them
       licenses: pilot.Licenses.map(l => ({
         name: `${l.License.Source} ${l.License.Name}`,
         rank: l.Rank,
@@ -187,7 +187,7 @@ export default function pilotToRoll20(pilot: Pilot, mech: Mech): IRoll20Data {
       sensors: mech.SensorRange,
       techAttack: mech.TechAttack,
       mounts: [mech.Frame.Mounts[0], mech.Frame.Mounts[1], mech.Frame.Mounts[2]],
-      weapons: mech.ActiveLoadout.Weapons.map(weapon => ({
+      weapons: mech.ActiveLoadout!.Weapons.map(weapon => ({
         name: weapon.Name,
         type: `${weapon.Size} ${weapon.Type}`,
         range: weapon.Range.filter(r => r.Type != RangeType.Blast)[0].Max,
@@ -205,7 +205,7 @@ export default function pilotToRoll20(pilot: Pilot, mech: Mech): IRoll20Data {
         name: rank.name,
         description: strip(rank.description),
       })),
-      systems: mech.ActiveLoadout.Systems.map(system => ({
+      systems: mech.ActiveLoadout!.Systems.map(system => ({
         name: system.Name,
         tags: system.Tags.map(tag => tag.GetName(pilot.LimitedBonus)).join(', '),
         sp: system.SP,

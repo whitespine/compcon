@@ -195,18 +195,17 @@ import PanelView from '../components/PanelView.vue'
 import NpcCard from './NpcCard.vue'
 import RosterGroup from './components/RosterGroup.vue'
 import { getModule } from 'vuex-module-decorators'
-import { NpcStore } from '@/store'
-import { Npc, Statblock } from 'compcon_data'
-import { INpcData } from '@/interface'
+import { Npc, Statblock, INpcData } from 'compcon_data'
 import { importData } from '@/io/Data'
 import { saveFile } from '@/io/Dialog'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'npc-manager',
   components: { PanelView, NpcCard, RosterGroup },
   data: () => ({
     search: '',
-    selectedNpc: null,
+    selectedNpc: null as null | Npc,
     grouping: null,
     headers: [
       { text: 'Name', value: 'Name', align: 'left' },
@@ -214,20 +213,21 @@ export default Vue.extend({
       { text: 'Role', value: 'Role' },
       { text: 'Tier', value: 'Tier' },
     ],
-    npcs: [],
     importDialog: false,
     statblockDialog: false,
-    importNpc: null,
-    statblockNpc: null,
+    importNpc: null as null | Npc,
+    statblockNpc: null as null | Npc,
   }),
   watch: {
     selectedNpc() {
-      this.$refs.view.resetScroll()
+      (this.$refs.view as any).resetScroll() // html hooks don't play nice with ts
     },
   },
-  created() {
-    const store = getModule(NpcStore, this.$store)
-    this.npcs = store.Npcs
+  computed: {
+    npcs(): Npc[] {
+      const store = getModule(CCDSInterface, this.$store).npcs
+      return store.Npcs
+    }
   },
   methods: {
     setStatblock(npc: Npc) {
@@ -235,16 +235,16 @@ export default Vue.extend({
       this.statblockDialog = true
     },
     statblock() {
-      return Statblock.GenerateNPC(this.statblockNpc)
+      return this.statblockNpc ? Statblock.GenerateNPC(this.statblockNpc) : null
     },
     deleteNpc(npc: Npc) {
       this.selectedNpc = null
-      const store = getModule(NpcStore, this.$store)
-      store.deleteNpc(npc)
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.npc.deleteNpc(npc));
     },
     copyNpc(npc: Npc) {
-      const store = getModule(NpcStore, this.$store)
-      store.cloneNpc(npc)
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.npc.cloneNpc(npc));
     },
     exportNpc(npc: Npc) {
       saveFile(
@@ -253,14 +253,15 @@ export default Vue.extend({
         'Save NPC'
       )
     },
-    async fileImport(file) {
+    async fileImport(file: File) {
       const npcData = await importData<INpcData>(file)
       this.importNpc = Npc.Deserialize(npcData)
       this.importNpc.RenewID()
     },
     confirmImport() {
-      const store = getModule(NpcStore, this.$store)
-      store.addNpc(this.importNpc)
+      const store = getModule(CCDSInterface, this.$store)
+      if(this.importNpc)
+        store.mut(s => s.npc.addNpc(this.importNpc!));
       this.importNpc = null
       this.importDialog = false
     },
