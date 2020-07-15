@@ -163,8 +163,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
-import { MissionStore } from '@/store'
 import { ActiveMission } from 'compcon_data'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'active-mission-landing',
@@ -192,26 +192,27 @@ export default Vue.extend({
   }),
   computed: {
     availableMissions() {
-      const store = getModule(MissionStore, this.$store)
-      return store.Missions
+      const store = getModule(CCDSInterface, this.$store)
+      return store.missions.Missions
     },
     activeMissions() {
-      const store = getModule(MissionStore, this.$store)
-      return store.ActiveMissions.filter(x => !x.IsComplete)
+      const store = getModule(CCDSInterface, this.$store)
+      return store.missions.ActiveMissions.filter(x => !x.IsComplete)
     },
     completedMissions() {
-      const store = getModule(MissionStore, this.$store)
-      return store.ActiveMissions.filter(x => x.IsComplete)
+      const store = getModule(CCDSInterface, this.$store)
+      return store.missions.ActiveMissions.filter(x => x.IsComplete)
     },
   },
   created() {
-    const store = getModule(MissionStore, this.$store)
-    store.Missions.forEach(m => m.ValidateSteps())
+    const store = getModule(CCDSInterface, this.$store)
+    // This is technically a mutation
+    store.mut(s => s.missions.Missions.forEach(m => m.ValidateSteps()));
   },
   methods: {
     deleteActiveMission(m: ActiveMission) {
-      const store = getModule(MissionStore, this.$store)
-      store.deleteActiveMission(m)
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.missions.deleteActiveMission(m));
     },
   },
 })

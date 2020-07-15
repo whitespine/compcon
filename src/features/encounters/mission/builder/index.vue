@@ -111,8 +111,8 @@
 import Vue from 'vue'
 import PanelView from '../../components/PanelView.vue'
 import { getModule } from 'vuex-module-decorators'
-import { MissionStore } from '@/store'
 import { Mission } from 'compcon_data'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'mission-manager',
@@ -122,43 +122,44 @@ export default Vue.extend({
     selectedMission: null,
     grouping: null,
     headers: [{ text: 'Name', value: 'Name', align: 'left' }],
-    missions: [],
   }),
   computed: {
     labels() {
-      return this.Missions.flatMap(x => x.Labels).filter(x => x != null && x != '')
+      return this.missions.flatMap(x => x.Labels).filter(x => x != null && x != '')
     },
     campaigns() {
-      return this.Missions.map(x => x.Campaign).filter(x => x != null && x != '')
+      return this.missions.map(x => x.Campaign).filter(x => x != null && x != '')
     },
+    missions(): Mission[] {
+      const store = getModule(CCDSInterface, this.$store)
+      return store.mission.Missions
+    }
   },
   watch: {
     selectedMission() {
-      this.$refs.view.resetScroll()
+      (this.$refs.view as any).resetScroll()
     },
   },
   created() {
-    const store = getModule(MissionStore, this.$store)
-    console.log(store.Missions)
-    this.missions = store.Missions
   },
   methods: {
     toMission(id: string) {
       this.$router.push({ name: 'edit-mission', params: { id } })
     },
     deleteMission(Mission: Mission) {
-      const store = getModule(MissionStore, this.$store)
-      store.deleteMission(Mission)
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.mission.deleteMission(Mission))
     },
     copyMission(Mission: Mission) {
-      const store = getModule(MissionStore, this.$store)
-      store.cloneMission(Mission)
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.mission.cloneMission(Mission))
     },
     addNew() {
-      const store = getModule(MissionStore, this.$store)
-      store.addMission(new Mission())
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.mission.addMission(new Mission()));
       const m = this.missions[this.missions.length - 1].ID
       this.$router.push({ name: 'edit-mission', params: { id: m } })
+
     },
   },
 })

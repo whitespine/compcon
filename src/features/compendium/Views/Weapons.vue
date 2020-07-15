@@ -10,8 +10,8 @@ import _ from 'lodash'
 import Component from 'vue-class-component'
 import CompendiumBrowser from '../components/CompendiumBrowser.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { MechWeapon } from '../../../classes/mech/MechWeapon'
+import { CCDSInterface } from '../../../io/ccdata_store'
+import { MechWeapon } from 'compcon_data'
 
 @Component({
   components: { CompendiumBrowser },
@@ -27,10 +27,10 @@ export default class Weapons extends Vue {
     { text: 'Damage', align: 'left', value: 'Damage[0].Max' },
   ]
 
-  private compendium = getModule(CompendiumStore, this.$store)
+  private compendium = getModule(CCDSInterface, this.$store).compendium
   public get weapons(): MechWeapon[] {
     return _.sortBy(
-      this.compendium.MechWeapons.filter(x => x.Source),
+      this.compendium.getItemCollection("MechWeapons").filter(x => x.Source),
       ['Source', 'Name']
     )
   }

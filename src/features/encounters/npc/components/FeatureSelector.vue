@@ -44,8 +44,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { NpcFeature } from 'compcon_data'
+import { NpcFeature, Npc } from 'compcon_data'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'npc-freature-selector',
@@ -63,29 +63,28 @@ export default Vue.extend({
       { text: 'Set', align: 'left', value: 'OriginSet' },
       { text: '', align: 'center', value: 'Detail' },
     ],
-    features: [],
     showAll: false,
     showDupe: false,
   }),
   computed: {
     availableFeatures(): NpcFeature[] {
+      let tnpc = this.npc as Npc;
       let i = []
       if (this.showAll) i = this.features
       else {
-        const templateFeatures = this.npc.Templates.flatMap(x => x.OptionalFeatures)
-        i = templateFeatures.concat(this.npc.Class.OptionalFeatures)
+        const templateFeatures = tnpc.Templates.flatMap(x => x.OptionalFeatures)
+        i = templateFeatures.concat(tnpc.Class.OptionalFeatures)
       }
-      if (!this.showDupe) i = i.filter(x => !this.npc.SelectedFeatures.some(y => y.ID === x.ID))
+      if (!this.showDupe) i = i.filter(x => !tnpc.SelectedFeatures.some(y => y.ID === x.ID))
       else {
-        const tempBaseFeats = this.npc.Templates.flatMap(x => x.BaseFeatures)
-        i = i.concat(this.npc.Class.BaseFeatures).concat(tempBaseFeats)
+        const tempBaseFeats = tnpc.Templates.flatMap(x => x.BaseFeatures)
+        i = i.concat(tnpc.Class.BaseFeatures).concat(tempBaseFeats)
       }
       return i
     },
-  },
-  created() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.features = compendium.NpcFeatures
-  },
+    features(): NpcFeature[] {
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("NpcFeatures")
+    }
+  }
 })
 </script>

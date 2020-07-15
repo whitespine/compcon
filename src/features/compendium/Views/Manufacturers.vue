@@ -53,15 +53,20 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 @Component
 export default class Manufacturers extends Vue {
   public tabModel = 0
 
-  private compendiumStore = getModule(CompendiumStore, this.$store)
+  private compendiumStore = getModule(CCDSInterface, this.$store).compendium
   get manufacturers() {
-    return this.compendiumStore.Manufacturers
+    let result = this.compendiumStore.getItemCollection("Manufacturers")
+    console.log("Manufactory");
+    console.log(result);
+    console.log(this.compendiumStore);
+    console.log(this.compendiumStore);
+    return result;
   }
 }
 </script>

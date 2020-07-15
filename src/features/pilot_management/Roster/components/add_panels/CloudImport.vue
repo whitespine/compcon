@@ -54,11 +54,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import gistApi from '@/io/apis/gist'
-import { Pilot } from 'compcon_data'
+import { Pilot, CCDataStore } from 'compcon_data'
 import { getModule } from 'vuex-module-decorators'
 
 import ImportDialog from './ImportDialog.vue'
-import { CCDataInterface } from '../../../../../io/ccdata_store'
+import { CCDSInterface } from '../../../../../io/ccdata_store'
+import _ from 'lodash'
 
 export default Vue.extend({
   name: 'cloud-import',
@@ -66,7 +67,7 @@ export default Vue.extend({
   data: () => ({
     dialog: false,
     importID: '',
-    importPilot: null,
+    importPilot: null as null | Pilot,
     cloudLoading: false,
     error: null,
     missingContentWarning: false,
@@ -90,16 +91,16 @@ export default Vue.extend({
       try {
         const pilotData = await gistApi.loadPilot(this.importID)
         if (!pilotData.brews) pilotData.brews = []
-        const installedPacks = getModule(CCDataInterface, this.$store).compendium.ContentPacks.map(
+        const installedPacks = getModule(CCDSInterface, this.$store).compendium.ContentPacks.map(
           x => `${x.Name} @ ${x.Version}`
         )
-        const missingPacks = this.$_.pullAll(pilotData.brews, installedPacks)
+        const missingPacks = _.pullAll(pilotData.brews, installedPacks)
         if (missingPacks.length) {
           this.missingContent = missingPacks.join('<br />')
           this.missingContentWarning = true
         }
         this.importPilot = Pilot.Deserialize(pilotData)
-        this.importPilot.brews = pilotData.brews
+        this.importPilot.SetBrewForce(pilotData.brews)
         this.importPilot.RenewID()
       } catch (e) {
         this.error = e.message
@@ -111,7 +112,9 @@ export default Vue.extend({
       if (!importPilot.CloudID) {
         importPilot.CloudID = this.importID
       }
-      getModule(PilotManagementStore, this.$store).addPilot(importPilot)
+      getModule(CCDSInterface, this.$store).mut(s => {
+        s.pilots.addPilot(importPilot)
+      });
       this.reset()
       this.dialog = false
       this.importID = ''

@@ -65,8 +65,9 @@ import Selector from './components/_SelectorBase.vue'
 import MissingItem from './components/_MissingItem.vue'
 import LicenseSelectItem from './components/_LicenseSelectItem.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import { Pilot } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
+import _ from 'lodash'
 
 export default Vue.extend({
   name: 'cc-license-selector',
@@ -75,12 +76,13 @@ export default Vue.extend({
     pilot: Pilot,
     levelUp: Boolean,
   },
-  data: () => ({
-    licenses: [],
-  }),
   computed: {
     selectionComplete(): boolean {
       return this.levelUp && !this.pilot.IsMissingLicenses
+    },
+    licenses() {
+      let licenses = getModule(CCDSInterface, this.$store).compendium.getItemCollection("Licenses");
+      return _.groupBy(licenses, 'Source');
     },
   },
   watch: {
@@ -88,14 +90,10 @@ export default Vue.extend({
       if (bool) window.scrollTo(0, document.body.scrollHeight)
     },
   },
-  created() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.licenses = this.$_.groupBy(compendium.Licenses, 'Source')
-  },
   methods: {
     manufacturer(id: string) {
-      const compendium = getModule(CompendiumStore, this.$store)
-      return compendium.referenceByID('Manufacturers', id.toUpperCase())
+      const compendium = getModule(CCDSInterface, this.$store).compendium
+      return compendium.getReferenceByID('Manufacturers', id.toUpperCase())
     },
   },
 })

@@ -112,9 +112,9 @@
 import Vue from 'vue'
 import _ from 'lodash'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { Pilot, Frame, Mech, MechType } from 'compcon_data'
+import { Pilot, Frame, Mech, MechType, CCDataStore } from 'compcon_data'
 import { mechname } from '@/io/Generators'
+import { CCDSInterface } from '../../../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'new-mech-menu',
@@ -122,11 +122,11 @@ export default Vue.extend({
     pilot: Pilot,
   },
   data: () => ({
-    mechName: null,
+    mechName: null as null | string,
     showAll: false,
-    frames: [],
-    selectedFrame: null,
-    frameTypes: [],
+    frames: [] as Frame[],
+    selectedFrame: null as null | number,
+    frameTypes: [] as MechType[],
     selectedTypes: [],
   }),
   computed: {
@@ -145,8 +145,8 @@ export default Vue.extend({
     },
   },
   mounted() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.frames = _.sortBy(compendium.Frames, ['Source', 'Name'])
+    const compendium = getModule(CCDSInterface, this.$store).compendium
+    this.frames = _.sortBy(compendium.getItemCollection("Frames"), ['Source', 'Name'])
     this.frameTypes = Object.keys(MechType).sort() as MechType[]
   },
   methods: {
@@ -157,9 +157,9 @@ export default Vue.extend({
       this.mechName = mechname()
     },
     addMech() {
-      const f = this.frames[this.selectedFrame]
+      const f = this.frames[this.selectedFrame || 0]
       const newMech = new Mech(f, this.pilot)
-      newMech.Name = this.mechName
+      newMech.Name = this.mechName || ""
       this.pilot.AddMech(newMech)
       this.mechName = null
       this.selectedFrame = null

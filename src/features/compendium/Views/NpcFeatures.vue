@@ -11,8 +11,8 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import CompendiumBrowser from '../components/CompendiumBrowser.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import { NpcFeature } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 @Component({
   components: { CompendiumBrowser },
@@ -25,9 +25,9 @@ export default class Weapons extends Vue {
     { text: 'Set', align: 'left', value: 'OriginSet' },
   ]
 
-  private compendium = getModule(CompendiumStore, this.$store)
+  private compendium = getModule(CCDSInterface, this.$store).compendium
   public get features(): NpcFeature[] {
-    return this.compendium.NpcFeatures
+    return this.compendium.getItemCollection("NpcFeatures");
   }
 }
 </script>

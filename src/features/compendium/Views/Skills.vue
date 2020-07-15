@@ -12,17 +12,16 @@
 import Vue from 'vue'
 import SidebarArrayView from '../components/SidebarArrayView.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../io/ccdata_store'
+import { Skill } from 'compcon_data'
 
 export default Vue.extend({
   name: 'skills',
   components: { SidebarArrayView },
-  data: () => ({
-    skills: [],
-  }),
-  created() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.skills = compendium.Skills
-  },
+  computed: {
+    skills(): Skill[] {
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("Skills");
+    }
+  }
 })
 </script>

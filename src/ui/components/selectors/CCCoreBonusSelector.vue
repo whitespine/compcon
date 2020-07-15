@@ -95,8 +95,8 @@ import MissingItem from './components/_MissingItem.vue'
 import CoreBonusSelectItem from './components/_CoreBonusSelectItem.vue'
 
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import { Pilot, CoreBonus, Manufacturer } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 @Component({
   components: { Selector, CoreBonusSelectItem, MissingItem },
@@ -106,13 +106,13 @@ export default class CCCoreBonusSelector extends Vue {
   @Prop(Boolean) levelUp!: boolean
 
   get coreBonuses(): CoreBonus[] {
-    return getModule(CompendiumStore, this.$store).CoreBonuses
+    return getModule(CCDSInterface, this.$store).compendium.getItemCollection("CoreBonuses");
   }
   get manufacturersWithCBs(): {
     manufacturer: Manufacturer
     coreBonuses: CoreBonus[]
   }[] {
-    const manufacturers = getModule(CompendiumStore, this.$store).Manufacturers
+    const manufacturers = getModule(CCDSInterface, this.$store).compendium.getItemCollection("Manufacturers");
 
     return manufacturers
       .map(manufacturer => ({

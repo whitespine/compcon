@@ -175,7 +175,8 @@
 import Vue from 'vue'
 import TalentTest from './TalentTest.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../io/ccdata_store'
+import { MechSystem, MechWeapon } from 'compcon_data'
 
 const icons = [
   'rank-1',
@@ -241,43 +242,44 @@ export default Vue.extend({
     notificationText: 'test',
     notificationTypes: ['achievement', 'confirmation', 'error'],
     notificationType: 'confirmation',
-    chargeExample: null,
-    deployExample: null,
-    droneExample: null,
-    multipleExample: null,
-    aiExample: null,
-    techExample: null,
-    reactionExample: null,
-    genericExample: null,
-    profileExample: null,
-    onAttackExample: null,
-    onHitExample: null,
-    onCritExample: null,
-    asDroneExample: null,
+    chargeExample: null as null | MechSystem,
+    deployExample: null as null | MechSystem,
+    droneExample: null as null | MechSystem,
+    multipleExample: null as null | MechSystem,
+    aiExample: null as null | MechSystem,
+    techExample: null as null | MechSystem,
+    reactionExample: null as null | MechSystem,
+    genericExample: null as null | MechSystem,
+    profileExample: null as null | MechWeapon,
+    onAttackExample: null as null | MechWeapon,
+    onHitExample: null as null | MechWeapon,
+    onCritExample: null as null | MechWeapon,
+    asDroneExample: null as null | MechWeapon,
   }),
   created() {
-    const s = getModule(CompendiumStore, this.$store)
-    this.genericExample = s.MechSystems.find(x => x.ID === 'ms_eva_module')
-    this.chargeExample = s.MechSystems.find(x => x.ID === 'ms_pattern_a_smoke_charges')
-    this.deployExample = s.MechSystems.find(x => x.ID === 'ms_pattern_a_jericho_deployable_cover')
-    this.droneExample = s.MechSystems.find(x => x.ID === 'ms_turret_drones')
-    this.multipleExample = s.MechSystems.find(x => x.ID === 'ms_reinforced_cabling')
-    this.aiExample = s.MechSystems.find(x => x.ID === 'ms_sekhmet_class_nhp')
-    this.techExample = s.MechSystems.find(x => x.ID === 'ms_neurospike')
-    this.reactionExample = s.MechSystems.find(x => x.ID === 'ms_singularity_motivator')
-    this.profileExample = s.MechWeapons.find(x => x.ID === 'mw_siege_cannon')
-    this.onAttackExample = s.MechWeapons.find(x => x.ID === 'mw_plasma_thrower')
-    this.onHitExample = s.MechWeapons.find(x => x.ID === 'mw_annihilator')
-    this.onCritExample = s.MechWeapons.find(x => x.ID === 'mw_chain_axe')
-    this.asDroneExample = s.MechWeapons.find(x => x.ID === 'mw_ghast_nexus')
+    const s = getModule(CCDSInterface, this.$store).compendium
+    this.genericExample =s.getReferenceByID("MechSystems", 'ms_eva_module')
+    this.chargeExample =s.getReferenceByID("MechSystems", 'ms_pattern_a_smoke_charges')
+    this.deployExample =s.getReferenceByID("MechSystems", 'ms_pattern_a_jericho_deployable_cover')
+    this.droneExample =s.getReferenceByID("MechSystems", 'ms_turret_drones')
+    this.multipleExample =s.getReferenceByID("MechSystems", 'ms_reinforced_cabling')
+    this.aiExample =s.getReferenceByID("MechSystems", 'ms_sekhmet_class_nhp')
+    this.techExample =s.getReferenceByID("MechSystems", 'ms_neurospike')
+    this.reactionExample =s.getReferenceByID("MechSystems", 'ms_singularity_motivator')
+    this.profileExample =s.getReferenceByID("MechWeapons", 'mw_siege_cannon')
+    this.onAttackExample =s.getReferenceByID("MechWeapons", 'mw_plasma_thrower')
+    this.onHitExample =s.getReferenceByID("MechWeapons", 'mw_annihilator')
+    this.onCritExample =s.getReferenceByID("MechWeapons", 'mw_chain_axe')
+    this.asDroneExample =s.getReferenceByID("MechWeapons", 'mw_ghast_nexus')
   },
   methods: {
     allIcons() {
       return icons
     },
-    allColors(theme) {
+    allColors(theme: any): Array<{name: string, color: string}> {
+      //@ts-ignore
       const t = this.$vuetify.theme.themes[theme]
-      const output = []
+      const output = [] as Array<{name: string, color: string}>
       Object.keys(t).forEach(e => {
         output.push({ name: e, color: t[e] })
       })

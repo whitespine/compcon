@@ -190,8 +190,8 @@ import EncounterPanel from './EncounterPanel.vue'
 import MissionStepElement from './MissionStepElement.vue'
 import { getModule } from 'vuex-module-decorators'
 import { mission } from '@/io/Generators'
-import { MissionStore } from '@/store'
-import { Encounter } from 'compcon_data'
+import { Encounter, Mission } from 'compcon_data'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'mission-card',
@@ -214,22 +214,29 @@ export default Vue.extend({
     },
   },
   computed: {
-    mission() {
-      const store = getModule(MissionStore, this.$store)
-      return store.Missions.find(x => x.ID === this.id)
+    mission(): Mission | null {
+      const store = getModule(CCDSInterface, this.$store)
+      return store.mission.Missions.find(x => x.ID === this.id) || null
     },
   },
   created() {
-    const store = getModule(MissionStore, this.$store)
-    store.Missions.forEach(m => m.ValidateSteps())
+    const store = getModule(CCDSInterface, this.$store)
+    // Can mutate
+    store.mut(s => s.mission.Missions.forEach(m => m.ValidateSteps()))
   },
   methods: {
     randomName() {
-      this.mission.Name = mission()
+      const store = getModule(CCDSInterface, this.$store)
+      if(this.mission) {
+        store.mut(() => this.mission!.Name = mission())
+      }
     },
     addEncounter(e: Encounter) {
-      this.mission.AddEncounter(e)
-      this.$refs.selectDialog.hide()
+      const store = getModule(CCDSInterface, this.$store)
+      if(this.mission) {
+        store.mut(() => this.mission!.AddEncounter(e));
+      }
+      (this.$refs.selectDialog as any).hide()
     },
   },
 })

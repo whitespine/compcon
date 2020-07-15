@@ -94,29 +94,27 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 
 import { ContentPack } from 'compcon_data'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 @Component
 export default class PacksList extends Vue {
   private expanded = []
-  private compendiumStore = getModule(CompendiumStore, this.$store)
+  private store = getModule(CCDSInterface, this.$store)
 
   public async toggleActive(packID: string, active: boolean): Promise<void> {
-    await this.compendiumStore.setPackActive({
-      packID,
-      active,
-    })
+    return this.store.mut(s => s.compendium.setPackActive( packID, active))
   }
 
   public async deletePack(id: string): Promise<void> {
-    return await this.compendiumStore.deleteContentPack(id)
+    return this.store.mut(s => s.compendium.deleteContentPack( id))
   }
 
   public get contentPacks(): ContentPack[] {
-    return this.compendiumStore.ContentPacks
+    return this.store.compendium.ContentPacks;
   }
+
   public headers = [
     { text: 'Active', value: 'toggleActive', sortable: false },
     { text: 'Name', value: 'name' },

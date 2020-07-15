@@ -129,7 +129,7 @@ import PrintDialog from './PrintDialog.vue'
 import DeleteDialog from './DeletePilotDialog.vue'
 
 import { getModule } from 'vuex-module-decorators'
-import { CCDataInterface } from '../../../../io/ccdata_store'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'edit-menu',
@@ -158,7 +158,7 @@ export default Vue.extend({
   methods: {
     deletePilot() {
       this.$router.push('/pilot_management')
-      const store = getModule(CCDataInterface, this.$store)
+      const store = getModule(CCDSInterface, this.$store)
       store.mut(s => s.pilots.deletePilot(this.pilot));
     },
   },

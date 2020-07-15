@@ -29,8 +29,8 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import CompendiumBrowser from '../components/CompendiumBrowser.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { ItemType } from 'compcon_data'
+import { ItemType, CCDataStore } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 @Component({
   components: { CompendiumBrowser },
@@ -55,15 +55,15 @@ export default class PilotGear extends Vue {
   ]
 
   // typing on these is wrong... look into fixing it
-  private compendium = getModule(CompendiumStore, this.$store)
+  private compendium = getModule(CCDSInterface, this.$store).compendium
   get armor() {
-    return this.compendium.PilotGear.filter(x => x.ItemType === ItemType.PilotArmor)
+    return this.compendium.getItemCollection("PilotArmor")
   }
   get weapons() {
-    return this.compendium.PilotGear.filter(x => x.ItemType === ItemType.PilotWeapon)
+    return this.compendium.getItemCollection("PilotWeapons")
   }
   get gear() {
-    return this.compendium.PilotGear.filter(x => x.ItemType === ItemType.PilotGear)
+    return this.compendium.getItemCollection("PilotGear")
   }
 }
 </script>

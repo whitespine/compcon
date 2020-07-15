@@ -40,16 +40,18 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../io/ccdata_store'
+import { CompendiumStore } from 'compcon_data'
 
 export default Vue.extend({
   name: 'statuses',
   data: () => ({
     statuses: [],
   }),
-  created() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.statuses = compendium.Statuses
+  computed: {
+    statuses() {
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("Statuses")
+    }
   },
 })
 </script>

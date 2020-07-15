@@ -139,10 +139,10 @@ import PilotCard from './components/PilotCard.vue'
 import PilotListItem from './components/PilotListItem.vue'
 import AddPilot from './components/AddPilot.vue'
 import { getModule } from 'vuex-module-decorators'
-import { Pilot } from 'compcon_data'
+import { Pilot, UserProfileStore } from 'compcon_data'
 import draggable from 'vuedraggable'
 import { teamName } from '@/io/Generators'
-import { CCDataInterface } from '../../../io/ccdata_store'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'roster-view',
@@ -168,19 +168,19 @@ export default Vue.extend({
       }
     },
     profile(): UserProfileStore {
-      const store = getModule(CCDataInterface, this.$store)
+      const store = getModule(CCDSInterface, this.$store)
       return store.user
     },
     pilotsUnsorted() {
-      const store = getModule(PilotManagementStore, this.$store)
+      const store = getModule(CCDSInterface, this.$store).pilots
       return store.Pilots
     },
     pilotGroups() {
-      const store = getModule(PilotManagementStore, this.$store)
+      const store = getModule(CCDSInterface, this.$store).pilots
       return store.PilotGroups
     },
-    pilots() {
-      const store = getModule(PilotManagementStore, this.$store)
+    pilots(): Pilot[] {
+      const store = getModule(CCDSInterface, this.$store).pilots
       return store.Pilots
     },
     pilotsByGroup() {

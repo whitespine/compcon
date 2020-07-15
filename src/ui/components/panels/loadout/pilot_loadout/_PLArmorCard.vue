@@ -86,9 +86,10 @@
 import Vue from 'vue'
 import PlCardBase from './_PLCardBase.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import { PilotArmor, CompendiumItem, ItemType } from 'compcon_data'
 import { flavorID } from '@/io/Generators'
+import { CCDSInterface } from '../../../../../io/ccdata_store'
+import _ from 'lodash'
 
 export default Vue.extend({
   name: 'pl-pilot-armor-card',
@@ -120,12 +121,12 @@ export default Vue.extend({
   }),
   methods: {
     equip(item: PilotArmor) {
-      this.$emit('equip', this.$_.clone(item))
-      this.$refs.base.closeSelector()
+      this.$emit('equip', _.clone(item));
+      (this.$refs.base as any).closeSelector()
     },
     getArmor() {
-      const compendium = getModule(CompendiumStore, this.$store)
-      return compendium.PilotGear.filter((x: CompendiumItem) => x.ItemType === ItemType.PilotArmor)
+      const compendium = getModule(CCDSInterface, this.$store).compendium
+      return compendium.getItemCollection("PilotArmor");
     },
     fID(template: string): string {
       return flavorID(template)

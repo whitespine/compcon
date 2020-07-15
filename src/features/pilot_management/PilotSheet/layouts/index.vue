@@ -8,14 +8,13 @@
 
 <script lang="ts">
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { Pilot } from 'compcon_data'
-import { UserProfile } from '@/io/User'
+import { Pilot, UserProfileStore } from 'compcon_data'
 import TabbedLayout from './Tabbed.vue'
 import ClassicLayout from './Classic.vue'
 import PilotNav from '../components/PilotNav.vue'
 
 import Vue from 'vue'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 export default Vue.extend({
   name: 'pilot-sheet-content',
   components: { PilotNav, TabbedLayout, ClassicLayout },
@@ -36,9 +35,8 @@ export default Vue.extend({
     pilot(): Pilot {
       return this.$store.state.management.Pilots.find(p => p.ID === this.pilotID)
     },
-    profile(): UserProfile {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.UserProfile
+    profile(): UserProfileStore {
+      return getModule(CCDSInterface, this.$store).user
     },
   },
   watch: {

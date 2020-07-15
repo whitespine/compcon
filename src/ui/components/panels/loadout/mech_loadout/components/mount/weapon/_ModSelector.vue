@@ -92,9 +92,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { MechWeapon } from 'compcon_data'
+import { MechWeapon, WeaponMod } from 'compcon_data'
 import { flavorID } from '@/io/Generators'
+import { CCDSInterface } from '../../../../../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'mod-selector',
@@ -118,15 +118,17 @@ export default Vue.extend({
       { text: 'SP', align: 'left', value: 'SP' },
       { text: '', align: 'center', value: 'Detail' },
     ],
-    mods: [],
     showUnlicensed: false,
     showOverSP: false,
   }),
   computed: {
+    mods(): WeaponMod[] {
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("WeaponMods").filter(x => x.Source);
+    },
     freeSP(): number {
       return this.weapon.Mod ? this.mech.FreeSP + this.weapon.Mod.SP : this.mech.FreeSP
     },
-    availableMods(): MechWeapon[] {
+    availableMods(): WeaponMod[] {
       // filter by applied_to
       let i = this.mods.filter(x => x.AppliedTo.includes(this.weapon.Type.toLowerCase()))
 
@@ -156,10 +158,6 @@ export default Vue.extend({
 
       return i
     },
-  },
-  created() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.mods = compendium.WeaponMods.filter(x => x.Source)
   },
   methods: {
     fID(template: string): string {

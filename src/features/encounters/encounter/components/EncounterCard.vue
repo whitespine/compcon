@@ -369,8 +369,8 @@ import Vue from 'vue'
 import NpcChip from './NpcChip.vue'
 import NpcSelector from './NpcSelector.vue'
 import { getModule } from 'vuex-module-decorators'
-import { EncounterStore, CompendiumStore } from '@/store'
-import { Npc, EncounterSide } from 'compcon_data'
+import { Npc, EncounterSide, Environment } from 'compcon_data'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'encounter-card',
@@ -382,26 +382,26 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    selRep: 'Standard Combat',
-    ctest: ['a', 'b', 'c'],
+    selRep: 'Standard Combat'
   }),
   computed: {
     labels() {
-      const store = getModule(EncounterStore, this.$store)
-      return store.Encounters.flatMap(x => x.Labels).filter(x => x)
+      const store = getModule(CCDSInterface, this.$store)
+      return store.encounters.Encounters.flatMap(x => x.Labels).filter(x => x)
     },
     campaigns() {
-      const store = getModule(EncounterStore, this.$store)
-      return store.Encounters.map(x => x.Campaign).filter(x => x)
+      const store = getModule(CCDSInterface, this.$store)
+      return store.encounters.Encounters.map(x => x.Campaign).filter(x => x)
     },
-    environmentData() {
-      return getModule(CompendiumStore, this.$store).Environments
+    environmentData(): Environment[] {
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("Environments") //.Environments
     },
     environments() {
+      this.environmentData
       return ['Nominal'].concat(this.environmentData.map(x => x.name))
     },
     sitreps() {
-      return getModule(CompendiumStore, this.$store).Sitreps
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("Sitreps")
     },
     forces() {
       return {

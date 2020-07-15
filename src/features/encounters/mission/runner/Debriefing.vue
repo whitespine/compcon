@@ -56,7 +56,7 @@ export default Vue.extend({
   computed: {
     mission() {
       const store = getModule(CCDSInterface, this.$store)
-      return store.mission.ActiveMissions.find(x => x.ID === this.id)
+      return store.missions.ActiveMissions.find(x => x.ID === this.id)
     },
   },
 })

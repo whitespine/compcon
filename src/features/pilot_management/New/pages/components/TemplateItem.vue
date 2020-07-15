@@ -128,7 +128,7 @@
 import Vue from 'vue'
 import { getImagePath, ImageTag } from '@/io/ImageManagement'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'template-item',
@@ -145,9 +145,9 @@ export default Vue.extend({
     },
   },
   methods: {
-    item(type: string, id: string) {
-      const compendium = getModule(CompendiumStore, this.$store)
-      return compendium.referenceByID(type, id)
+    item(type: "Skills" | "Talents" | "MechSystems" | "MechWeapons", id: string) {
+      const compendium = getModule(CCDSInterface, this.$store).compendium
+      return compendium.getReferenceByID(type, id)
     },
   },
 })

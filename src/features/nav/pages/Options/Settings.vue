@@ -143,15 +143,15 @@
 import Vue from 'vue'
 import allThemes from '@/ui/style/themes'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import { exportAll, importAll, exportV1Pilots, clearAllData } from '@/io/BulkData'
 import { saveFile } from '@/io/Dialog'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'options-settings',
   data: () => ({
     theme: 'gms',
-    themes: [],
+    themes: [] as any[],
     // themes: [
     //   { name: 'GMS Red (Default Light)', value: 'light' },
     //   { name: 'MSMC Dark', value: 'dark' },
@@ -163,19 +163,19 @@ export default Vue.extend({
   }),
   computed: {
     userID() {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.UserProfile.ID
+      const store = getModule(CCDSInterface, this.$store)
+      return store.user.ID
     },
     userTheme() {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.UserProfile.Theme
+      const store = getModule(CCDSInterface, this.$store)
+      return store.user.Theme
     },
   },
   created() {
     this.theme = this.userTheme
     for (const k in allThemes) {
       if (allThemes.hasOwnProperty(k)) {
-        const e = allThemes[k]
+        const e = (allThemes as any)[k]
         this.themes.push({ name: e.name, value: e.id })
       }
     }

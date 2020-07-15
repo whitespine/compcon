@@ -90,8 +90,8 @@ import Selector from './components/_SelectorBase.vue'
 import MissingItem from './components/_MissingItem.vue'
 import TalentSelectItem from './components/_TalentSelectItem.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import { Rules, Pilot, Talent , accentInclude } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'talent-selector',
@@ -118,10 +118,11 @@ export default Vue.extend({
       return (this.newPilot || this.levelUp) && !this.pilot.IsMissingTalents
     },
     talents(): Talent[] {
-      const compendium = getModule(CompendiumStore, this.$store)
-      if (this.search) return compendium.Talents.filter(x => accentInclude(x.Name, this.search))
+      const compendium = getModule(CCDSInterface, this.$store).compendium
+      const talents = compendium.getItemCollection("Talents");
+      if (this.search) return talents.filter(x => accentInclude(x.Name, this.search))
 
-      return _.sortBy(compendium.Talents, [
+      return _.sortBy(talents, [
         t => {
           return this.pilot.Talents.some(x => x.Talent.ID === t.ID) ? -1 : 1
         },

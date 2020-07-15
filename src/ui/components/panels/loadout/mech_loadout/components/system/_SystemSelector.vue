@@ -93,9 +93,9 @@
 import Vue from 'vue'
 import _ from 'lodash'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { MechSystem } from 'compcon_data'
+import { MechSystem, Mech } from 'compcon_data'
 import { flavorID } from '@/io/Generators'
+import { CCDSInterface } from '../../../../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'system-selector',
@@ -118,7 +118,6 @@ export default Vue.extend({
       { text: 'SP Cost', align: 'left', value: 'SP' },
       { text: '', align: 'center', value: 'Detail' },
     ],
-    systems: [],
     showUnlicensed: false,
     showOverSP: false,
   }),
@@ -126,14 +125,18 @@ export default Vue.extend({
     freeSP(): number {
       return this.equipped ? this.mech.FreeSP + this.equipped.SP : this.mech.FreeSP
     },
+    systems(): MechSystem[] {
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("MechSystems").filter(x => x.Source)
+    },
     availableSystems(): MechSystem[] {
+      let tmech = this.mech as Mech;
       // filter unique
       let i = this.systems.filter(
-        x => !this.mech.ActiveLoadout.UniqueSystems.map(y => y.ID).includes(x.ID)
+        x => !tmech.ActiveLoadout!.UniqueSystems.map(y => y.ID).includes(x.ID)
       )
 
       // filter ai
-      if (this.mech.ActiveLoadout.AICount >= this.mech.Pilot.AICapacity) {
+      if (tmech.ActiveLoadout!.AICount >= tmech.Pilot.AICapacity) {
         i = i.filter(x => !x.IsAI)
       }
 
@@ -149,10 +152,6 @@ export default Vue.extend({
 
       return _.sortBy(i, ['Source', 'Name'])
     },
-  },
-  created() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.systems = compendium.MechSystems.filter(x => x.Source)
   },
   methods: {
     fID(template: string): string {

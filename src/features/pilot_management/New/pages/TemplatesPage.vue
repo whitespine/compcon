@@ -63,11 +63,37 @@
 import Vue from 'vue'
 import { getImagePath, ImageTag } from '@/io/ImageManagement'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import TemplateItem from './components/TemplateItem.vue'
 import Templates from '../pregens.json'
-import { MechSkills, Mech } from 'compcon_data'
+import { MechSkills, Mech, Pilot } from 'compcon_data'
 import { mechname } from '@/io/Generators'
+import { CCDSInterface } from '../../../../io/ccdata_store'
+import { CompendiumCategory, Compendium } from 'compcon_data/dist/store/compendium'
+
+interface PlayerTemplate {
+    "name": string,
+    "image": string,
+    "code": string,
+    "description": string,
+    "tactics": string,
+    "build": {
+      "mechSkills": [number, number, number, number],
+      "skills": string[],
+      "talents": string[],
+      "gear": {
+        "armor": string,
+        "weapons": string[],
+        "gear": string[]
+      },
+      "mech": {
+        "systems": string[],
+        "mounts": Array<{
+            "mount_type": string,
+            "slots": string[]
+          }>
+      }
+    }
+  }
 
 export default Vue.extend({
   name: 'templates-page',
@@ -79,7 +105,7 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    selected: null,
+    selected: null as null | PlayerTemplate,
   }),
   computed: {
     templates() {
@@ -90,51 +116,53 @@ export default Vue.extend({
     },
   },
   methods: {
-    item(type: string, id: string) {
-      const compendium = getModule(CompendiumStore, this.$store)
-      return compendium.referenceByID(type, id)
+    item<T extends keyof Compendium>(type: T, id: string): Compendium[T][0] {
+      const compendium = getModule(CCDSInterface, this.$store).compendium
+      return compendium.getReferenceByID(type, id)
     },
     setTemplate() {
+      if(!this.selected) { return; }
+      let tpilot = this.pilot as Pilot;
       const t = this.selected.build
-      this.pilot.MechSkills = MechSkills.Deserialize(t.mechSkills)
-      this.pilot.ClearSkills()
+      tpilot.MechSkills = MechSkills.Deserialize(t.mechSkills)
+      tpilot.ClearSkills()
       t.skills.forEach(s => {
-        this.pilot.AddSkill(this.item('Skills', s))
+        tpilot.AddSkill(this.item('Skills', s))
       })
-      this.pilot.ClearTalents()
+      tpilot.ClearTalents()
       t.talents.forEach(t => {
-        this.pilot.AddTalent(this.item('Talents', t))
+        tpilot.AddTalent(this.item('Talents', t))
       })
-      this.pilot.Loadout.Armor = [this.item('PilotGear', t.gear.armor)]
-      this.pilot.Loadout.Weapons = t.gear.weapons.map(x => this.item('PilotGear', x))
-      this.pilot.Loadout.Gear = t.gear.gear.map(x => this.item('PilotGear', x))
+      tpilot.Loadout.Armor = [this.item('PilotArmor', t.gear.armor)]
+      tpilot.Loadout.Weapons = t.gear.weapons.map(x => this.item('PilotWeapons', x))
+      tpilot.Loadout.Gear = t.gear.gear.map(x => this.item('PilotGear', x))
 
       const m = t.mech
-      const mech = new Mech(this.item('Frames', 'mf_standard_pattern_i_everest'), this.pilot)
+      const mech = new Mech(this.item('Frames', 'mf_standard_pattern_i_everest'), tpilot)
 
       mech.Name = mechname()
-      mech.ActiveLoadout.Systems = m.systems.map(x => this.item('MechSystems', x))
+      mech.ActiveLoadout!.Systems = m.systems.map(x => this.item('MechSystems', x))
 
-      mech.ActiveLoadout.AllMounts()
-        .find(m => m.Type === 'Main')
+      mech.ActiveLoadout!.AllMounts()
+        .find(m => m.Type === 'Main')!
         .Slots[0].EquipWeapon(this.item('MechWeapons', m.mounts[0].slots[0]))
-      mech.ActiveLoadout.AllMounts()
-        .find(m => m.Type === 'Flex')
+      mech.ActiveLoadout!.AllMounts()
+        .find(m => m.Type === 'Flex')!
         .Slots[0].EquipWeapon(this.item('MechWeapons', m.mounts[1].slots[0]))
-      mech.ActiveLoadout.AllMounts()
-        .find(m => m.Type === 'Flex')
+      mech.ActiveLoadout!.AllMounts()
+        .find(m => m.Type === 'Flex')!
         .Slots[1].EquipWeapon(this.item('MechWeapons', m.mounts[1].slots[1]))
-      mech.ActiveLoadout.AllMounts()
-        .find(m => m.Type === 'Heavy')
+      mech.ActiveLoadout!.AllMounts()
+        .find(m => m.Type === 'Heavy')!
         .Slots[0].EquipWeapon(this.item('MechWeapons', m.mounts[2].slots[0]))
 
       mech.SetLocalImage(this.selected.image)
 
-      this.pilot.Mechs.forEach(m => {
-        this.pilot.RemoveMech(m)
+      tpilot.Mechs.forEach(m => {
+        tpilot.RemoveMech(m)
       })
-      this.pilot.AddMech(mech)
-      this.pilot.ActiveMech = mech
+      tpilot.AddMech(mech)
+      tpilot.ActiveMech = mech
 
       this.$emit('next')
     },

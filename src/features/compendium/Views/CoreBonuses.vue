@@ -52,19 +52,19 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import _ from 'lodash'
+import { CCDSInterface } from '../../../io/ccdata_store'
+import { CCDataStore } from 'compcon_data'
 
 @Component
 export default class CoreBonuses extends Vue {
-  private compendium = getModule(CompendiumStore, this.$store)
+  private compendium = getModule(CCDSInterface, this.$store).compendium
   get bonuses() {
-    return _.groupBy(this.compendium.CoreBonuses, 'Source')
+    return _.groupBy(this.compendium.getItemCollection("CoreBonuses"), 'Source')
   }
 
   public manufacturer(id: string) {
-    const compendium = getModule(CompendiumStore, this.$store)
-    return compendium.Manufacturers.find(x => x.ID === id.toUpperCase())
+    return this.compendium.getReferenceByID("Manufacturers", id.toUpperCase())
   }
 }
 </script>

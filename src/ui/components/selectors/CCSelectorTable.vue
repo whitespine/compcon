@@ -58,10 +58,9 @@
 import Vue from 'vue'
 import SelectorTableView from './views/_SelectorTableView.vue'
 import SelectorSplitView from './views/_SelectorSplitView.vue'
-import { accentInclude, ItemFilter } from 'compcon_data'
+import { accentInclude, ItemFilter, UserProfileStore } from 'compcon_data'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { UserProfile } from '@/io/User'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'cc-selector-table',
@@ -87,15 +86,16 @@ export default Vue.extend({
   },
   data: () => ({
     search: '',
-    filters: {},
+    filters: {} as any,
     itemType: '',
   }),
   computed: {
-    profile(): UserProfile {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.UserProfile
+    profile(): UserProfileStore {
+      const store = getModule(CCDSInterface, this.$store)
+      return store.user
     },
     fItems() {
+      // TODO: What in the blazes?
       const vm = this as any
       let i = vm.items
 
@@ -112,7 +112,7 @@ export default Vue.extend({
     if (!this.itemType) this.itemType = this.itemTypeFallback
   },
   methods: {
-    setFilters(newFilter) {
+    setFilters(newFilter: any) {
       this.filters = newFilter
     },
   },

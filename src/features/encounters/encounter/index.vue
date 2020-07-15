@@ -120,8 +120,8 @@ import PanelView from '../components/PanelView.vue'
 import EncounterGroup from './components/EncounterGroup.vue'
 import EncounterCard from './components/EncounterCard.vue'
 import { getModule } from 'vuex-module-decorators'
-import { EncounterStore } from '@/store'
 import { Encounter } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'encounter-manager',
@@ -133,31 +133,31 @@ export default Vue.extend({
     headers: [
       { text: 'Name', value: 'Name', align: 'left' },
       { text: 'PR', value: 'Power', width: '50' },
-    ],
-    encounters: [],
+    ]
   }),
   watch: {
     selectedEncounter() {
-      this.$refs.view.resetScroll()
+      (this.$refs.view as any).resetScroll()
     },
   },
-  created() {
-    const store = getModule(EncounterStore, this.$store)
-    this.encounters = store.Encounters
+  computed: {
+    encounters(): Encounter[] {
+      return getModule(CCDSInterface, this.$store).encounters.Encounters;
+    }
   },
   methods: {
     deleteEncounter(encounter: Encounter) {
-      const store = getModule(EncounterStore, this.$store)
-      store.deleteEncounter(encounter)
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.encounters.deleteEncounter(encounter));
     },
     copyEncounter(encounter: Encounter) {
-      const store = getModule(EncounterStore, this.$store)
-      store.cloneEncounter(encounter)
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.encounters.cloneEncounter(encounter))
     },
     addNew() {
-      const store = getModule(EncounterStore, this.$store)
-      store.addEncounter(new Encounter())
+      const store = getModule(CCDSInterface, this.$store)
       const enc = this.encounters[this.encounters.length - 1].ID
+      store.mut(s => s.encounters.addEncounter(new Encounter()))
       this.$router.push({ name: 'encounter', params: { id: enc } })
     },
   },

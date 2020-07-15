@@ -106,7 +106,7 @@ import gistApi from '@/io/apis/gist'
 import { getModule } from 'vuex-module-decorators'
 import { Pilot } from 'compcon_data'
 import { importData } from '@/io/Data'
-import { CCDataInterface } from '../../../../io/ccdata_store'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'pilot-selector',
@@ -126,8 +126,12 @@ export default Vue.extend({
   }),
   computed: {
     pilots() {
-      const store = getModule(CCDataInterface, this.$store);
-      return store.pilots.pilots.filter(x => !this.selectedPilots.some(y => y.ID === x.ID))
+      const store = getModule(CCDSInterface, this.$store);
+      
+      // Return only pilots that aren't selected
+      let all_p = store.pilots.Pilots;
+      let sel_p = this.selectedPilots as Pilot[]
+      return all_p.filter(x => !sel_p.some(y => y.ID === x.ID))
     },
   },
   methods: {

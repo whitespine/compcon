@@ -71,23 +71,24 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 
+// @ts-ignore
 import PromisifyFileReader from 'promisify-file-reader'
-import { parseContentPack } from 'compcon_data'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 
-import { IContentPack } from 'compcon_data'
+import { IContentPack, ContentPack } from 'compcon_data'
 
 import PackInfo from './PackInfo.vue'
+import { CCDSInterface } from '../../../../io/ccdata_store'
+import { parseContentPack } from '../../../../io/ContentPackParser'
 
 @Component({
   components: { PackInfo },
 })
 export default class PackInstall extends Vue {
-  private dataStore = getModule(CompendiumStore, this.$store)
+  private dataStore = getModule(CCDSInterface, this.$store)
 
-  contentPack: IContentPack = null
-  error: string = null
+  contentPack: IContentPack | null = null
+  error: string | null = null
 
   async fileChange(file: HTMLInputElement) {
     this.contentPack = null
@@ -104,7 +105,7 @@ export default class PackInstall extends Vue {
   }
 
   get packAlreadyInstalled() {
-    return !!this.contentPack && this.dataStore.packAlreadyInstalled(this.contentPack.id)
+    return !!this.contentPack && this.dataStore.compendium.packAlreadyInstalled(this.contentPack.id)
   }
 
   public value = null
@@ -112,10 +113,11 @@ export default class PackInstall extends Vue {
   public done = false
 
   async install() {
-    if (this.done || this.installing) return
+    if (this.done || this.installing || !this.contentPack) return
     this.installing = true
     this.contentPack.active = true
-    await this.dataStore.installContentPack(this.contentPack)
+    let initialized = new ContentPack(this.contentPack);
+    await this.dataStore.mut(s => s.compendium.addContentPack(initialized))
     this.installing = false
 
     this.done = true

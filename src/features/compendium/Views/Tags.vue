@@ -8,16 +8,16 @@ import Component from 'vue-class-component'
 import _ from 'lodash'
 import SidebarArrayView from '../components/SidebarArrayView.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 @Component({
   components: { SidebarArrayView },
 })
 export default class Tags extends Vue {
-  private compendium = getModule(CompendiumStore, this.$store)
+  private compendium = getModule(CCDSInterface, this.$store).compendium
   get tags() {
     return _.sortBy(
-      this.compendium.Tags.filter(x => !x.IsHidden),
+      this.compendium.getItemCollection("Tags").filter(x => !x.IsHidden),
       'Name'
     )
   }

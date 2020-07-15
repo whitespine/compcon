@@ -19,7 +19,7 @@
       </v-btn>
     </div>
     <div class="clipped px-2 pt-1">
-      <span id="title">COMP/CON</span>
+      <span id="title">CLOB/CON</span>
       <!-- Shout out Netlify on web for their free open source plan -->
       <a
         v-if="$platform === 'web'"

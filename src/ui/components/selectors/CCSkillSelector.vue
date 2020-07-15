@@ -88,9 +88,10 @@ import AddCustomSkill from './components/_AddCustomSkill.vue'
 import MissingItem from './components/_MissingItem.vue'
 import Selector from './components/_SelectorBase.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { Rules, Pilot } from 'compcon_data'
+import { Rules, Pilot, Skill, CustomSkill } from 'compcon_data'
 import { rules } from 'lancer-data'
+import { CCDSInterface } from '../../../io/ccdata_store'
+import _, { Dictionary } from 'lodash'
 
 export default Vue.extend({
   name: 'skill-selector',
@@ -99,38 +100,36 @@ export default Vue.extend({
     pilot: Pilot,
     levelUp: Boolean,
   },
-  data: () => ({
-    staticSkills: [],
-    headers: [],
-  }),
   computed: {
-    skills() {
+    headers() {
+      return rules.skill_headers
+    },
+    staticSkills(): Dictionary<Skill[]> {
+      let skills = getModule(CCDSInterface, this.$store).compendium.getItemCollection("Skills");
+      return _.groupBy(skills, 'Family')
+    },
+    skills(): Dictionary<Array<Skill | CustomSkill>> {
       const cs = this.pilot.Skills.filter(x => x.IsCustom)
       if (cs.length) return { ...this.staticSkills, Custom: cs.map(x => x.Skill) }
       return this.staticSkills
     },
     newPilot(): boolean {
-      return this.pilot.Level === 0
+      return (this.pilot as Pilot).Level === 0
     },
     selectedMin(): number {
       return Rules.MinimumPilotSkills
     },
     enoughSelections(): boolean {
-      return !(this.pilot.Skills.length < this.selectedMin)
+      return !((this.pilot as Pilot).Skills.length < this.selectedMin)
     },
     selectionComplete(): boolean {
-      return (this.newPilot || this.levelUp) && !this.pilot.IsMissingSkills
+      return (this.newPilot || this.levelUp) && !(this.pilot as Pilot).IsMissingSkills
     },
   },
   watch: {
     selectionComplete(bool) {
       if (bool) window.scrollTo(0, document.body.scrollHeight)
     },
-  },
-  created() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.staticSkills = this.$_.groupBy(compendium.Skills, 'Family')
-    this.headers = rules.skill_headers
   },
 })
 </script>

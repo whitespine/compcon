@@ -50,7 +50,8 @@ import Vue from 'vue'
 import { CompendiumItem } from 'compcon_data'
 import { accentInclude } from  'compcon_data'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../io/ccdata_store'
+import _ from 'lodash'
 
 export default Vue.extend({
   name: 'search-results',
@@ -60,13 +61,13 @@ export default Vue.extend({
   }),
   computed: {
     validResults(): CompendiumItem[] {
-      const compendium = getModule(CompendiumStore, this.$store)
-
-      return this.$_.flatten(
-        this.$_.values(
-          this.$_.pick(compendium, ['Frames', 'MechSystems', 'MechWeapons', 'WeaponMods'])
-        )
-      )
+      const cmp = getModule(CCDSInterface, this.$store).compendium
+      return _.flatten<CompendiumItem>([
+        cmp.getItemCollection("Frames"),
+        cmp.getItemCollection("MechSystems"),
+        cmp.getItemCollection("MechWeapons"),
+        cmp.getItemCollection("WeaponMods"),
+      ])
     },
     searchResults(): CompendiumItem[] {
       if (!this.searchText) {

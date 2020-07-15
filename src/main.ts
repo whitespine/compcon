@@ -36,7 +36,7 @@ import { Capacitor } from '@capacitor/core'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import 'tiptap-vuetify/dist/main.css'
 import { getModule } from 'vuex-module-decorators'
-import { CCDataInterface } from './io/ccdata_store'
+import { CCDSInterface } from './io/ccdata_store'
 
 async function main() {
   Object.defineProperty(Vue.prototype, '$_', { value: _ })
@@ -47,7 +47,7 @@ async function main() {
 
   // Preload compcon data interaction layer
   let cc_store = await Startup(Vue.prototype.$appVersion, Vue.prototype.$lancerVersion)
-  getModule(CCDataInterface, store).initCCLayer(cc_store);
+  getModule(CCDSInterface, store).initCCLayer(cc_store);
 
   // Preload theme
   let activeTheme: any; // Its a vue theme object - doesn't really matter its type
@@ -91,7 +91,10 @@ async function main() {
 
   Vue.directive('extlink', externalLinkDirective)
 
-  Vue.config.errorHandler = (error, vm) => Vue.prototype.$notifyError(error, vm)
+  Vue.config.errorHandler = (error, vm) => {
+    console.log(error);
+    return Vue.prototype.$notifyError(error, vm)
+  }
   window.onerror = error => Vue.prototype.$notifyError(error)
 
   // Finally, init vue
@@ -103,6 +106,9 @@ async function main() {
     created() {},
     render: h => h(App),
   }).$mount('#app')
+
+  // Setup store immediately after
+  console.log(cc_store);
 }
 
 main()

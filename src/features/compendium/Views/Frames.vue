@@ -12,6 +12,7 @@ import CompendiumBrowser from '../components/CompendiumBrowser.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CompendiumStore } from '@/store'
 import { MechType, Frame } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 @Component({
   components: { CompendiumBrowser },
@@ -34,9 +35,9 @@ export default class Frames extends Vue {
     { text: 'SP', align: 'left', value: 'SP' },
   ]
 
-  private compendium = getModule(CompendiumStore, this.$store)
+  private compendium = getModule(CCDSInterface, this.$store).compendium
   public get frames(): Frame[] {
-    return _.sortBy(this.compendium.Frames, ['Source', 'Name'])
+    return _.sortBy(this.compendium.getItemCollection("Frames"), ['Source', 'Name'])
   }
 
   public frameTypes = Object.keys(MechType).sort() as MechType[]

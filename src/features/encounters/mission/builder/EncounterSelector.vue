@@ -76,13 +76,12 @@
 import Vue from 'vue'
 import EncounterPanel from './EncounterPanel.vue'
 import { getModule } from 'vuex-module-decorators'
-import { EncounterStore } from '@/store'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'encounter-selector',
   components: { EncounterPanel },
   data: () => ({
-    encounters: [],
     side: 'Enemy',
     headers: [
       { text: 'Name', value: 'Name', align: 'left' },
@@ -91,8 +90,8 @@ export default Vue.extend({
     search: '',
   }),
   created() {
-    const compendium = getModule(EncounterStore, this.$store)
-    this.encounters = compendium.Encounters
+    const compendium = getModule(CCDSInterface, this.$store)
+    this.encounters = compendium.encounters.Encounters
   },
 })
 </script>

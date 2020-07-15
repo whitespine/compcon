@@ -105,9 +105,9 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import CompendiumBrowser from '../components/CompendiumBrowser.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import { NpcClass } from 'compcon_data'
 import { accentInclude } from  'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 @Component({
   components: { CompendiumBrowser },
@@ -131,9 +131,9 @@ export default class NpcClasses extends Vue {
     { text: 'Save', align: 'left', value: 'Save' },
     { text: 'H/A/S/E', align: 'left', value: 'Hase', sortable: false },
   ]
-  private compendium = getModule(CompendiumStore, this.$store)
+  private compendium = getModule(CCDSInterface, this.$store).compendium
   public get classes(): NpcClass[] {
-    return this.compendium.NpcClasses
+    return this.compendium.getItemCollection("NpcClasses")
   }
 
   public get fItems(): NpcClass[] {

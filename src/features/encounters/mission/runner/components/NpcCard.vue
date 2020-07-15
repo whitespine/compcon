@@ -356,9 +356,9 @@
 import Vue from 'vue'
 import sleep from '@/util/sleep'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import RechargeMenu from './RechargeMenu.vue'
-import { UserProfile } from '@/io/User'
+import { CCDSInterface } from '../../../../../io/ccdata_store'
+import { CCDataStore, UserProfileStore } from 'compcon_data'
 
 export default Vue.extend({
   name: 'npc-card',
@@ -388,19 +388,19 @@ export default Vue.extend({
   }),
   computed: {
     statuses() {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.Statuses.filter(x => x.type === 'Status')
+      const store = getModule(CCDSInterface, this.$store).compendium
+      store.getItemCollection("Statuses").filter(x => x.type === 'Status');
+      // return store.get.filter(x => x.type === 'Status')
     },
     conditions() {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.Statuses.filter(x => x.type === 'Condition')
+      const store = getModule(CCDSInterface, this.$store).compendium
+      store.getItemCollection("Statuses").filter(x => x.type === 'Condition');
     },
     reactions() {
       return this.npc.Reactions
     },
-    profile(): UserProfile {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.UserProfile
+    profile(): UserProfileStore {
+      return getModule(CCDSInterface, this.$store).user
     },
   },
   watch: {
@@ -410,7 +410,7 @@ export default Vue.extend({
           this.structRolledOver = true
           await sleep(500)
           this.structRolledOver = false
-          if (this.npc.CurrentStructure > 0) this.$refs.structureTable.show()
+          if (this.npc.CurrentStructure > 0) (this.$refs.structureTable as any).show()
         }
       },
     },
@@ -420,7 +420,7 @@ export default Vue.extend({
           this.stressRolledOver = true
           await sleep(500)
           this.stressRolledOver = false
-          if (this.npc.CurrentStress > 0) this.$refs.stressTable.show()
+          if (this.npc.CurrentStress > 0) (this.$refs.stressTable as any).show()
         }
       },
     },

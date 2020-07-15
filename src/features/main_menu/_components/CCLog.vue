@@ -32,45 +32,54 @@
 
 <script lang="ts">
 import Vue from 'vue'
+// Todo: See if there's actual bindings we can get
+//@ts-ignore
 import TypeIt from 'typeit'
 import GmsStart from './startup_logs/gms'
 import MsmcStart from './startup_logs/msmc'
+import PastaStart from './startup_logs/pasta'
 import { HorusStart, HorusChat } from './startup_logs/horus'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { UserProfile } from '@/io/User'
+import { UserProfileStore } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'cc-log',
   data: () => ({
-    typer: {},
+    typer: {} as any, // It's a typeit instance
     text: [],
     lock: false,
   }),
   computed: {
-    profile(): UserProfile {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.UserProfile
+    profile(): UserProfileStore {
+      const store = getModule(CCDSInterface, this.$store)
+      return store.user
     },
+    output(): Element {
+      return this.$refs.output as Element
+    },
+    completed(): Element {
+      return this.$refs.completed as Element
+    }
   },
   async mounted() {
     this.lock = true
     await Vue.nextTick()
-    this.typer = new TypeIt(this.$refs.output, {
+    this.typer = new TypeIt(this.output, {
       speed: 2,
       nextStringDelay: 5,
       lifeLike: false,
       cursor: false,
       startDelete: false,
       beforeString: () => {
-        this.$refs.output?.scrollIntoView({ block: 'end' })
+        this.output?.scrollIntoView({ block: 'end' })
       },
       afterString: () => {
-        this.$refs.output?.scrollIntoView({ block: 'end' })
+        this.output?.scrollIntoView({ block: 'end' })
       },
       afterComplete: () => {
         if (this.profile.Theme === 'horus') {
-          HorusChat(this.$refs.output)
+          HorusChat(this.output)
         } else {
           this.lock = false
         }
@@ -86,7 +95,8 @@ export default Vue.extend({
       case 'msmc':
         MsmcStart(this.typer)
       default:
-        GmsStart(this.typer)
+        // GmsStart(this.typer)
+        PastaStart(this.typer)
         break
     }
   },
@@ -98,20 +108,20 @@ export default Vue.extend({
       this.typer.destroy()
 
       //collect written strings so TypeIt doesn't erase them
-      if (this.$refs.completed.innerHTML) this.$refs.completed.innerHTML += '<br>'
-      this.$refs.completed.innerHTML += this.$refs.output.innerHTML
-      this.$refs.output.innerHTML = ''
+      if (this.completed.innerHTML) this.completed.innerHTML += '<br>'
+      this.completed.innerHTML += this.output.innerHTML
+      this.output.innerHTML = ''
 
-      this.typer = new TypeIt(this.$refs.output, {
+      this.typer = new TypeIt(this.output, {
         speed: 32,
         lifeLike: true,
         nextStringDelay: 7,
         cursor: false,
         beforeString: () => {
-          this.$refs.output?.scrollIntoView({ block: 'end' })
+          (this.output as any)?.scrollIntoView({ block: 'end' })
         },
         afterString: () => {
-          this.$refs.output?.scrollIntoView({ block: 'end' })
+          (this.output as any)?.scrollIntoView({ block: 'end' })
         },
         afterComplete: () => {
           this.lock = false

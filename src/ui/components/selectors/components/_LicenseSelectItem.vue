@@ -60,7 +60,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'license-select-item',
@@ -80,8 +80,8 @@ export default Vue.extend({
   },
   methods: {
     frame(id: string) {
-      const compendium = getModule(CompendiumStore, this.$store)
-      return compendium.referenceByID('Frames', id)
+      const compendium = getModule(CCDSInterface, this.$store).compendium
+      return compendium.getReferenceByID('Frames', id)
     },
   },
 })

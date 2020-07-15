@@ -3,15 +3,14 @@
 // class/module, this should be mostly for organization's sake.
 import { getModule } from 'vuex-module-decorators'
 import { ensureDataDir } from './Data'
-import { CCDataInterface } from './ccdata_store'
-import {hooks, PersistentStore } from "compcon_data";
+import { PersistentStore, set_logger, setup_store, CCDataStore, set_is_web, setup_image_shim } from "compcon_data";
 import { addImage, getImagePath, getImagePaths, removeImage, validateImageFolders } from './ImageManagement';
 import { Capacitor } from '@capacitor/core';
 import { saveData, loadData } from './Data';
 import ExtLog from './ExtLog';
 
 
-export default async function(lancerVer: string, ccVer: string): Promise<hooks.StoreInterfaces.Store> {
+export default async function(lancerVer: string, ccVer: string): Promise<CCDataStore> {
   // Make sure data files can be accessed
   ensureDataDir()
   validateImageFolders()
@@ -21,22 +20,23 @@ export default async function(lancerVer: string, ccVer: string): Promise<hooks.S
   const isWeb = PLATFORM === 'web'
 
   // Setup logger beforehand so we can see if things break
-  hooks.set_logger((...data) => ExtLog(data.join("")));
+  set_logger((...data) => ExtLog(data.join("")));
 
   // Create a store before doing anything else
   const pers = new PlatformPersistence();
-  const cc_store = new hooks.StoreInterfaces.Store(pers);
-  hooks.setup_store_shim(cc_store); // We must do this prior to doing load_all, otherwise any CC-data internal hooks calls will break. This will fail very noisily
+  const cc_store = new CCDataStore(pers);
+  setup_store(cc_store); // We must do this prior to doing load_all, otherwise any CC-data internal hooks calls will break. This will fail very noisily
   await cc_store.load_all();
 
   // Tell the store versions
-  cc_store.setVersions(lancerVer, ccVer); 
+  cc_store.setVersions("test", "test"); 
+  console.log((cc_store.compendium as any).getAll_content_packs);
 
-  // Tell CC data the platform. TODO: This is dumb as hell - we should instead give it a more robust image resolution shim instead of having CC data figure it out. CC data should not care
-  hooks.set_is_web(isWeb);
+  // Tell CC data the platform. TODO: This is dumb - we should instead give it a more robust image resolution shim instead of having CC data figure it out. CC data should not care
+  set_is_web(isWeb);
 
-  // Actually set the hooks
-  hooks.setup_image_shim( {
+  // Actually set the hooks. TODO: Same as above - this is wacky
+  setup_image_shim( {
       addImage: addImage,
       getImagePath: getImagePath,
       getImagePaths: getImagePaths,

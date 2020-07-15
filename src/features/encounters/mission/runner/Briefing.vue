@@ -132,22 +132,22 @@ export default Vue.extend({
   computed: {
     mission(): Mission {
       const store = getModule(CCDSInterface, this.$store)
-      return store.mission.Missions.find(x => x.ID === this.id)!
+      return store.missions.Missions.find(x => x.ID === this.id)!
     },
-    pilotPower() {
-      return this.pilots
-        .reduce((a, b) => +a + +b.Power, 0)
-        .toString()
-        .padStart(4, '0')
+    rawPilotPower(): number {
+      return this.pilots.reduce((a, b) => +a + +b.Power, 0);
+    }, 
+    pilotPower(): string {
+        return this.rawPilotPower.toString().padStart(4, '0')
     },
-    avgPower() {
+    avgPower(): string {
       return this.mission.averagePower.toString().padStart(4, '0')
     },
-    maxPower() {
+    maxPower(): string {
       return this.mission.maxPower.toString().padStart(4, '0')
     },
-    difficulty() {
-      const diff = this.maxPower - this.pilotPower
+    difficulty(): string {
+      const diff = this.mission.maxPower - this.rawPilotPower
       if (diff < -600) return 'Trivial'
       if (diff < -300) return 'Easy'
       if (diff > -300 && diff < 300) return 'Balanced'
@@ -155,7 +155,7 @@ export default Vue.extend({
       return 'Impossible'
     },
     diffColor() {
-      const diff = this.maxPower - this.pilotPower
+      const diff = this.mission.maxPower - this.rawPilotPower
       if (diff < -600) return 'green'
       if (diff < -300) return 'teal'
       if (diff > -300 && diff < 300) return 'indigo'
@@ -175,7 +175,7 @@ export default Vue.extend({
     startMission() {
       const m = new ActiveMission(this.mission, this.pilots)
       const store = getModule(CCDSInterface, this.$store)
-      store.mut(s => s.mission.addActiveMission(m));
+      store.mut(s => s.missions.addActiveMission(m));
       this.$router.push({ name: 'mission-runner', params: { id: m.ID } })
     },
   },

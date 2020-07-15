@@ -68,7 +68,8 @@
 import Vue from 'vue'
 import EditMenu from './PilotEditMenu.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CCDataInterface } from '../../../../io/ccdata_store'
+import { CCDSInterface } from '../../../../io/ccdata_store';
+import { Pilot } from 'compcon_data';
 
 export default Vue.extend({
   name: 'pilot-nav',
@@ -86,16 +87,18 @@ export default Vue.extend({
     },
   },
   computed: {
-    lastLoaded() {
-      const store = getModule(CCDataInterface, this.$store);
+    lastLoaded(): string | null {
+      const store = getModule(CCDSInterface, this.$store);
       let found_loaded = null;
       if(found_loaded) {
-        return 
+        return  null
       }
-      return this.pilot.Mechs.some(x => x.ID === store.pilots.LoadedMechID)
-        ? store.LoadedMechID
-        : this.pilot.ActiveMech
-        ? this.pilot.ActiveMech.ID
+
+      let tpilot = this.pilot as Pilot;
+      return tpilot.Mechs.some(x => x.ID === store.pilots.LoadedMechId)
+        ? store.pilots.LoadedMechId
+        : tpilot.ActiveMech
+        ? tpilot.ActiveMech.ID
         : null
     },
   },
@@ -105,8 +108,8 @@ export default Vue.extend({
     },
     deletePilot() {
       this.$router.push('/pilot_management')
-      const store = getModule(PilotManagementStore, this.$store)
-      store.deletePilot(this.pilot)
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.pilots.deletePilot(this.pilot));
     },
   },
 })

@@ -57,15 +57,15 @@ export class CCDSInterface extends VuexModule { // Short for comp-con data store
   }
 
   public get npcs(): NpcStore {
-    return this._data.npc;
+    return this._data.npcs;
   }
 
   public get encounters(): EncounterStore {
-    return this._data.encounter;
+    return this._data.encounters;
   }
 
-  public get mission(): MissionStore {
-    return this._data.mission;
+  public get missions(): MissionStore {
+    return this._data.missions;
   }
 
   public get compendium(): CompendiumStore {

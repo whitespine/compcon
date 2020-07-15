@@ -51,11 +51,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Pilot } from  'compcon_data'
+import { Pilot, IPilotData } from  'compcon_data'
 import { importData } from '@/io/Data'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import ImportDialog from './ImportDialog.vue'
+import { CCDSInterface } from '../../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'file-import',
@@ -64,7 +64,7 @@ export default Vue.extend({
     dialog: false,
     // fileValue is just used to clear the file input
     fileValue: null,
-    importPilot: null,
+    importPilot: null as null | Pilot,
     error: null,
     missingContentWarning: false,
     missingContent: '',
@@ -81,22 +81,22 @@ export default Vue.extend({
       this.error = null
       this.missingContentWarning = false
     },
-    async importFile(file) {
+    async importFile(file: File) {
       this.reset()
       if (!file) return
       try {
         const pilotData = await importData<IPilotData>(file)
         if (!pilotData.brews) pilotData.brews = []
-        const installedPacks = getModule(CompendiumStore, this.$store).ContentPacks.map(
+        const installedPacks = getModule(CCDSInterface, this.$store).compendium.ContentPacks.map(
           x => `${x.Name} @ ${x.Version}`
         )
-        const missingPacks = this.$_.pullAll(pilotData.brews, installedPacks)
+        const missingPacks = _.pullAll(pilotData.brews, installedPacks)
         if (missingPacks.length) {
           this.missingContent = missingPacks.join('<br />')
           this.missingContentWarning = true
         }
         this.importPilot = Pilot.Deserialize(pilotData)
-        this.importPilot.brews = pilotData.brews
+        this.importPilot.SetBrewForce(pilotData.brews)
         this.importPilot.RenewID()
       } catch (e) {
         this.error = e.message
@@ -104,8 +104,9 @@ export default Vue.extend({
       }
     },
     stageImport() {
-      const installedPacks = getModule(CompendiumStore, this.$store).ContentPacks.map(x => x.Name)
-      const missingPacks = this.$_.without(this.importPilot.brews, installedPacks)
+      if (!this.importPilot) { return; }
+      const installedPacks = getModule(CCDSInterface, this.$store).compendium.ContentPacks.map(x => x.Name)
+      const missingPacks = this.$_.without(this.importPilot.Brews, installedPacks)
       if (!missingPacks.length) this.confirmImport()
       else {
         this.missingContent = missingPacks.join('<br />')
@@ -113,6 +114,7 @@ export default Vue.extend({
       }
     },
     confirmImport() {
+      if (!this.importPilot) { return; }
       this.importPilot.RenewID()
       this.$store.dispatch('addPilot', this.importPilot)
       this.reset()

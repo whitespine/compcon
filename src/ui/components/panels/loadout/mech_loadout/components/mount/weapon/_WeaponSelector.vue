@@ -94,9 +94,9 @@
 import Vue from 'vue'
 import _ from 'lodash'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import { Rules, MechWeapon } from  'compcon_data'
 import { flavorID } from '@/io/Generators'
+import { CCDSInterface } from '../../../../../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'weapon-selector',
@@ -122,11 +122,14 @@ export default Vue.extend({
       { text: 'SP', align: 'left', value: 'SP' },
       { text: '', align: 'center', value: 'Detail' },
     ],
-    weapons: [],
     showUnlicensed: false,
     showOverSP: false,
   }),
   computed: {
+    weapons(): MechWeapon[] {
+      const compendium = getModule(CCDSInterface, this.$store).compendium
+      return compendium.getItemCollection("MechWeapons").filter(x => x.Source)
+    }, 
     freeSP(): number {
       return this.weaponSlot.Weapon
         ? this.mech.FreeSP + this.weaponSlot.Weapon.SP
@@ -155,10 +158,7 @@ export default Vue.extend({
       return _.sortBy(i, ['Source', 'Name'])
     },
   },
-  created() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.weapons = compendium.MechWeapons.filter(x => x.Source)
-  },
+
   methods: {
     fID(template: string): string {
       return flavorID(template)

@@ -52,15 +52,15 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 @Component
 export default class Factions extends Vue {
   public tabModel = 0
 
-  private compendiumStore = getModule(CompendiumStore, this.$store)
+  private compendiumStore = getModule(CCDSInterface, this.$store).compendium
   get factions() {
-    return this.compendiumStore.Factions
+    return this.compendiumStore.getItemCollection("Factions")
   }
 }
 </script>

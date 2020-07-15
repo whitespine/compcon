@@ -26,14 +26,13 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import { Talent } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 @Component
 export default class Talents extends Vue {
-  private compendium = getModule(CompendiumStore, this.$store)
   get talents(): Talent[] {
-    return this.compendium.Talents
+    return getModule(CCDSInterface, this.$store).compendium.getItemCollection("Talents");
   }
 }
 </script>

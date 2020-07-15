@@ -50,16 +50,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../io/ccdata_store'
+import { NpcTemplate } from 'compcon_data'
 
 export default Vue.extend({
   name: 'npc-templates',
-  data: () => ({
-    templates: [],
-  }),
-  created() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.templates = compendium.NpcTemplates
-  },
+  computed: {
+    templates(): NpcTemplate[] {
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("NpcTemplates")
+    }
+  }
 })
 </script>

@@ -50,17 +50,21 @@
   </v-container>
 </template>
 
+
+
 <script lang="ts">
 import Vue from 'vue'
-import ItemFilter from 'compcon_data'
+import ItemFilter, { UserProfileStore } from 'compcon_data'
 import { accentInclude } from 'compcon_data'
 import CompendiumMobileView from './views/CompendiumMobileView.vue'
 import CompendiumSplitView from './views/CompendiumSplitView.vue'
 import CompendiumTableView from './views/CompendiumTableView.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { UserProfile } from '@/io/User'
-import { CCDataInterface } from '../../../io/ccdata_store'
+import { CCDSInterface } from '../../../io/ccdata_store'
+
+// TODO: This entire damn file
+// @ts-nocheck
+
 
 export default Vue.extend({
   name: 'compendium-browser',
@@ -85,9 +89,9 @@ export default Vue.extend({
     itemType: '',
   }),
   computed: {
-    profile(): UserProfile {
-      const store = getModule(CCDataInterface, this.$store)
-      return store.UserProfile
+    profile(): UserProfileStore {
+      const store = getModule(CCDSInterface, this.$store)
+      return store.user
     },
     fItems() {
       const vm = this as any

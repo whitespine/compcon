@@ -39,7 +39,7 @@
 import Vue from 'vue'
 import PilotRegistrationCard from '../../PilotSheet/components/PilotRegistrationCard.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CCDataInterface } from '../../../../io/ccdata_store'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'confirm-page',
@@ -63,7 +63,7 @@ export default Vue.extend({
   methods: {
     savePilot() {
       this.pilot.cc_ver = Vue.prototype.version
-      const store = getModule(CCDataInterface, this.$store)
+      const store = getModule(CCDSInterface, this.$store)
       store.mut(d => d.pilots.addPilot(this.pilot));
       this.$emit('done')
     },

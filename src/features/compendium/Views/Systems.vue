@@ -10,8 +10,8 @@ import _ from 'lodash'
 import Component from 'vue-class-component'
 import CompendiumBrowser from '../components/CompendiumBrowser.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
 import { MechEquipment } from 'compcon_data'
+import { CCDSInterface } from '../../../io/ccdata_store'
 
 @Component({
   components: { CompendiumBrowser },
@@ -24,11 +24,11 @@ export default class Weapons extends Vue {
     { text: 'SP Cost', align: 'left', value: 'SP' },
   ]
 
-  private compendium = getModule(CompendiumStore, this.$store)
+  private compendium = getModule(CCDSInterface, this.$store).compendium
   public get systems(): MechEquipment[] {
-    const sys = (this.compendium.MechSystems as MechEquipment[])
+    const sys = (this.compendium.getItemCollection("MechSystems") as MechEquipment[])
       .filter(x => x.Source)
-      .concat(this.compendium.WeaponMods as MechEquipment[])
+      .concat(this.compendium.getItemCollection("WeaponMods"))
 
     return _.sortBy(sys, ['Source', 'Name'])
   }

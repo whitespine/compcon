@@ -61,8 +61,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
-import { NpcFeature } from 'compcon_data'
+import { NpcFeature, Npc, NpcTemplate } from 'compcon_data'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'npc-template-selector',
@@ -72,17 +72,14 @@ export default Vue.extend({
       required: true,
     },
   },
-  data: () => ({
-    templates: [],
-  }),
   computed: {
-    availableTemplates(): NpcFeature[] {
-      return this.templates.filter(x => !this.npc.Templates.some(y => y.ID === x.ID))
+    templates(): NpcTemplate[] {
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("NpcTemplates")
+
     },
-  },
-  created() {
-    const compendium = getModule(CompendiumStore, this.$store)
-    this.templates = compendium.NpcTemplates
-  },
+    availableTemplates(): NpcTemplate[] {
+      return this.templates.filter(x => !(this.npc as Npc).Templates.some(y => y.ID === x.ID))
+    },
+  }
 })
 </script>

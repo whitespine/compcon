@@ -65,24 +65,25 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../io/ccdata_store'
+import _ from 'lodash'
 
 export default Vue.extend({
   name: 'licenses',
   computed: {
     licenses() {
-      const licenseData = getModule(CompendiumStore, this.$store).Licenses
-      return this.$_.groupBy(licenseData, 'Source')
+      const licenseData = getModule(CCDSInterface, this.$store).compendium.getItemCollection("Licenses")
+      return _.groupBy(licenseData, 'Source')
     },
   },
   methods: {
     manufacturer(id: string) {
-      const compendium = getModule(CompendiumStore, this.$store)
-      return compendium.Manufacturers.find(x => x.ID === id)
+      const compendium = getModule(CCDSInterface, this.$store).compendium
+      return compendium.getReferenceByID("Manufacturers", id)
     },
     frame(id: string) {
-      const compendium = getModule(CompendiumStore, this.$store)
-      return compendium.referenceByID('Frames', id)
+      const compendium = getModule(CCDSInterface, this.$store).compendium
+      return compendium.getReferenceByID('Frames', id)
     },
   },
 })

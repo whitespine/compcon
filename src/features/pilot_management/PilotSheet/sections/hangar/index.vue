@@ -60,9 +60,8 @@ import MechListItem from './components/MechListItem.vue'
 import MechTable from './components/MechTable.vue'
 import NewMechMenu from './components/NewMechMenu.vue'
 import { getModule } from 'vuex-module-decorators'
-import { Pilot } from 'compcon_data'
-import { UserProfile } from '@/io/User'
-import { Interface } from 'readline'
+import { Pilot, CCDataStore, UserProfileStore, Mech } from 'compcon_data'
+import { CCDSInterface } from '../../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'mech-hangar-view',
@@ -74,15 +73,15 @@ export default Vue.extend({
     },
   },
   computed: {
-    profile(): UserProfile {
-      const store = getModule(Interface, this.$store)
-      return store.UserProfile
+    profile(): UserProfileStore {
+      const store = getModule(CCDSInterface, this.$store)
+      return store.user
     },
   },
   methods: {
-    toMechSheet(mech) {
-      const store = getModule(PilotManagementStore, this.$store)
-      store.setLoadedMech(mech.ID)
+    toMechSheet(mech: Mech) {
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.pilots.setLoadedMech(mech.ID))
       this.$router.push(`../mech/${mech.ID}`)
     },
   },

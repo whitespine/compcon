@@ -464,7 +464,7 @@
 import Vue from 'vue'
 import PlayerEquipmentItem from './PlayerEquipmentItem.vue'
 import { getModule } from 'vuex-module-decorators'
-import { CompendiumStore } from '@/store'
+import { CCDSInterface } from '../../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'player-card',
@@ -494,19 +494,19 @@ export default Vue.extend({
   }),
   computed: {
     statuses() {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.Statuses.filter(x => x.type === 'Status')
+      const store = getModule(CCDSInterface, this.$store).compendium
+      return store.getItemCollection("Statuses").filter(x => x.type === 'Status')
     },
     conditions() {
-      const store = getModule(CompendiumStore, this.$store)
-      return store.Statuses.filter(x => x.type === 'Condition')
+      const store = getModule(CCDSInterface, this.$store).compendium
+      return store.getItemCollection("Statuses").filter(x => x.type === 'Condition')
     },
   },
   methods: {
     expandAll(len: number, key: string, expand: boolean) {
       for (let i = 0; i < len; i++) {
-        const k = key + i
-        this.$refs[k][0].collapsed = expand
+        let k: string = key + i;
+        (this.$refs[k] as any)[k][0].collapsed = expand
       }
     },
     onHpRollover() {
@@ -519,8 +519,8 @@ export default Vue.extend({
       if (this.mech.CurrentStructure < 0) this.mech.CurrentStructure = 0
       this.structRolledOver = true
       setTimeout(() => {
-        this.structRolledOver = false
-        this.$refs.structureTable.show()
+        this.structRolledOver = false;
+        (this.$refs.structureTable as any).show()
       }, 500)
     },
     onHeatRollover() {
@@ -533,8 +533,8 @@ export default Vue.extend({
       if (this.mech.CurrentStress < 0) this.mech.CurrentStress = 0
       this.stressRolledOver = true
       setTimeout(() => {
-        this.stressRolledOver = false
-        this.$refs.stressTable.show()
+        this.stressRolledOver = false;
+        (this.$refs.stressTable as any).show()
       }, 500)
     },
   },
