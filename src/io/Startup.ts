@@ -70,7 +70,8 @@ export class PlatformPersistence extends PersistentStore {
     public used_keys: Set<string> = new Set();
 
     private to_fname(name: string) {
-        return name + ".json";
+        // return name + ".json";
+        return name;
     }
 
     async set_item(key: string, val: any): Promise<void> {

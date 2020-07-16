@@ -40,7 +40,7 @@ const getPackID = async function(manifest: IContentPackManifest): Promise<string
     const enc = new TextEncoder();
     const signature = `${manifest.author}/${manifest.name}`;
     const hash = await crypto.subtle.digest("SHA-1", enc.encode(signature));
-    return btoa(String.fromCharCode.apply(null, new Uint8Array(hash)));
+    return btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(hash))));
 };
 
 async function getZipData<T>(zip: JSZip, filename: string): Promise<T[]> {

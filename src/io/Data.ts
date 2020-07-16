@@ -1,6 +1,7 @@
 import { Capacitor } from '@capacitor/core'
 import path from 'path'
 import { promisify } from 'util'
+// @ts-ignore  Unfortunately no typings exist
 import PromisifyFileReader from 'promisify-file-reader'
 
 import ExtLog from './ExtLog'
@@ -77,7 +78,7 @@ const saveData = async function<T>(fileName: string, data: T): Promise<void> {
 const loadData = async function<T>(fileName: string): Promise<T | null> {
   const fileExists = await exists(fileName)
   if (fileExists) {
-    const dataText = await readFile(fileName)
+    const dataText = await readFile(fileName) || ""
     return (JSON.parse(dataText) as T) || null;
   } else {
     return null;

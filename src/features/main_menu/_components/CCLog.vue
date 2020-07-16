@@ -37,7 +37,6 @@ import Vue from 'vue'
 import TypeIt from 'typeit'
 import GmsStart from './startup_logs/gms'
 import MsmcStart from './startup_logs/msmc'
-import PastaStart from './startup_logs/pasta'
 import { HorusStart, HorusChat } from './startup_logs/horus'
 import { getModule } from 'vuex-module-decorators'
 import { UserProfileStore } from 'compcon_data'
@@ -95,8 +94,7 @@ export default Vue.extend({
       case 'msmc':
         MsmcStart(this.typer)
       default:
-        // GmsStart(this.typer)
-        PastaStart(this.typer)
+        GmsStart(this.typer)
         break
     }
   },

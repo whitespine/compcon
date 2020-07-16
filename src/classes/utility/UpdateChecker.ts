@@ -55,7 +55,7 @@ export class UpdateChecker extends EventEmitter {
                 break;
             case "electron":
                 {
-                    const channel = ELECTRON_ITCH_CHANNELS[nodeProcess.platform];
+                    const channel = ELECTRON_ITCH_CHANNELS[nodeProcess.platform as "linux" | "darwin" | "win32"];
                     const response = await fetch(
                         `https://itch.io/api/1/x/wharf/latest?target=massif-press/compcon&channel_name=${channel}-beta`
                     );

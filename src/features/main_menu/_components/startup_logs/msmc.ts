@@ -56,15 +56,15 @@ const phrases = [
 ]
 
 const getLogo = (): string => {
-  const l = _.sample(logos)
+  const l = _.sample(logos)!
   return l.replace(/\//g, '&#47;')
 }
 
-const getPhrase = (): string => {
-  return _.sample(phrases)
+function getPhrase(): string {
+  return _.sample(phrases)!
 }
 
-const plog = typer => {
+function plog(typer: any) {
   typer
     .type('<br>')
     .type('COMPANION/CONCIERGE UNIT INITIALIZING')

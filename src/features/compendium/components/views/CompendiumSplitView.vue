@@ -41,6 +41,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { CompendiumItem } from 'compcon_data'
 
 export default Vue.extend({
   name: 'compendium-split-view',
@@ -55,7 +56,8 @@ export default Vue.extend({
   }),
   computed: {
     selectedItem() {
-      return this.items.find(x => x.ID === this.selected)
+      let citems = this.items as CompendiumItem[];
+      return citems.find(x => x.ID === this.selected)
     },
   },
 })

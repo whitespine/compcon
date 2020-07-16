@@ -5,7 +5,7 @@ function motd(): string {
   return _.sample(require('./horus_chat/motd.txt').split('\n'))
 }
 
-const HorusStart = typer => {
+export function HorusStart(typer: any) {
   const nfo = require('./horus_chat/nfo.txt')
 
   typer
@@ -112,7 +112,7 @@ function formatBan(input: string[]): string {
   } --ADMIN //</span>`
 }
 
-function randomNoRepeat(arr) {
+function randomNoRepeat<T>(arr: Array<T>): () => T {
   var copy = arr.slice(0);
   return function () {
     if (copy.length < 1) { copy = arr.slice(0); }
@@ -123,13 +123,13 @@ function randomNoRepeat(arr) {
   };
 }
 
-const HorusChat = output => {
-  const chat = require('./horus_chat/chat.txt').split('\n')
-  const mods = require('./horus_chat/mods.txt').split('\n')
-  const admin = require('./horus_chat/admin.txt').split('\n')
-  const bans = require('./horus_chat/bans.txt').split('\n')
+export function HorusChat(output: any) {
+  const chat = require('./horus_chat/chat.txt').split('\n') as string[]
+  const mods = require('./horus_chat/mods.txt').split('\n') as string[]
+  const admin = require('./horus_chat/admin.txt').split('\n') as string[]
+  const bans = require('./horus_chat/bans.txt').split('\n') as string[]
 
-  const allLines = []
+  const allLines: string[] = []
 
   chat.forEach(l => {
     allLines.push(formatChat(l.split(/,(.+)/)))
@@ -164,5 +164,3 @@ const HorusChat = output => {
 
   loop()
 }
-
-export { HorusStart, HorusChat }

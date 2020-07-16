@@ -1,6 +1,6 @@
 import { encryption } from '@/io/Generators'
 
-const plog = typer => {
+const plog = (typer: any) => {
   typer
     .type('<br>')
     .type('COMPANION/CONCIERGE UNIT INITIALIZING')
