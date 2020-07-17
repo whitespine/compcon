@@ -114,15 +114,16 @@ export default Vue.extend({
   name: 'npc-selector',
   components: { NpcPanel, RosterGroup },
   data: () => ({
-    npcs: [],
     side: 'Enemy',
     grouping: null,
     headers: [{ text: 'Name', value: 'Name', align: 'left' }],
     search: '',
   }),
-  created() {
-    const compendium = getModule(CCDSInterface, this.$store).npcs
-    this.npcs = compendium.Npcs
+  computed: {
+    npcs(): Npc[] {
+      const compendium = getModule(CCDSInterface, this.$store).npcs
+      return compendium.Npcs
+    }
   },
   methods: {
     generateNpcElementId: function(npc: Npc): string {

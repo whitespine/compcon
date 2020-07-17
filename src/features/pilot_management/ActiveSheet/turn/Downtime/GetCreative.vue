@@ -39,7 +39,7 @@
               <v-row justify="center">
                 <v-col cols="4">
                   <v-text-field
-                    v-model="initialRoll"
+                    v-model.number="initialRoll"
                     type="number"
                     label="Initial Roll Result"
                     outlined
@@ -150,7 +150,7 @@
               <v-row justify="center">
                 <v-col cols="3">
                   <v-text-field
-                    v-model="improveRoll"
+                    v-model.number="improveRoll"
                     type="number"
                     label="Progress Roll Result"
                     outlined
@@ -248,7 +248,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Project } from 'compcon_data'
+import { Project, Pilot } from 'compcon_data'
 export default Vue.extend({
   name: 'get-creative',
   props: {
@@ -262,11 +262,11 @@ export default Vue.extend({
     project_name: '',
     details: '',
     complicated: false,
-    initialRoll: '',
-    improveRoll: '',
+    initialRoll: 0,
+    improveRoll: 0,
     improve: '',
     cost: '',
-    improveSelection: null,
+    improveSelection: null as null | Project,
     costs: [
       ' Quality materials',
       ' Specific knowledge or techniques',
@@ -275,8 +275,8 @@ export default Vue.extend({
     ],
   }),
   computed: {
-    projects() {
-      return this.pilot.Reserves.filter(x => x.Type === 'Project' && !x.IsFinished)
+    projects(): Project[] {
+      return (this.pilot as Pilot).Reserves.filter(x => x.Type === 'Project' && !(x as Project).IsFinished) as Project[]
     },
   },
   methods: {
@@ -294,7 +294,7 @@ export default Vue.extend({
         used: false,
         can_finish: false,
         finished: false,
-        progress: this.initialRoll < 10 || this.improveRoll < 10 ? 1 : 0,
+        progress: (this.initialRoll < 10 || this.improveRoll) < 10 ? 1 : 0,
         requirements: [],
       })
       if (this.cost) p.ResourceCost = `Requires: ${this.cost.toString()}`
@@ -302,15 +302,15 @@ export default Vue.extend({
       this.close()
     },
     improveProject() {
-      if (this.cost) this.improveSelection.ResourceCost = `Requires: ${this.cost.toString()}`
-      if (this.initialRoll < 10) this.improveSelection.Progress = 1
+      if (this.cost) this.improveSelection!.ResourceCost = `Requires: ${this.cost.toString()}`
+      if (this.initialRoll < 10) this.improveSelection!.Progress = 1
       this.close()
     },
     completeProject() {
-      this.improveSelection.Name = this.improveSelection.ResourceLabel
-      this.improveSelection.ResourceName = ''
-      this.improveSelection.ResourceCost = ''
-      this.improveSelection.IsFinished = true
+      this.improveSelection!.Name = this.improveSelection!.ResourceLabel
+      this.improveSelection!.ResourceName = ''
+      this.improveSelection!.ResourceCost = ''
+      this.improveSelection!.IsFinished = true
       this.close()
     },
     close() {
@@ -318,8 +318,8 @@ export default Vue.extend({
       this.project_name = ''
       this.details = ''
       this.complicated = false
-      this.initialRoll = ''
-      this.improveRoll = ''
+      this.initialRoll = 0
+      this.improveRoll = 0
       this.improve = ''
       this.cost = ''
       this.improveSelection = null

@@ -62,10 +62,6 @@ export default class Manufacturers extends Vue {
   private compendiumStore = getModule(CCDSInterface, this.$store).compendium
   get manufacturers() {
     let result = this.compendiumStore.getItemCollection("Manufacturers")
-    console.log("Manufactory");
-    console.log(result);
-    console.log(this.compendiumStore);
-    console.log(this.compendiumStore);
     return result;
   }
 }

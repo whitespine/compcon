@@ -124,7 +124,7 @@ export default Vue.extend({
       })
   },
   mounted() {
-    this.commitRef = process.env.COMMIT_REF
+    this.commitRef = process.env.COMMIT_REF || "unkown"
   },
 })
 </script>

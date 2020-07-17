@@ -393,12 +393,14 @@ export default Vue.extend({
       const store = getModule(CCDSInterface, this.$store)
       return store.encounters.Encounters.map(x => x.Campaign).filter(x => x)
     },
+    environments() {
+      let ev = (this as any).environmentData as Environment[]; // Dunno why this is so fussy
+      let ev_names = ev.map(x => x.name);
+      // TODO: Figure out this nightmare
+      return ['Nominal'].concat(ev_names);
+    },
     environmentData(): Environment[] {
       return getModule(CCDSInterface, this.$store).compendium.getItemCollection("Environments") //.Environments
-    },
-    environments() {
-      this.environmentData
-      return ['Nominal'].concat(this.environmentData.map(x => x.name))
     },
     sitreps() {
       return getModule(CCDSInterface, this.$store).compendium.getItemCollection("Sitreps")
@@ -424,15 +426,15 @@ export default Vue.extend({
       else if (this.environmentData.some(x => x.name === this.encounter.Environment))
         this.encounter.EnvironmentDetails = this.environmentData.find(
           x => x.name === this.encounter.Environment
-        ).description
+        )?.description || "No description"
     },
     addNpc(event: { npc: Npc; side: EncounterSide }) {
       this.encounter.AddNpc(event.npc, event.side)
-      this.$refs.npcDialog.hide()
+      (this.$refs.npcDialog as any).hide()
     },
     addReinforcement(event: { npc: Npc; side: EncounterSide }) {
       this.encounter.AddReinforcement(event.npc, event.side)
-      this.$refs.reinforcementDialog.hide()
+      (this.$refs.reinforcementDialog as any).hide()
     },
   },
 })

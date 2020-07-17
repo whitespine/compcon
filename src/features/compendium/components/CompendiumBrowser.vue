@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ItemFilter, { UserProfileStore, CompendiumItem } from 'compcon_data'
+import { ItemFilter, UserProfileStore, CompendiumItem, ItemFilterParam } from 'compcon_data'
 import { accentInclude } from 'compcon_data'
 import CompendiumMobileView from './views/CompendiumMobileView.vue'
 import CompendiumSplitView from './views/CompendiumSplitView.vue'
@@ -85,7 +85,7 @@ export default Vue.extend({
   },
   data: () => ({
     search: '',
-    filters: {},
+    filters: {} as ItemFilterParam,
     itemType: '',
   }),
   computed: {
@@ -94,12 +94,11 @@ export default Vue.extend({
       return store.user
     },
     fItems() {
-      const vm = this as any
-      let i = vm.items
+      let i = this.items as CompendiumItem[]
 
-      if (vm.search) i = i.filter(x => accentInclude(x.Name, vm.search))
+      if (this.search) i = i.filter(x => accentInclude(x.Name, this.search))
 
-      if (Object.keys(vm.filters).length) {
+      if (Object.keys(this.filters).length) {
         i = ItemFilter.Filter(i, this.filters)
       }
 
@@ -110,7 +109,7 @@ export default Vue.extend({
     this.itemType = (this.items as CompendiumItem[])[0].ItemType
   },
   methods: {
-    setFilters(newFilter: ItemFilter) {
+    setFilters(newFilter: ItemFilterParam) {
       this.filters = newFilter
     },
   },

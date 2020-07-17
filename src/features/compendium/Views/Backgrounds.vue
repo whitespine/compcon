@@ -11,16 +11,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import SidebarArrayView from '../components/SidebarArrayView.vue'
-import { backgrounds } from 'lancer-data'
+import { backgrounds } from 'compcon_data'
 
 export default Vue.extend({
   name: 'backgrounds',
   components: { SidebarArrayView },
   data: () => ({
-    backgrounds: [],
+    backgrounds
   }),
-  created() {
-    this.backgrounds = backgrounds
-  },
 })
 </script>

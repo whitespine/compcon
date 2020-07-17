@@ -16,7 +16,7 @@
       <v-row justify="center">
         <v-col cols="3">
           <v-text-field
-            v-model="skillRoll"
+            v-model.number="skillRoll"
             type="number"
             label="Roll Result"
             outlined
@@ -93,7 +93,7 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    skillRoll: '',
+    skillRoll: 0,
     custom_name: '',
     details: '',
     choices: [
@@ -127,7 +127,7 @@ export default Vue.extend({
     close() {
       this.choice = 0
       this.trade = 0
-      this.skillRoll = ''
+      this.skillRoll = 0
       this.custom_name = ''
       this.details = ''
       this.$emit('close')

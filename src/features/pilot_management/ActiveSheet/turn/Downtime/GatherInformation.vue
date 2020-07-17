@@ -16,7 +16,7 @@
       <v-row justify="center">
         <v-col cols="3">
           <v-text-field
-            v-model="skillRoll"
+            v-model.number="skillRoll"
             type="number"
             label="Roll Result"
             outlined
@@ -121,7 +121,7 @@ export default Vue.extend({
   },
   data: () => ({
     commit: false,
-    skillRoll: '',
+    skillRoll: 0,
     details: '',
     choices: [
       'You leave clear evidence of your rummaging',
@@ -150,7 +150,7 @@ export default Vue.extend({
     },
     close() {
       this.commit = false
-      this.skillRoll = ''
+      this.skillRoll = 0
       this.details = ''
       this.choice = 0
       this.$emit('close')

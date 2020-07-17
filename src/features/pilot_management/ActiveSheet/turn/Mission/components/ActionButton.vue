@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { actions } from 'lancer-data'
+import { actions, PlayerAction } from 'compcon_data'
 
 export default Vue.extend({
   name: 'action-button',
@@ -68,14 +68,14 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    action: {},
+    action: undefined as undefined | PlayerAction,
     dialog: false,
     actionColor: '',
   }),
   created() {
     this.action = actions.find(x => x.id === `act_${this.actionId}`)
     if (this.colorOverride) this.actionColor = this.colorOverride
-    else this.actionColor = `action--${this.action.action_type}`
+    else this.actionColor = `action--${this.action!.action_type}`
   },
 })
 </script>

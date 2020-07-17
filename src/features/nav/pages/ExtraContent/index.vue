@@ -32,7 +32,7 @@ import PackInstall from './PackInstall.vue'
   components: { PacksList, PackInstall },
 })
 export default class ExtraContent extends Vue {
-  public tabs = null
+  public tabs: number | null = null
 
   public onInstalled() {
     this.tabs = 0

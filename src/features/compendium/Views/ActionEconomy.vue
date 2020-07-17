@@ -39,13 +39,14 @@
 import Vue from 'vue'
 import ActionTypeCard from '../components/ActionTypeCard.vue'
 import ActionCard from '../components/ActionCard.vue'
-import { actions } from 'lancer-data'
+import {PlayerAction, actions} from "compcon_data";
+
 
 export default Vue.extend({
   name: 'reference',
   components: { ActionTypeCard, ActionCard },
   data: () => ({
-    actions: [],
+    actions: [] as PlayerAction[],
   }),
   created() {
     this.actions = actions.filter(x => x.action_type !== 'downtime' && !x.reserve)

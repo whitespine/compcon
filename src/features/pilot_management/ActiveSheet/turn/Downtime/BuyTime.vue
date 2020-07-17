@@ -80,7 +80,7 @@
         large
         tile
         color="primary"
-        :disabled="skillRoll === '' || details === ''"
+        :disabled="!skillRoll || details === ''"
         @click="addReserve()"
       >
         add reserve
@@ -99,7 +99,7 @@ export default Vue.extend({
     pilot: { type: Object, required: true },
   },
   data: () => ({
-    skillRoll: '',
+    skillRoll: 0,
     details: '',
   }),
   methods: {
@@ -123,7 +123,6 @@ export default Vue.extend({
       this.close()
     },
     close() {
-      this.skillRoll = ''
       this.details = ''
       this.$emit('close')
     },

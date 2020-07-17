@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Mech } from 'compcon_data'
 export default Vue.extend({
   name: 'condition-dialog',
   props: {
@@ -29,8 +30,8 @@ export default Vue.extend({
       this.dialog = true
     },
     endCondition(c: string) {
-      const cidx = this.mech.Conditions.findIndex(x => x === c)
-      if (cidx > -1) this.mech.Conditions.splice(cidx, 1)
+      const cidx = (this.mech as Mech).Conditions.findIndex(x => x === c)
+      if (cidx > -1) (this.mech as Mech).Conditions.splice(cidx, 1)
       this.dialog = false
     },
   },

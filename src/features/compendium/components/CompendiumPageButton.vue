@@ -20,7 +20,7 @@ export default class CCMajorButton extends Vue {
   readonly name!: string
 
   @Prop({ type: String, required: false, default: '' })
-  readonly icon: string
+  readonly icon!: string
 
   @Prop({ type: String, required: false, default: '' })
   readonly cols?: string
@@ -35,7 +35,7 @@ export default class CCMajorButton extends Vue {
   readonly sm?: string
 
   @Prop({ type: String, required: false, default: 'primary' })
-  readonly color: string
+  readonly color!: string
 }
 </script>
 

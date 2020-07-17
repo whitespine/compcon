@@ -85,7 +85,7 @@ export default Vue.extend({
     show() {
       this.dialog = true
     },
-    complete(success) {
+    complete(success: boolean) {
       if (success) this.mech.Burn = 0
       this.$emit('complete')
       this.dialog = false

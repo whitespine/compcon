@@ -67,6 +67,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import _ from 'lodash'
+import { IContentPack } from 'compcon_data';
 
 @Component({
   props: {
@@ -74,7 +75,7 @@ import _ from 'lodash'
   },
 })
 export default class PackInfo extends Vue {
-  private humanReadableMap = {
+  private humanReadableMap: {[key: string]: [string, string]} = {
     manufacturers: ['manufacturer', 'manufacturers'],
     coreBonuses: ['core bonus', 'core bonuses'],
     frames: ['frame', 'frames'],
@@ -90,7 +91,8 @@ export default class PackInfo extends Vue {
   }
 
   get packContents() {
-    return _.toPairs(this.$props.pack.data)
+    let pack = this.$props.pack as IContentPack;
+    return _.toPairs(pack.data)
       .map(([key, value]: [string, object[]]) => {
         const count = value.length
         return [key, count]

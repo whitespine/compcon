@@ -20,7 +20,7 @@ export default Vue.extend({
   name: 'panel-view',
   methods: {
     resetScroll() {
-      document.getElementById('scrollTarget').scrollTop = 0
+      document.getElementById('scrollTarget')!.scrollTop = 0
     },
   },
 })

@@ -111,8 +111,8 @@ export default Vue.extend({
   methods: {
     expandAll(len: number, key: string, expand: boolean) {
       for (let i = 0; i < len; i++) {
-        const k = key + i
-        this.$refs[k][0].collapsed = expand
+        const k = key + i;
+        (this.$refs as any)[k][0].collapsed = expand
       }
     },
   },

@@ -57,7 +57,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import ReserveSelector from './ReserveSelector.vue'
-import { Reserve } from 'compcon_data'
+import { Reserve, Pilot } from 'compcon_data'
 
 export default Vue.extend({
   name: 'power-at-cost',
@@ -83,7 +83,7 @@ export default Vue.extend({
   }),
   methods: {
     addReserve() {
-      const rs = this.$refs.rs
+      const rs = this.$refs.rs as any
       const r = rs.reserveByID(rs.reserve)
       const nr = new Reserve({
         id: rs.reserve || 'reserve_custom',
@@ -96,14 +96,14 @@ export default Vue.extend({
         resource_cost: this.complication1,
         used: false,
       })
-      if (this.complication2 !== 'None') nr.ResourceCost += `\n${this.complication2}`
-      this.pilot.Reserves.push(nr)
+      if (this.complication2 !== 'None') nr.ResourceCost += `\n${this.complication2}`;
+      (this.pilot as Pilot).Reserves.push(nr)
       this.close()
     },
     close() {
       this.complication1 = 'None'
-      this.complication2 = 'None'
-      this.$refs.rs.reset()
+      this.complication2 = 'None';
+      (this.$refs.rs as any).reset()
       this.$emit('close')
     },
   },

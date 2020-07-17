@@ -141,7 +141,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import allThemes from '@/ui/style/themes'
+import allThemes, { ThemeChoice } from '@/ui/style/themes'
 import { getModule } from 'vuex-module-decorators'
 import { exportAll, importAll, exportV1Pilots, clearAllData } from '@/io/BulkData'
 import { saveFile } from '@/io/Dialog'
@@ -150,13 +150,8 @@ import { CCDSInterface } from '../../../../io/ccdata_store'
 export default Vue.extend({
   name: 'options-settings',
   data: () => ({
-    theme: 'gms',
-    themes: [] as any[],
-    // themes: [
-    //   { name: 'GMS Red (Default Light)', value: 'light' },
-    //   { name: 'MSMC Dark', value: 'dark' },
-    //   { name: 'HORUS Dark', value: 'horus' },
-    // ],
+    theme: 'gms' as ThemeChoice,
+    themes: [] as Array<{name: string, value: ThemeChoice}>,
     importDialog: false,
     fileValue: null,
     deleteDialog: false,
@@ -166,13 +161,18 @@ export default Vue.extend({
       const store = getModule(CCDSInterface, this.$store)
       return store.user.ID
     },
-    userTheme() {
+    userTheme(): keyof typeof allThemes {
       const store = getModule(CCDSInterface, this.$store)
-      return store.user.Theme
+      let theme = store.user.Theme;
+      if(theme !== "gms" && theme !== "msmc" && theme !== "horus") {
+        return "gms"
+      } else {
+        return store.user.Theme as ThemeChoice
+      }
     },
   },
   created() {
-    this.theme = this.userTheme
+    this.theme = this.userTheme 
     for (const k in allThemes) {
       if (allThemes.hasOwnProperty(k)) {
         const e = (allThemes as any)[k]
@@ -185,7 +185,7 @@ export default Vue.extend({
       location.reload(true)
     },
     setTheme() {
-      getModule(CompendiumStore, this.$store).UserProfile.Theme = this.theme
+      getModule(CCDSInterface, this.$store).user.Theme = this.theme
       const isDark = allThemes[this.theme].type === 'dark'
 
       if (isDark) {
@@ -197,8 +197,8 @@ export default Vue.extend({
       }
     },
     setUserID(id: string) {
-      const store = getModule(CompendiumStore, this.$store)
-      store.UserProfile.ID = id
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.user.ID = id);
     },
     async bulkExport() {
       const result = await exportAll()
@@ -208,7 +208,7 @@ export default Vue.extend({
         'Save COMP/CON Archive'
       )
     },
-    async bulkImport(file) {
+    async bulkImport(file: string) {
       await importAll(file)
       this.importDialog = false
     },

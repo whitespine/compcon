@@ -46,6 +46,8 @@ export default class UpdatesTracker extends Vue {
         return 'Update and Reload'
       case 'electron':
         return 'Download Update'
+      default:
+        return 'Unknown platform - update manually'
     }
   }
   updateClick() {

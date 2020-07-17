@@ -123,42 +123,43 @@ export default Vue.extend({
   },
   methods: {
     ccLog(btn: string) {
+      let log = this.$refs['log'] as any;
       switch (btn) {
         case 'compendium':
-          this.$refs['log'].print(
+          log.print(
             'man compendium',
             'Browse the database of LANCER frames, equipment, and rules'
           )
           break
         case 'pilot':
-          this.$refs['log'].print(
+          log.print(
             'man pilot-sheet',
             'Create and manage pilots and their mechs, print character sheets, and enable active play mode'
           )
           break
         case 'gm':
-          this.$refs['log'].print(
+          log.print(
             'man gm-tools',
             'Build and manage NPCs and encounters, and run missions with NPCs and pilots'
           )
           break
         case 'campaign':
-          this.$refs['log'].print('man campaigns', 'work in progress')
+          log.print('man campaigns', 'work in progress')
           break
         case 'content':
-          this.$refs['log'].print('man homebrew', 'Manage and create COMP/CON expansion data')
+          log.print('man homebrew', 'Manage and create COMP/CON expansion data')
           break
         case 'options':
-          this.$refs['log'].print('compcon -settings --verbose', 'Open the options manager')
+          log.print('compcon -settings --verbose', 'Open the options manager')
           break
         case 'about':
-          this.$refs['log'].print('compcon --v', 'About COMP/CON')
+          log.print('compcon --v', 'About COMP/CON')
           break
         case 'help':
-          this.$refs['log'].print('compcon --h', 'Open the COMP/CON help page')
+          log.print('compcon --h', 'Open the COMP/CON help page')
           break
         case 'update':
-          this.$refs['log'].print(
+          log.print(
             'gms-upm compcon changelog -l',
             'View COMP/CON changelog and latest updates'
           )

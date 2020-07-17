@@ -16,7 +16,7 @@
       <v-row justify="center">
         <v-col cols="3">
           <v-text-field
-            v-model="skillRoll"
+            v-model.number="skillRoll"
             type="number"
             label="Roll Result"
             outlined
@@ -152,7 +152,7 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    skillRoll: '',
+    skillRoll: 0,
     details: '',
     losses: ['Your dignity', 'All of your possessions', 'Your memory'],
     kept: '',
@@ -169,7 +169,7 @@ export default Vue.extend({
     ],
   }),
   computed: {
-    addDisabled() {
+    addDisabled(): boolean {
       if (!this.skillRoll) return true
       return (
         (this.skillRoll < 10 && !this.kept) ||
@@ -246,7 +246,7 @@ export default Vue.extend({
       this.close()
     },
     close() {
-      this.skillRoll = ''
+      this.skillRoll = 0
       this.details = ''
       this.kept = ''
       this.reserve1 = ''

@@ -139,7 +139,7 @@
                       <v-row justify="center">
                         <v-col cols="5">
                           <v-text-field
-                            v-model="improveRoll"
+                            v-model.number="improveRoll"
                             type="number"
                             label="Organization Management Roll Result"
                             outlined
@@ -352,7 +352,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { OrgType, Organization } from 'compcon_data'
+import { OrgType, Organization, Pilot } from 'compcon_data'
 export default Vue.extend({
   name: 'get-organized',
   props: {
@@ -367,30 +367,28 @@ export default Vue.extend({
     name: '',
     details: '',
     start: '',
-    selected: null,
-    improveRoll: '',
+    selected: null as null | Organization,
+    improveRoll: 0,
     badChoice: '',
     action: '',
     improvement: '',
   }),
   computed: {
-    orgTypes() {
-      return Object.keys(OrgType)
-        .map(k => OrgType[k])
+    orgTypes(): OrgType[] {
+      return Object.values(OrgType)
         .sort() as OrgType[]
     },
-    organizations() {
-      return this.pilot.Organizations
+    organizations(): Organization[] {
+      return (this.pilot as Pilot).Organizations
     },
-    confirmDisabled() {
+    confirmDisabled(): boolean {
       if (this.tabs === 0) return !this.name || !this.type || !this.start
       if (this.tabs === 1) {
-        if (parseInt(this.improveRoll) < 10) {
+        if (this.improveRoll < 10) {
           return !(this.badChoice === 'fold' || (this.badChoice && this.action))
-        } else if (parseInt(this.improveRoll) < 20) {
-          if (this.selected.Efficiency === 6 && this.selected.Influence === 6) return false
-          else return
-          !this.improvement
+        } else if (this.improveRoll < 20) {
+          if (this.selected!.Efficiency === 6 && this.selected!.Influence === 6) return false
+          else return !this.improvement
         } else {
           return false
         }
@@ -407,10 +405,10 @@ export default Vue.extend({
       }
     },
     addOrg() {
-      this.pilot.Organizations.push(
+      (this.pilot as Pilot).Organizations.push(
         new Organization({
           name: this.name,
-          purpose: this.purpose,
+          purpose: this.details, 
           efficiency: this.start === 'efficiency' ? 2 : 0,
           influence: this.start === 'influence' ? 2 : 0,
           description: this.details,
@@ -420,28 +418,28 @@ export default Vue.extend({
       this.close()
     },
     improveOrg() {
-      if (parseInt(this.improveRoll) < 10) {
+      if (this.improveRoll < 10) {
         if (this.badChoice === 'fold') {
           this.pilot.Organizations.splice(
-            this.pilot.Organizations.findIndex(x => x.Name === this.selected.Name),
+            (this.pilot as Pilot).Organizations.findIndex(x => x.Name === this.selected!.Name),
             1
           )
         } else if (this.badChoice === 'efficiency') {
-          this.selected.Efficiency -= 2
-          this.selected.Actions = this.action
+          this.selected!.Efficiency -= 2
+          this.selected!.Actions = this.action
         } else if (this.badChoice === 'influence') {
-          this.selected.Influence -= 2
-          this.selected.Actions = this.action
+          this.selected!.Influence -= 2
+          this.selected!.Actions = this.action
         }
-      } else if (parseInt(this.improveRoll) < 20) {
+      } else if (this.improveRoll < 20) {
         if (this.improvement === 'efficiency') {
-          this.selected.Efficiency += 2
+          this.selected!.Efficiency += 2
         } else if (this.improvement === 'influence') {
-          this.selected.Influence += 2
+          this.selected!.Influence += 2
         }
       } else {
-        this.selected.Efficiency += 2
-        this.selected.Influence += 2
+        this.selected!.Efficiency += 2
+        this.selected!.Influence += 2
       }
 
       this.close()
@@ -453,7 +451,7 @@ export default Vue.extend({
       this.details = ''
       this.start = ''
       this.selected = null
-      this.improveRoll = ''
+      this.improveRoll = 0
       this.badChoice = ''
       this.action = ''
       this.improvement = ''

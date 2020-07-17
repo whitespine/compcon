@@ -21,7 +21,7 @@ export default Vue.extend({
     searchText: '',
   }),
   mounted() {
-    const vm = this
+    const vm = this as any
     vm.$mousetrap.bind(['ctrl+f', '/'], () => {
       ;(vm.$refs.input as HTMLElement).focus()
     })

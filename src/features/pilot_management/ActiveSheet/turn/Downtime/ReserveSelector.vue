@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { reserves } from 'lancer-data'
+import { reserves, Reserve, IReserveData } from 'compcon_data'
 
 export default Vue.extend({
   name: 'reserve-selector',
@@ -64,17 +64,17 @@ export default Vue.extend({
     reserveTypes: ['Resources', 'Tactical', 'Mech', 'Custom'],
   }),
   computed: {
-    reserveComplete() {
-      return (
+    reserveComplete(): boolean {
+      return !!(
         (this.type && this.reserve) || (this.type === 'Custom' && this.custom_name && this.details)
       )
     },
-    reserves() {
+    reserves(): IReserveData[] {
       return reserves.filter(x => x.type === this.type)
     },
   },
   methods: {
-    reserveByID(id) {
+    reserveByID(id: string) {
       return reserves.find(x => x.id === id)
     },
     reset() {

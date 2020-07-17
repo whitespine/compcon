@@ -10,16 +10,17 @@
 <script lang="ts">
 import Vue from 'vue'
 import SidebarArrayView from '../components/SidebarArrayView.vue'
-import { glossary } from 'lancer-data'
+import _ from 'lodash'
+import { GlossaryItem, glossary } from 'compcon_data'
 
 export default Vue.extend({
   name: 'glossary',
   components: { SidebarArrayView },
   data: () => ({
-    glossary: [],
+    glossary: [] as GlossaryItem[]
   }),
   created() {
-    this.glossary = this.$_.sortBy(glossary, [x => x.name])
+    this.glossary = _.sortBy(glossary, [x => x.name])
   },
 })
 </script>

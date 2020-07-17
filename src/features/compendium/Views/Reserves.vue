@@ -34,22 +34,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 import ActionCard from '../components/ActionCard.vue'
 import ReserveCard from '../components/ReserveCard.vue'
-import { actions, reserves } from 'lancer-data'
+import { actions, reserves, IReserveData, PlayerAction } from 'compcon_data'
 
 export default Vue.extend({
   name: 'reference',
   components: { ActionCard, ReserveCard },
   data: () => ({
     tabModel: 0,
-    downtimeActions: [],
-    reserves: [],
+    reserves: _.groupBy(reserves, 'type'),
+    downtimeActions: actions.filter(x => x.action_type === 'downtime')
   }),
-  created() {
-    this.reserves = _.groupBy(reserves, 'type')
-    this.downtimeActions = actions.filter(x => x.action_type === 'downtime')
-  },
 })
 </script>

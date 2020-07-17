@@ -354,6 +354,8 @@ import MedPipLayout from './MedPipLayout.vue'
 import SmallPipLayout from './SmallPipLayout.vue'
 
 import Vue from 'vue'
+import { getModule } from 'vuex-module-decorators'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 export default Vue.extend({
   name: 'mech-block',
   components: { MechSelectButton, LargePipLayout, MedPipLayout, SmallPipLayout },
@@ -388,13 +390,13 @@ export default Vue.extend({
         : [' +1 ', ' +1d3 ', ' +1d6 ', '+1d6+4']
     },
     loadout(): MechLoadout {
-      return this.mech.ActiveLoadout
+      return this.mech.ActiveLoadout!
     },
     statuses(): string[] {
-      return this.$store.getters.getItemCollection('Statuses').filter(x => x.type === 'Status')
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("Statuses").map(s => s.name);
     },
     conditions(): string[] {
-      return this.$store.getters.getItemCollection('Statuses').filter(x => x.type === 'Condition')
+      return getModule(CCDSInterface, this.$store).compendium.getItemCollection("Conditions").map(s => s.name);
     },
     hpResistance(): boolean {
       if (this.mech.Resistances.length === 1 && this.mech.Resistances[0] === 'Heat') return false
@@ -404,7 +406,7 @@ export default Vue.extend({
       if (this.mech.Resistances.length) {
         if (this.mech.Resistances.length === 1) {
           const c = this.resistances
-            .find(x => x.name === this.mech.Resistances[0])
+            .find(x => x.name === this.mech.Resistances[0])!
             .name.toLowerCase()
           if (c === 'heat') return 'heat'
           return 'overcharge'
@@ -420,8 +422,8 @@ export default Vue.extend({
         if (newVal < oldVal) {
           this.structRolledOver = true
           await sleep(500)
-          this.structRolledOver = false
-          this.$refs.structureTable.show()
+          this.structRolledOver = false;
+          (this.$refs.structureTable as any).show()
         }
       },
     },
@@ -430,8 +432,8 @@ export default Vue.extend({
         if (newVal < oldVal) {
           this.stressRolledOver = true
           await sleep(500)
-          this.stressRolledOver = false
-          this.$refs.stressTable.show()
+          this.stressRolledOver = false;
+          (this.$refs.stressTable as any).show()
         }
       },
     },
@@ -440,7 +442,7 @@ export default Vue.extend({
     expandAll(len: number, key: string, expand: boolean) {
       for (let i = 0; i < len; i++) {
         const k = key + i
-        if (this.$refs[k]) this.$refs[k][0].collapsed = expand
+        if (this.$refs[k]) (this.$refs[k] as any)[0].collapsed = expand
       }
     },
   },

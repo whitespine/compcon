@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { actions } from 'lancer-data'
+import { PlayerAction, actions } from 'compcon_data'
 
 export default Vue.extend({
   name: 'dt-action',
@@ -48,12 +48,13 @@ export default Vue.extend({
     disabled: { type: Boolean },
   },
   data: () => ({
-    action: {},
     infoDialog: false,
     dialog: false,
   }),
-  created() {
-    this.action = actions.find(x => x.id === this.actionId)
+  computed: {
+    action(): PlayerAction {
+      return actions.find(x => x.id === this.actionId)!
+    }
   },
   methods: {
     close() {
