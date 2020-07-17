@@ -106,7 +106,7 @@ export default Vue.extend({
   }),
   watch: {
     selectedClass() {
-      a(this.$refs.view as Element).resetScroll()
+      (this.$refs.view as any).resetScroll()
     },
   },
   created() {
