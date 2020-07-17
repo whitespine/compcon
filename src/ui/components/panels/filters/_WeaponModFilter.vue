@@ -41,8 +41,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Tag, WeaponType, Manufacturer } from 'compcon_data'
+import { getModule } from 'vuex-module-decorators';
+import { CCDSInterface } from '@/io/ccdata_store';
+import _ from 'lodash';
 
-const nameSort = function(a, b) {
+type FilterOption = {text: string, value: string};
+const nameSort = function(a: FilterOption, b: FilterOption) {
   if (a.text.toUpperCase() < b.text.toUpperCase()) return -1
   if (a.text.toUpperCase() > b.text.toUpperCase()) return 1
   return 0
@@ -55,29 +59,25 @@ export default Vue.extend({
     tagFilter: [],
   }),
   computed: {
-    manufacturers(): Manufacturer[] {
-      return this.$store.getters
-        .getItemCollection('Manufacturers')
+    manufacturers(): FilterOption[] {
+        return getModule(CCDSInterface, this.$store).compendium
+      .getItemCollection("Manufacturers")
         .map(x => ({ text: x.Name, value: x.ID }))
         .sort(nameSort)
     },
     tags(): Tag[] {
-      return this.$_.uniqBy(
-        [].concat(
-          this.$store.getters
-            .getItemCollection('WeaponMods')
-            .flatMap(x => x.Tags)
-            .filter(x => !x.FilterIgnore && !x.IsHidden)
-        ),
-        'ID'
-      )
+      let all_tags = getModule(CCDSInterface, this.$store)
+      .compendium.getItemCollection("MechSystems")
+      .flatMap(w => w.Tags)
+      .filter(x => !x.FilterIgnore && !x.IsHidden);
+
+      return _.uniqBy(all_tags, 'ID');
     },
   },
   methods: {
     clear() {
       this.sourceFilter = []
       this.tagFilter = []
-      this.weaponTypeFilter = []
     },
     updateFilters() {
       let fObj = {} as any

@@ -107,12 +107,18 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Tag, WeaponType, WeaponSize, RangeType, DamageType, Manufacturer } from  'compcon_data'
+import { getModule } from 'vuex-module-decorators'
+import { CCDSInterface } from '@/io/ccdata_store'
+import _ from 'lodash'
 
-const nameSort = function(a, b) {
+type FilterOption = {text: string, value: string};
+const nameSort = function(a: FilterOption, b: FilterOption) {
   if (a.text.toUpperCase() < b.text.toUpperCase()) return -1
   if (a.text.toUpperCase() > b.text.toUpperCase()) return 1
   return 0
 }
+
+
 
 export default Vue.extend({
   name: 'frame-filter',
@@ -125,43 +131,36 @@ export default Vue.extend({
     damageTypeFilter: [],
   }),
   computed: {
-    manufacturers(): Manufacturer[] {
-      return this.$store.getters
-        .getItemCollection('Manufacturers')
+    manufacturers(): FilterOption[] {
+      return getModule(CCDSInterface, this.$store)
+      .compendium
+      .getItemCollection("Manufacturers")
         .map(x => ({ text: x.Name, value: x.ID }))
         .sort(nameSort)
     },
     weaponTypes(): WeaponType[] {
-      return Object.keys(WeaponType)
-        .map(k => WeaponType[k as any])
-        .filter(k => k !== 'Integrated')
-        .sort() as WeaponType[]
+      return [...Object.values(WeaponType)]
+        .sort()
     },
     weaponSizes(): WeaponSize[] {
-      return Object.keys(WeaponSize)
-        .map(k => WeaponSize[k as any])
-        .sort() as WeaponSize[]
+      return [...Object.values(WeaponSize)]
+        .sort()
     },
     attackTypes(): RangeType[] {
-      return Object.keys(RangeType)
-        .map(k => RangeType[k as any])
-        .sort() as RangeType[]
+      return [...Object.values(RangeType)]
+        .sort()
     },
     damageTypes(): DamageType[] {
-      return Object.keys(DamageType)
-        .map(k => DamageType[k as any])
-        .sort() as DamageType[]
+      return [...Object.values(DamageType)]
+        .sort()
     },
     tags(): Tag[] {
-      return this.$_.uniqBy(
-        [].concat(
-          this.$store.getters
-            .getItemCollection('MechWeapons')
-            .flatMap(x => x.Tags)
-            .filter(x => !x.FilterIgnore && !x.IsHidden)
-        ),
-        'ID'
-      )
+      let all_tags = getModule(CCDSInterface, this.$store)
+      .compendium.getItemCollection("MechWeapons")
+      .flatMap(w => w.Tags)
+      .filter(x => !x.FilterIgnore && !x.IsHidden);
+
+      return _.uniqBy(all_tags, 'ID');
     },
   },
   methods: {

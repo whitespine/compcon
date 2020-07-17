@@ -247,7 +247,7 @@ export default Vue.extend({
       this.newGroupName = ''
       this.newGroupMenu = false
     },
-    moved(e, g) {
+    moved(e: any, g: string) {
       if (e.moved && e.moved.element) {
         const p = e.moved.element as Pilot
         p.SortIndex = e.moved.newIndex
@@ -258,7 +258,7 @@ export default Vue.extend({
         p.Group = g
       }
     },
-    deleteGroup(g) {
+    deleteGroup(g: string) {
       const store = getModule(CCDSInterface, this.$store)
       this.groups[g].forEach((p: Pilot) => {
         Vue.set(p, 'Group', '')

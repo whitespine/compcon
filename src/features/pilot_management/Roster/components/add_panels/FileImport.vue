@@ -116,7 +116,7 @@ export default Vue.extend({
     confirmImport() {
       if (!this.importPilot) { return; }
       this.importPilot.RenewID()
-      this.$store.dispatch('addPilot', this.importPilot)
+      getModule(CCDSInterface, this.$store).mut(s => s.pilots.addPilot(this.importPilot!));
       this.reset()
       this.dialog = false
       this.$emit('done')

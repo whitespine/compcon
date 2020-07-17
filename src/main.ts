@@ -37,6 +37,8 @@ import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import 'tiptap-vuetify/dist/main.css'
 import { getModule } from 'vuex-module-decorators'
 import { CCDSInterface } from './io/ccdata_store'
+import { USER_DATA_PATH, readFile, loadData } from './io/Data'
+import { FILE_KEYS, IUserProfile } from 'compcon_data'
 
 async function main() {
   console.log("Entered main");
@@ -49,10 +51,13 @@ async function main() {
   // Preload compcon storage/web interaction layer
   await Startup()
 
-  // Preload theme
+  // Preload theme. We skip the normal process as vuex hasn't initialized yet
   let activeTheme: any; // Its a vue theme object - doesn't really matter its type
-  let userTheme = getModule(CCDSInterface, store).user.Theme;
-  switch (userTheme) {
+  let userProfile = await loadData<IUserProfile>(FILE_KEYS.user_config)
+  console.log(USER_DATA_PATH);
+
+  console.log(userProfile);
+  switch (userProfile?.theme || "gms") {
     case "gms":
       activeTheme =  themes.gms;
       break;
@@ -117,7 +122,10 @@ async function main() {
 
   // Do a load. bit tricky
   s.Data.load_all(load_mutator => {
-    s.mut(x => load_mutator(x));
+    s.mut(x => {
+      console.log("Load all mutator primed");
+      load_mutator(x)
+    });
   });
 }
 

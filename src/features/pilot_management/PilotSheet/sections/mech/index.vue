@@ -113,6 +113,8 @@ import TraitBlock from './sections/traits/index.vue'
 import AttributesBlock from './sections/attributes/index.vue'
 import DeleteMechDialog from '../hangar/components/DeleteMechDialog.vue'
 import { Pilot, Mech } from 'compcon_data'
+import { getModule } from 'vuex-module-decorators'
+import { CCDSInterface } from '@/io/ccdata_store'
 
 export default Vue.extend({
   name: 'mech-sheet',
@@ -138,7 +140,7 @@ export default Vue.extend({
   },
   computed: {
     pilot(): Pilot {
-      return this.$store.state.management.Pilots.find(p => p.ID === this.pilotID)
+      return getModule(CCDSInterface, this.$store).pilots.findByID(this.pilotID);
     },
     mech(): Mech {
       return this.pilot.Mechs.find((m: Mech) => m.ID === this.mechID)
@@ -153,7 +155,8 @@ export default Vue.extend({
   methods: {
     deleteMech() {
       this.$router.push({ name: 'mech_hangar' })
-      this.pilot.RemoveMech(this.mech)
+      // Want a mut context for this
+      getModule(CCDSInterface, this.$store).mut(s => this.pilot.RemoveMech(this.mech));
     },
   },
 })

@@ -56,8 +56,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { MechType, MountType, Manufacturer } from  'compcon_data'
+import { getModule } from 'vuex-module-decorators'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
-const nameSort = function(a, b) {
+type FilterOption = {text: string, value: string};
+const nameSort = function(a: FilterOption, b: FilterOption) {
   if (a.text.toUpperCase() < b.text.toUpperCase()) return -1
   if (a.text.toUpperCase() > b.text.toUpperCase()) return 1
   return 0
@@ -67,31 +70,27 @@ export default Vue.extend({
   name: 'frame-filter',
   data: () => ({
     sourceFilter: '',
-    typeFilter: [],
-    mountFilter: [],
+    typeFilter: [] as MechType[],
+    mountFilter: [] as MountType[],
   }),
   computed: {
-    manufacturers(): Manufacturer[] {
-      return this.$store.getters
-        .getItemCollection('Manufacturers')
+    manufacturers(): FilterOption[] {
+      return getModule(CCDSInterface, this.$store)
+      .compendium
+      .getItemCollection("Manufacturers")
         .map(x => ({ text: x.Name, value: x.ID }))
         .sort(nameSort)
     },
     mechTypes(): MechType[] {
-      return Object.keys(MechType)
-        .map(k => MechType[k as any])
-        .sort() as MechType[]
+      return [...Object.values(MechType)].sort()
     },
     mountTypes(): MountType[] {
-      return Object.keys(MountType)
-        .map(k => MountType[k as any])
-        .filter(x => x !== 'Integrated')
-        .sort() as MountType[]
+      return [...Object.values(MountType)].sort() 
     },
   },
   methods: {
     clear() {
-      this.sourceFilter = []
+      this.sourceFilter = ''
       this.typeFilter = []
       this.mountFilter = []
     },

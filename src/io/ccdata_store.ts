@@ -21,8 +21,6 @@ class PlatformPersistence extends PersistentStore {
     async set_item(key: string, val: any): Promise<void> {
         key = this.to_fname(key);
         this.used_keys.add(key);
-        console.log(`Set ${key}`);
-        console.log(val);
         await saveData(key, val);
     }
 
@@ -30,8 +28,6 @@ class PlatformPersistence extends PersistentStore {
         key = this.to_fname(key);
         this.used_keys.add(key);
         let val = await loadData(key);
-        console.log(`getting ${key}`);
-        console.log(val);
         return val
     }
 }

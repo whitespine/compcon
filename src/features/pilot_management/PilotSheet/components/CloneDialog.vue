@@ -57,7 +57,9 @@
 import Vue from 'vue'
 import data from 'lancer-data'
 import _ from 'lodash'
-import { Pilot } from 'compcon_data'
+import { Pilot, CCDataStore } from 'compcon_data'
+import { getModule } from 'vuex-module-decorators'
+import { CCDSInterface } from '../../../../io/ccdata_store'
 
 export default Vue.extend({
   name: 'cloud-dialog',
@@ -72,11 +74,11 @@ export default Vue.extend({
   }),
   methods: {
     show() {
-      this.$refs.dialog.show()
+      (this.$refs.dialog as any).show()
     },
     hide() {
-      this.quirk = null
-      this.$refs.dialog.hide()
+      this.quirk = null;
+      (this.$refs.dialog as any).hide()
     },
     rollQuirk() {
       this.quirk = _.sample(data.quirks)
@@ -86,11 +88,11 @@ export default Vue.extend({
       newPilot.RenewID()
       newPilot.Callsign += '※'
       newPilot.Name += ' (CLONE)'
-      newPilot.Quirk = this.quirk
+      newPilot.Quirk = this.quirk || ""
       for (const mech of newPilot.Mechs) {
         mech.RenewID()
       }
-      this.$store.dispatch('addPilot', newPilot)
+      getModule(CCDSInterface).mut(s => s.pilots.addPilot(newPilot));
       this.hide()
     },
     copyPilot() {
@@ -102,7 +104,7 @@ export default Vue.extend({
       for (const mech of newPilot.Mechs) {
         mech.RenewID()
       }
-      this.$store.dispatch('addPilot', newPilot)
+      getModule(CCDSInterface).mut(s => s.pilots.addPilot(newPilot));
       this.hide()
     },
   },
