@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
-import { CCDataStore, PilotManagementStore, NpcStore, EncounterStore, MissionStore, CompendiumStore, UserProfileStore } from 'compcon_data'
+import { CCDataStore, PilotManagementStore, NpcStore, EncounterStore, MissionStore, CompendiumStore, UserProfileStore, PersistentStore, setup_store } from 'compcon_data'
+import { saveData, loadData } from './Data';
 
 // We take these in to mutate the store
 export type StoreMutation = (v: CCDataStore) => void;
@@ -8,25 +9,48 @@ export type StoreMutation = (v: CCDataStore) => void;
 const MANIP_DATA = "ManipData";
 const TOUCH_DATA = "TouchData";
 
+class PlatformPersistence extends PersistentStore {
+    // Tracks touched files. Useful for export
+    public used_keys: Set<string> = new Set();
+
+    private to_fname(name: string) {
+        // return name + ".json";
+        return name;
+    }
+
+    async set_item(key: string, val: any): Promise<void> {
+        key = this.to_fname(key);
+        this.used_keys.add(key);
+        console.log(`Set ${key}`);
+        console.log(val);
+        await saveData(key, val);
+    }
+
+    async get_item(key: string): Promise<any> {
+        key = this.to_fname(key);
+        this.used_keys.add(key);
+        let val = await loadData(key);
+        console.log(`getting ${key}`);
+        console.log(val);
+        return val
+    }
+}
+
 @Module({
   name: 'nav',
 })
 export class CCDSInterface extends VuexModule { // Short for comp-con data store interface
-  private _data!: CCDataStore;
+  private _data: CCDataStore = (() => {
+    let store = new CCDataStore(new PlatformPersistence());
+    setup_store(store);
+    return store;
+  })();
 
+  // Getter access
   get Data(): CCDataStore {
     return this._data;
   }
-
-  @Mutation
-  initCCLayer(data_store: CCDataStore) {
-    if(!this._data) {
-      this._data = data_store;
-    } else {
-      throw new Error("Double init of CC data layer.");
-    }
-  }
-
+  
   @Mutation
   private [MANIP_DATA](mut: StoreMutation) {
     mut(this._data);

@@ -49,7 +49,7 @@
     <v-divider vertical dark class="ml-2 mr-2" />
 
     <v-toolbar-title v-if="$vuetify.breakpoint.mdAndUp">
-      <span class="heading">COMP/CON</span>
+      <span class="heading">CLOB/CON</span>
       <span class="flavor-text white--text">{{ $appVersion }}</span>
     </v-toolbar-title>
 

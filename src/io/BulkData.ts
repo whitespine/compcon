@@ -2,7 +2,7 @@ import { readFile, writeFile } from './Data'
 // @ts-ignore
 import PromisifyFileReader from 'promisify-file-reader'
 import Extlog from './ExtLog'
-import Startup, { PlatformPersistence } from './Startup'
+import Startup from './Startup'
 import Vue from 'vue'
 import { store } from '@/store'
 import { FILE_KEYS } from 'compcon_data'
@@ -40,7 +40,7 @@ export async function importAll(file: string): Promise<void> {
   const promises = arr.map((o: IBulkExport) => writeFile(o.filename, o.data))
   await Promise.all(promises)
   Extlog('Import data loaded! Running startup...')
-  Startup(Vue.prototype.$appVersion, Vue.prototype.$lancerVersion)
+  Startup()
 }
 
 export async function clearAllData(): Promise<void> {
@@ -48,6 +48,6 @@ export async function clearAllData(): Promise<void> {
   const promises = files.map(file => writeFile(file, ''))
   await Promise.all(promises)
   Extlog('All data erased! Running startup...')
-  Startup(Vue.prototype.$appVersion, Vue.prototype.$lancerVersion)
+  Startup()
 }
 

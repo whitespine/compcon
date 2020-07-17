@@ -10,7 +10,7 @@ import { saveData, loadData } from './Data';
 import ExtLog from './ExtLog';
 
 
-export default async function(lancerVer: string, ccVer: string): Promise<CCDataStore> {
+export default async function(): Promise<void> {
   // Make sure data files can be accessed
   ensureDataDir()
   validateImageFolders()
@@ -19,18 +19,10 @@ export default async function(lancerVer: string, ccVer: string): Promise<CCDataS
   const PLATFORM = Capacitor.platform
   const isWeb = PLATFORM === 'web'
 
-  // Setup logger beforehand so we can see if things break
+  // Setup compcon logger beforehand so we can see if things break
   set_logger((...data) => ExtLog(data.join("")));
 
-  // Create a store before doing anything else
-  const pers = new PlatformPersistence();
-  const cc_store = new CCDataStore(pers);
-  setup_store(cc_store); // We must do this prior to doing load_all, otherwise any CC-data internal hooks calls will break. This will fail very noisily
-  await cc_store.load_all();
 
-  // Tell the store versions
-  cc_store.setVersions("test", "test"); 
-  console.log((cc_store.compendium as any).getAll_content_packs);
 
   // Tell CC data the platform. TODO: This is dumb - we should instead give it a more robust image resolution shim instead of having CC data figure it out. CC data should not care
   set_is_web(isWeb);
@@ -43,8 +35,6 @@ export default async function(lancerVer: string, ccVer: string): Promise<CCDataS
       removeImage: removeImage,
       validateImageFolders: validateImageFolders
   });
-
-  return cc_store;
 
   // const pilotStore = getModule(PilotManagementStore, store)
   // pilotStore.loadPilots()
@@ -65,24 +55,3 @@ export default async function(lancerVer: string, ccVer: string): Promise<CCDataS
 
 
 // Provide compcon data layer bindings for storing/loading data
-export class PlatformPersistence extends PersistentStore {
-    // Tracks touched files. Useful for export
-    public used_keys: Set<string> = new Set();
-
-    private to_fname(name: string) {
-        // return name + ".json";
-        return name;
-    }
-
-    async set_item(key: string, val: any): Promise<void> {
-        key = this.to_fname(key);
-        this.used_keys.add(key);
-        await saveData(key, val);
-    }
-
-    async get_item(key: string): Promise<any> {
-        key = this.to_fname(key);
-        this.used_keys.add(key);
-        return loadData(key);
-    }
-}

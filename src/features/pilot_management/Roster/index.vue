@@ -148,11 +148,11 @@ export default Vue.extend({
   name: 'roster-view',
   components: { RosterSort, AddPilot, PilotListItem, PilotCard, draggable },
   data: () => ({
-    sortParams: null,
+    sortParams: null as null | any[],
     drag: false,
     newGroupMenu: false,
-    groups: [],
-    shown: [],
+    groups: {} as _.Dictionary<Pilot[]>,
+    shown: [] as string[],
     newGroupName: '',
     preventDnd: true,
   }),
@@ -171,11 +171,11 @@ export default Vue.extend({
       const store = getModule(CCDSInterface, this.$store)
       return store.user
     },
-    pilotsUnsorted() {
+    pilotsUnsorted(): Pilot[] {
       const store = getModule(CCDSInterface, this.$store).pilots
       return store.Pilots
     },
-    pilotGroups() {
+    pilotGroups(): string[] {
       const store = getModule(CCDSInterface, this.$store).pilots
       return store.PilotGroups
     },
@@ -183,7 +183,7 @@ export default Vue.extend({
       const store = getModule(CCDSInterface, this.$store).pilots
       return store.Pilots
     },
-    pilotsByGroup() {
+    pilotsByGroup(): _.Dictionary<Pilot[]> {
       const grouped = _.groupBy(this.pilots, 'Group')
       return grouped
     },
@@ -194,7 +194,7 @@ export default Vue.extend({
         ghostClass: 'ghost',
       }
     },
-    isTouch() {
+    isTouch(): boolean {
       if ('ontouchstart' in document.documentElement) {
         return true
       } else {
@@ -214,14 +214,14 @@ export default Vue.extend({
   },
   methods: {
     reset() {
-      const store = getModule(PilotManagementStore, this.$store)
+      const store = getModule(CCDSInterface, this.$store)
       this.groups = _.groupBy(this.pilots, 'Group')
       for (const g in this.groups) {
         if (this.groups.hasOwnProperty(g)) {
           this.groups[g] = _.sortBy(this.groups[g], 'SortIndex')
         }
       }
-      store.PilotGroups.forEach(pg => {
+      store.pilots.PilotGroups.forEach(pg => {
         if (!Object.keys(this.groups).includes(pg)) Vue.set(this.groups, pg, [])
       })
     },
@@ -240,8 +240,8 @@ export default Vue.extend({
       this.sortParams = sortParams
     },
     addNewGroup() {
-      const store = getModule(PilotManagementStore, this.$store)
-      store.addGroup(this.newGroupName)
+      const store = getModule(CCDSInterface, this.$store)
+      store.mut(s => s.pilots.addGroup(this.newGroupName));
       this.shown.push(this.newGroupName)
       Vue.set(this.groups, this.newGroupName, [])
       this.newGroupName = ''
@@ -259,13 +259,13 @@ export default Vue.extend({
       }
     },
     deleteGroup(g) {
-      const store = getModule(PilotManagementStore, this.$store)
+      const store = getModule(CCDSInterface, this.$store)
       this.groups[g].forEach((p: Pilot) => {
         Vue.set(p, 'Group', '')
       })
       if (!this.groups[g]) return
       Vue.delete(this.groups, g)
-      store.deleteGroup(g)
+      store.mut(s => s.pilots.deleteGroup(g));
       this.reset()
     },
     randomName() {

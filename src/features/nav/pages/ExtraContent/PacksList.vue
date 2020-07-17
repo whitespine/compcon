@@ -101,14 +101,17 @@ import { CCDSInterface } from '../../../../io/ccdata_store'
 @Component
 export default class PacksList extends Vue {
   private expanded = []
-  private store = getModule(CCDSInterface, this.$store)
+  
+  private get store() {
+    return getModule(CCDSInterface, this.$store)
+  }
 
   public async toggleActive(packID: string, active: boolean): Promise<void> {
-    return this.store.mut(s => s.compendium.setPackActive( packID, active))
+    await this.store.mut(s => s.compendium.setPackActive( packID, active))
   }
 
   public async deletePack(id: string): Promise<void> {
-    return this.store.mut(s => s.compendium.deleteContentPack( id))
+    await this.store.mut(s => s.compendium.deleteContentPack( id))
   }
 
   public get contentPacks(): ContentPack[] {

@@ -39,19 +39,20 @@ import { getModule } from 'vuex-module-decorators'
 import { CCDSInterface } from './io/ccdata_store'
 
 async function main() {
+  console.log("Entered main");
   Object.defineProperty(Vue.prototype, '$_', { value: _ })
   Object.defineProperty(Vue.prototype, '$platform', { value: Capacitor.platform })
 
   Vue.prototype.$appVersion = process.env.VERSION_STRING
   Vue.prototype.$lancerVersion = `${lancerData.info.version}`
 
-  // Preload compcon data interaction layer
-  let cc_store = await Startup(Vue.prototype.$appVersion, Vue.prototype.$lancerVersion)
-  getModule(CCDSInterface, store).initCCLayer(cc_store);
+  // Preload compcon storage/web interaction layer
+  await Startup()
 
   // Preload theme
   let activeTheme: any; // Its a vue theme object - doesn't really matter its type
-  switch (cc_store.user.Theme) {
+  let userTheme = getModule(CCDSInterface, store).user.Theme;
+  switch (userTheme) {
     case "gms":
       activeTheme =  themes.gms;
       break;
@@ -92,7 +93,7 @@ async function main() {
   Vue.directive('extlink', externalLinkDirective)
 
   Vue.config.errorHandler = (error, vm) => {
-    console.log(error);
+    console.error (error);
     return Vue.prototype.$notifyError(error, vm)
   }
   window.onerror = error => Vue.prototype.$notifyError(error)
@@ -107,8 +108,17 @@ async function main() {
     render: h => h(App),
   }).$mount('#app')
 
-  // Setup store immediately after
-  console.log(cc_store);
+  // Tell the store versions
+  let app_ver = Vue.prototype.$appVersion as string;
+  let lancer_ver = Vue.prototype.$lancerVersion as string;
+
+  let s = getModule(CCDSInterface, store);
+  s.mut(s => s.setVersions(app_ver, lancer_ver));
+
+  // Do a load. bit tricky
+  s.Data.load_all(load_mutator => {
+    s.mut(x => load_mutator(x));
+  });
 }
 
 main()
