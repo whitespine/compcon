@@ -33,7 +33,7 @@ export default Vue.extend({
   }),
   computed: {
     pilot(): Pilot {
-      return getModule(CCDSInterface, this.$store).pilots.findByID(this.pilotID);
+      return getModule(CCDSInterface, this.$store).pilots.getPilot(this.pilotID)!;
     },
     profile(): UserProfileStore {
       return getModule(CCDSInterface, this.$store).user

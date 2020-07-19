@@ -85,10 +85,13 @@ export default Vue.extend({
   },
   data: () => ({
     search: '',
-    filters: {} as ItemFilterParam,
-    itemType: '',
+    filters: {} as ItemFilterParam
   }),
   computed: {
+    itemType(): CompendiumItem["ItemType"] {
+      // Base item type on
+       return (this.items as CompendiumItem[])[0].ItemType
+    },
     profile(): UserProfileStore {
       const store = getModule(CCDSInterface, this.$store)
       return store.user
@@ -96,7 +99,9 @@ export default Vue.extend({
     fItems() {
       let i = this.items as CompendiumItem[]
 
-      if (this.search) i = i.filter(x => accentInclude(x.Name, this.search))
+      if (this.search) {
+        i = i.filter(x => accentInclude(x.Name, this.search))
+      }
 
       if (Object.keys(this.filters).length) {
         i = ItemFilter.Filter(i, this.filters)
@@ -104,9 +109,6 @@ export default Vue.extend({
 
       return i
     },
-  },
-  created() {
-    this.itemType = (this.items as CompendiumItem[])[0].ItemType
   },
   methods: {
     setFilters(newFilter: ItemFilterParam) {

@@ -45,11 +45,10 @@ import {PlayerAction, actions} from "compcon_data";
 export default Vue.extend({
   name: 'reference',
   components: { ActionTypeCard, ActionCard },
-  data: () => ({
-    actions: [] as PlayerAction[],
-  }),
-  created() {
-    this.actions = actions.filter(x => x.action_type !== 'downtime' && !x.reserve)
+  computed: { 
+    actions(): PlayerAction[] {
+      return actions.filter(x => x.action_type !== 'downtime' && !x.reserve)
+    }
   },
 })
 </script>

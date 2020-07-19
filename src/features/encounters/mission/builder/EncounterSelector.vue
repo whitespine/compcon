@@ -77,6 +77,7 @@ import Vue from 'vue'
 import EncounterPanel from './EncounterPanel.vue'
 import { getModule } from 'vuex-module-decorators'
 import { CCDSInterface } from '../../../../io/ccdata_store'
+import { Encounter } from 'compcon_data'
 
 export default Vue.extend({
   name: 'encounter-selector',
@@ -89,9 +90,10 @@ export default Vue.extend({
     ],
     search: '',
   }),
-  created() {
-    const compendium = getModule(CCDSInterface, this.$store)
-    this.encounters = compendium.encounters.Encounters
+  computed: { 
+    encounters(): Encounter[] {
+      return getModule(CCDSInterface, this.$store).encounters.Encounters;
+    }
   },
 })
 </script>

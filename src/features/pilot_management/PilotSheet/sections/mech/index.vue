@@ -140,16 +140,20 @@ export default Vue.extend({
   },
   computed: {
     pilot(): Pilot {
-      return getModule(CCDSInterface, this.$store).pilots.findByID(this.pilotID);
+      return getModule(CCDSInterface, this.$store).pilots.getPilot(this.pilotID)!;
     },
     mech(): Mech {
-      return this.pilot.Mechs.find((m: Mech) => m.ID === this.mechID)
+      let p = getModule(CCDSInterface, this.$store).pilots.getPilot(this.pilotID)!;
+      return p.Mechs.find((m: Mech) => m.ID === this.mechID)! // We just trust that the mech exists here since we're like, viewing it
     },
-    color() {
+    color(): string {
       return this.mech.Frame.Manufacturer.Color
     },
-    isPixel() {
-      return this.mech.LocalImage && this.mech.LocalImage.includes('_pixel')
+    isPixel(): boolean {
+      if(this.mech.LocalImage) {
+        return  this.mech.LocalImage.includes('_pixel')
+      } 
+      return false;
     },
   },
   methods: {

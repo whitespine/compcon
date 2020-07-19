@@ -16,11 +16,10 @@ import { GlossaryItem, glossary } from 'compcon_data'
 export default Vue.extend({
   name: 'glossary',
   components: { SidebarArrayView },
-  data: () => ({
-    glossary: [] as GlossaryItem[]
-  }),
-  created() {
-    this.glossary = _.sortBy(glossary, [x => x.name])
+  computed: {
+    sorted_glossary(): GlossaryItem[] {
+      return _.sortBy(glossary, [x => x.name])
+    }
   },
 })
 </script>
