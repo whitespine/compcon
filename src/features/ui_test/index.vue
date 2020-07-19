@@ -256,7 +256,7 @@ export default Vue.extend({
     onCritExample: null as null | MechWeapon,
     asDroneExample: null as null | MechWeapon,
   }),
-  created() {
+  created() { // AUDITED - who cares lol
     const s = getModule(CCDSInterface, this.$store).compendium
     this.genericExample =s.getReferenceByID("MechSystems", 'ms_eva_module')
     this.chargeExample =s.getReferenceByID("MechSystems", 'ms_pattern_a_smoke_charges')

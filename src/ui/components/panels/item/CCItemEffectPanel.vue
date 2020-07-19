@@ -32,7 +32,7 @@ export default {
       type: Boolean,
     },
   },
-  created() {
+  created() { // AUDITED - its fine, no idea what this number does though
     this.ie_key = Math.random()
       .toString(36)
       .substring(2, 5)

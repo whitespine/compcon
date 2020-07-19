@@ -28,22 +28,19 @@ import { DamageType } from  'compcon_data'
 })
 export default class CCStringEdit extends Vue {
   @Prop({ type: Array, required: false, default: () => [] })
-  readonly allowedTypes: string[]
+  readonly allowedTypes!: string[]
 
   dialog = false
-  availableTypes = []
   selected = ''
 
-  created(): void {
-    this.availableTypes = this.allowedTypes.length
+  get availableTypes(): string[] {
+    return this.allowedTypes.length
       ? this.damageTypes().filter(x => this.allowedTypes.includes(x))
       : this.damageTypes().filter(x => x !== 'Variable')
   }
 
   damageTypes(): string[] {
-    return Object.keys(DamageType)
-      .map(k => DamageType[k as any])
-      .sort() as string[]
+    return Object.values(DamageType).sort() as string[]
   }
 
   show(): void {

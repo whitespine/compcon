@@ -69,7 +69,7 @@ import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 
 @Component({ name: 'tick-bar' })
 export default class CCTickBar extends Vue {
-  created(): void {
+  created(): void { // AUDITED
     this.lock = true
     if (!this.readonly) {
       this.model = this.current > this.max ? this.max : this.current
@@ -83,22 +83,22 @@ export default class CCTickBar extends Vue {
   }
 
   @Prop({ type: String, required: false, default: '' })
-  readonly label: string
+  readonly label!: string
 
   @Prop({ type: String, required: false, default: 'start' })
-  readonly justify: string
+  readonly justify!: string
   @Prop({ type: Boolean })
   readonly small?: boolean
   @Prop({ type: Boolean })
   readonly large?: boolean
   @Prop({ type: String, required: false, default: 'mdi-hexagon-outline' })
-  readonly emptyIcon: string
+  readonly emptyIcon!: string
   @Prop({ type: String, required: false, default: 'mdi-hexagon' })
-  readonly fullIcon: string
+  readonly fullIcon!: string
   @Prop({ type: String, required: false, default: 'accent' })
-  readonly color: string
+  readonly color!: string
   @Prop({ type: String, required: false, default: 'panel' })
-  readonly bgColor: string
+  readonly bgColor!: string
   @Prop({ type: Boolean })
   readonly noPips?: boolean
   @Prop({ type: Boolean })
@@ -142,7 +142,8 @@ export default class CCTickBar extends Vue {
     else e.target.value = this.myInput
   }
 
-  @Ref('pipinput') readonly pipinput: HTMLInputElement
+  @Ref('pipinput') 
+  readonly pipinput!: HTMLInputElement
   startInputting(): void {
     this.inputting = true
     this.$nextTick(() => {

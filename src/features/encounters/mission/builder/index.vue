@@ -124,15 +124,15 @@ export default Vue.extend({
     headers: [{ text: 'Name', value: 'Name', align: 'left' }],
   }),
   computed: {
-    labels() {
-      return this.missions.flatMap(x => x.Labels).filter(x => x != null && x != '')
+    labels(): string[] {
+      return this.missions.flatMap(x => x.Labels).filter(x => x)
     },
-    campaigns() {
-      return this.missions.map(x => x.Campaign).filter(x => x != null && x != '')
+    campaigns(): string[] {
+      return this.missions.map(x => x.Campaign).filter(x => x)
     },
     missions(): Mission[] {
       const store = getModule(CCDSInterface, this.$store)
-      return store.mission.Missions
+      return store.missions.Missions
     }
   },
   watch: {
@@ -140,23 +140,21 @@ export default Vue.extend({
       (this.$refs.view as any).resetScroll()
     },
   },
-  created() {
-  },
   methods: {
     toMission(id: string) {
       this.$router.push({ name: 'edit-mission', params: { id } })
     },
     deleteMission(Mission: Mission) {
       const store = getModule(CCDSInterface, this.$store)
-      store.mut(s => s.mission.deleteMission(Mission))
+      store.mut(s => s.missions.deleteMission(Mission))
     },
     copyMission(Mission: Mission) {
       const store = getModule(CCDSInterface, this.$store)
-      store.mut(s => s.mission.cloneMission(Mission))
+      store.mut(s => s.missions.cloneMission(Mission))
     },
     addNew() {
       const store = getModule(CCDSInterface, this.$store)
-      store.mut(s => s.mission.addMission(new Mission()));
+      store.mut(s => s.missions.addMission(new Mission()));
       const m = this.missions[this.missions.length - 1].ID
       this.$router.push({ name: 'edit-mission', params: { id: m } })
 

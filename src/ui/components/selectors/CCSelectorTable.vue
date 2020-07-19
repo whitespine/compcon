@@ -36,7 +36,7 @@
           :hint="`${fItems.length} Items`"
         />
       </v-col>
-      <cc-filter-panel v-if="!noFilter" :item-type="itemType" @set-filters="setFilters" />
+      <cc-filter-panel v-if="!noFilter" :item-type="itemTypeFallback" @set-filters="setFilters" />
     </v-row>
     <selector-table-view
       v-if="profile.SelectorView === 'list'"
@@ -58,7 +58,7 @@
 import Vue from 'vue'
 import SelectorTableView from './views/_SelectorTableView.vue'
 import SelectorSplitView from './views/_SelectorSplitView.vue'
-import { accentInclude, ItemFilter, UserProfileStore } from 'compcon_data'
+import { accentInclude, ItemFilter, UserProfileStore, CompendiumItem } from 'compcon_data'
 import { getModule } from 'vuex-module-decorators'
 import { CCDSInterface } from '../../../io/ccdata_store'
 
@@ -95,22 +95,23 @@ export default Vue.extend({
       return store.user
     },
     fItems() {
-      // TODO: What in the blazes?
-      const vm = this as any
-      let i = vm.items
+      // Filter the items
+      let items = this.items as CompendiumItem[];
 
-      if (vm.search) i = i.filter(x => accentInclude(x.Name, vm.search))
-
-      if (Object.keys(vm.filters).length) {
-        i = ItemFilter.Filter(i, vm.filters)
+      if (this.search) {
+        items = items.filter(x => accentInclude(x.Name, this.search))
       }
 
-      return i
+      if (Object.keys(this.filters).length) {
+        items = ItemFilter.Filter(items, this.filters)
+      }
+
+      return items
     },
   },
-  created() {
-    if (!this.itemType) this.itemType = this.itemTypeFallback
-  },
+  // created() { // Disable temporarily to see how it behaves
+    // if (!this.itemType) this.itemType = this.itemTypeFallback
+  // },
   methods: {
     setFilters(newFilter: any) {
       this.filters = newFilter

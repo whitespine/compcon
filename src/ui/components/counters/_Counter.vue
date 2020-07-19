@@ -65,7 +65,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Counter } from  'compcon_data'
+import { Counter, ICounterSaveData } from  'compcon_data'
 
 @Component({
   props: {
@@ -88,12 +88,12 @@ import { Counter } from  'compcon_data'
   },
 })
 export default class CounterComponent extends Vue {
-  public counter: Counter = null
+  public counter!: Counter
 
-  created(): void {
+  created(): void { // AUDITED
     this.counter = new Counter(this.$props.counterData)
 
-    const data = this.$props.saveData.find(data => data.id === this.counter.ID)
+    const data = (this.$props.saveData as ICounterSaveData[]).find(data => data.id === this.counter.ID)
     if (data) this.counter.LoadData(data)
   }
 

@@ -207,7 +207,7 @@ export default Vue.extend({
       this.reset()
     },
   },
-  created() {
+  created() { // AUDITED
     this.reset()
     this.shown = Object.keys(this.groups)
     this.preventDnd = this.isTouch

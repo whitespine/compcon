@@ -29,34 +29,34 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 @Component({name: 'cc-active-card'})
 export default class CCActiveCard extends Vue {
   @Prop({ type: String, required: false, default: 'primary' })
-  readonly color: string
+  readonly color!: string
   @Prop({ type: String, required: true })
-  readonly header: string
+  readonly header!: string
   @Prop({ type: String, required: false, default: '' })
-  readonly subheader: string
+  readonly subheader!: string
   @Prop({ type: [String, Number], required: false, default: '' })
-  readonly content: string | number
+  readonly content!: string | number
   @Prop({ type: [String, Number], required: false, default: '' })
-  readonly cols: string | number
+  readonly cols!: string | number
   @Prop({ type: [String, Number], required: false, default: '' })
-  readonly xl: string | number
+  readonly xl!: string | number
   @Prop({ type: [String, Number], required: false, default: '' })
-  readonly lg: string | number
+  readonly lg!: string | number
   @Prop({ type: [String, Number], required: false, default: '' })
-  readonly md: string | number
+  readonly md!: string | number
   @Prop({ type: [String, Number], required: false, default: '' })
-  readonly cm: string | number
+  readonly cm!: string | number
   @Prop({ type: Boolean })
-  readonly collapsible: boolean
+  readonly collapsible?: boolean
   @Prop({ type: Boolean })
-  readonly startClosed: boolean
+  readonly startClosed?: boolean
   @Prop({ type: Boolean })
-  readonly prominent: boolean
+  readonly prominent?: boolean
 
   collapsed = false
 
-  created() {
-    this.collapsed = this.startClosed
+  created() { // AUDITED
+    this.collapsed = !!this.startClosed
   }
 }
 </script>

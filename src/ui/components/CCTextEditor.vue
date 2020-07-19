@@ -83,13 +83,13 @@ export default Vue.extend({
       HardBreak,
     ],
   }),
-  created() {
+  created() { // AUDITED
     this.text = this.original || ''
   },
   methods: {
     show() {
-      this.text = this.original || ''
-      this.$refs.dialog.show()
+      this.text = this.original || '';
+      (this.$refs as any).show()
     },
   },
 })

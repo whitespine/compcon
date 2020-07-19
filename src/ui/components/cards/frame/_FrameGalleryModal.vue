@@ -100,6 +100,15 @@ import Vue from 'vue'
 import { getImagePath, ImageTag } from '@/io/ImageManagement'
 import map from '../../../../../static/img/artistmap.json'
 import path from 'path'
+import { Frame } from 'compcon_data'
+
+interface Artist {
+  imgName: string | null,
+  name: string,
+  logo: string | null,
+  website: string | null
+  twitter: string | null,
+}
 
 export default Vue.extend({
   name: 'frame-gallery-modal',
@@ -108,36 +117,39 @@ export default Vue.extend({
   },
   data: () => ({
     dialog: false,
-    selected: null,
+    selected: ""
   }),
   computed: {
-    artist() {
+    artist(): Artist | null {
       if (!this.selected) return null
       const basename = path.basename(this.selected, path.extname(this.selected))
       const artist = map.find(x => x.images.some(y => y.img === basename))
       if (!artist) return null
       const image = artist.images.find(x => x.img === basename)
+      if(!image) return null;
       return {
         imgName: image.name,
         name: artist.artist,
-        logo: artist.logo ? getImagePath(ImageTag.Misc, artist.logo) : '',
+        logo: artist.logo ? getImagePath(ImageTag.Misc, artist.logo) : null,
         website: artist.website || null,
         twitter: artist.twitter || null,
       }
     },
-    isPixel() {
+
+    isPixel(): boolean {
       return this.selected.includes('_pixel')
     },
   },
-  created() {
-    this.selected = this.frame.DefaultImage
+  created() { // AUDITED (mostly - this element will likely see a ton of work in the future)
+    this.selected = (this.frame as Frame).DefaultImage
   },
   methods: {
     selectImg(a) {
+      // TODO: This seems broken
       this.selected = this.imgPath(a.tag, a.src)
       this.$emit('set-img', this.imgPath(a.tag, a.src))
     },
-    imgPath(tag: ImageTag, src: string) {
+    imgPath(tag: ImageTag, src: string): string {
       return getImagePath(tag, src)
     },
   },

@@ -36,13 +36,20 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
+type AmmoType = {
+  name: string,
+  cost: 0,
+  effect: string
+}
+
 export default Vue.extend({
   name: 'ammo-case-inset',
   props: {
     level: { type: Number, required: true, default: 0 },
   },
   data: () => ({
-    selected: null,
+    selected: null as unknown as AmmoType, // Set in create
     allAmmo: [
       {
         name: 'Standard',
@@ -81,15 +88,15 @@ export default Vue.extend({
         cost: 2,
         effect: 'This weapon gains AP and deals Kinetic damage.',
       },
-    ],
+    ] as AmmoType[],
   }),
   computed: {
-    ammoItems() {
+    ammoItems(): AmmoType[] {
       if (this.level < 2) return this.allAmmo.slice(0, 4)
       return this.allAmmo
     },
   },
-  created() {
+  created() { // AUDITED
     this.selected = this.allAmmo[0]
   },
 })

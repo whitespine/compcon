@@ -1,3 +1,7 @@
+<!--
+
+As best I can tell this is old as dirt
+
 <template>
   <cc-titled-panel :title="talent.Name" icon="cci-trait">
     <v-btn slot="items" icon @click="$refs.dialog.show()">
@@ -97,3 +101,5 @@ export default Vue.extend({
   },
 })
 </script>
+
+-->

@@ -192,6 +192,7 @@ import { getModule } from 'vuex-module-decorators'
 import { mission } from '@/io/Generators'
 import { Encounter, Mission } from 'compcon_data'
 import { CCDSInterface } from '../../../../io/ccdata_store'
+import _ from 'lodash'
 
 export default Vue.extend({
   name: 'mission-card',
@@ -214,28 +215,41 @@ export default Vue.extend({
     },
   },
   computed: {
-    mission(): Mission | null {
+    ref_mission(): Mission {
       const store = getModule(CCDSInterface, this.$store)
-      return store.mission.Missions.find(x => x.ID === this.id) || null
+      return store.missions.Missions.find(x => x.ID === this.id)! // We trust that we are being given a real id
     },
   },
-  created() {
+  data() { 
+    return {
+      mission: (null as any) as Mission // Set in created
+    }
+  },
+  created() { // NEEDSWORK
     const store = getModule(CCDSInterface, this.$store)
-    // Can mutate
-    store.mut(s => s.mission.Missions.forEach(m => m.ValidateSteps()))
+
+    // In order to safely modify this mission, we create a temporary local copy to manipulate
+    let mis = Mission.Deserialize(Mission.Serialize(this.ref_mission));
+
+    // We can freely mutate it
+    mis.ValidateSteps();
+    this.mission = mis;
+    // store.mut(s => s.missions.Missions.forEach(m => m.ValidateSteps()))
   },
   methods: {
-    randomName() {
+    // Save our ref back to the store
+    save() {
       const store = getModule(CCDSInterface, this.$store)
-      if(this.mission) {
-        store.mut(() => this.mission!.Name = mission())
-      }
+      store.missions.updateMission(this.mission);
     },
+
+    // Sets the mission to have a new random name
+    randomName() {
+      this.mission.Name = mission()
+    },
+
     addEncounter(e: Encounter) {
-      const store = getModule(CCDSInterface, this.$store)
-      if(this.mission) {
-        store.mut(() => this.mission!.AddEncounter(e));
-      }
+      this.mission.AddEncounter(e);
       (this.$refs.selectDialog as any).hide()
     },
   },
