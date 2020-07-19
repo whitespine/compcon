@@ -204,11 +204,6 @@ export default Vue.extend({
       return store.missions.ActiveMissions.filter(x => x.IsComplete)
     },
   },
-  created() {
-    const store = getModule(CCDSInterface, this.$store)
-    // This is technically a mutation
-    store.mut(s => s.missions.Missions.forEach(m => m.ValidateSteps()));
-  },
   methods: {
     deleteActiveMission(m: ActiveMission) {
       const store = getModule(CCDSInterface, this.$store)
