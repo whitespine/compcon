@@ -32,7 +32,7 @@ export default class UpdatesTracker extends Vue {
     this.checking = false
   }
 
-  created() {
+  created() { // AUDITED
     updateChecker.on('updatefound', () => (this.updateFound = true))
   }
 

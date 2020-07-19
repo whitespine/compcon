@@ -102,16 +102,17 @@ export default Vue.extend({
     selectedClass: null as null | NpcClass,
     grouping: null,
     headers: [{ text: 'Name', value: 'Name', align: 'left' }],
-    classes: [] as NpcClass[],
   }),
   watch: {
     selectedClass() {
       (this.$refs.view as any).resetScroll()
     },
   },
-  created() {
-    const store = getModule(CCDSInterface, this.$store).compendium
-    this.classes = store.getItemCollection("NpcClasses");
+  computed: { 
+    classes() {
+      const store = getModule(CCDSInterface, this.$store).compendium
+      return store.getItemCollection("NpcClasses");
+    }
   },
   methods: {
     AddNpc() {

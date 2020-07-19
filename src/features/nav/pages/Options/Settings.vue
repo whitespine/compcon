@@ -112,6 +112,7 @@
           outlined
           :items="themes"
           item-text="name"
+          item-value="id"
           @change="setTheme"
         />
       </v-col>
@@ -141,7 +142,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import allThemes, { ThemeChoice } from '@/ui/style/themes'
+import ThemesLookup, { Theme, ThemeIDs } from '@/ui/style/themes'
 import { getModule } from 'vuex-module-decorators'
 import { exportAll, importAll, exportV1Pilots, clearAllData } from '@/io/BulkData'
 import { saveFile } from '@/io/Dialog'
@@ -150,49 +151,51 @@ import { CCDSInterface } from '../../../../io/ccdata_store'
 export default Vue.extend({
   name: 'options-settings',
   data: () => ({
-    theme: 'gms' as ThemeChoice,
-    themes: [] as Array<{name: string, value: ThemeChoice}>,
+    theme: null as unknown as Theme, // Set in local
     importDialog: false,
     fileValue: null,
     deleteDialog: false,
   }),
   computed: {
-    userID() {
-      const store = getModule(CCDSInterface, this.$store)
-      return store.user.ID
+    // Quick lookup of user id
+    userID(): string {
+      return getModule(CCDSInterface, this.$store).user.ID;
     },
-    userTheme(): keyof typeof allThemes {
+
+    // Get the error-corrected user theme key 
+    userTheme(): Theme {
       const store = getModule(CCDSInterface, this.$store)
       let theme = store.user.Theme;
-      if(theme !== "gms" && theme !== "msmc" && theme !== "horus") {
-        return "gms"
+      if(!ThemesLookup[theme]) {
+        return this.themes[0]
       } else {
-        return store.user.Theme as ThemeChoice
+        return ThemesLookup[theme]
       }
     },
-  },
-  created() {
-    this.theme = this.userTheme 
-    for (const k in allThemes) {
-      if (allThemes.hasOwnProperty(k)) {
-        const e = (allThemes as any)[k]
-        this.themes.push({ name: e.name, value: e.id })
-      }
+
+    // Lookup of the keys, for display purposes
+    themes(): Theme[] {
+      return Object.values(ThemesLookup) as Theme[]
     }
+  },
+  created() { // AUDITED
+    // Convenient to track local
+    this.theme = this.userTheme 
   },
   methods: {
     reload() {
+      // Let theme actually apply, I guess
       location.reload(true)
     },
     setTheme() {
-      getModule(CCDSInterface, this.$store).user.Theme = this.theme
-      const isDark = allThemes[this.theme].type === 'dark'
+      getModule(CCDSInterface, this.$store).user.Theme = this.theme.id
+      const isDark = this.theme.type === 'dark'
 
       if (isDark) {
-        this.$vuetify.theme.themes.dark = allThemes[this.theme].colors
+        this.$vuetify.theme.themes.dark = this.theme.colors
         this.$vuetify.theme.dark = true
       } else {
-        this.$vuetify.theme.themes.light = allThemes[this.theme].colors
+        this.$vuetify.theme.themes.light = this.theme.colors
         this.$vuetify.theme.dark = false
       }
     },

@@ -33,6 +33,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Status } from 'compcon_data'
 
 @Component({ name: 'status-select' })
 export default class CCStatusSelect extends Vue {
@@ -43,10 +44,10 @@ export default class CCStatusSelect extends Vue {
   readonly model!: Status[]
 
   @Prop({ type: String, required: false, default: '' })
-  readonly color: string
+  readonly color!: string
 
   @Prop({ type: String, required: false, default: '' })
-  readonly label: string
+  readonly label!: string
 
   @Prop({ type: Boolean })
   readonly dark?: boolean

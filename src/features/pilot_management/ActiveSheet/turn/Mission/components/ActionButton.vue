@@ -68,14 +68,19 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    action: undefined as undefined | PlayerAction,
-    dialog: false,
-    actionColor: '',
+    dialog: false
   }),
-  created() {
-    this.action = actions.find(x => x.id === `act_${this.actionId}`)
-    if (this.colorOverride) this.actionColor = this.colorOverride
-    else this.actionColor = `action--${this.action!.action_type}`
-  },
+  computed: {
+    action(): PlayerAction {
+      return actions.find(x => x.id === `act_${this.actionId}`)! // We trust props
+    },
+    actionColor(): string {
+      if (this.colorOverride)  {
+        return  this.colorOverride
+      } else  {
+        return `action--${this.action!.action_type}`
+      }
+    }
+  }
 })
 </script>

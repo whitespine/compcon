@@ -107,7 +107,7 @@ export default Vue.extend({
     credits: credits,
     loading: true,
   }),
-  created() {
+  created() { // AUDITED
     gistApi
       .getCredits()
       .then((response: any) => {

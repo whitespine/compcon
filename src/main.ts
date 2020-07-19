@@ -104,7 +104,7 @@ async function main() {
   window.onerror = error => Vue.prototype.$notifyError(error)
 
   // Finally, init vue
-  new Vue({
+  new Vue({ // AUDITED
     components: { App },
     vuetify,
     router,
