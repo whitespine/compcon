@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Pilot } from 'compcon_data'
 
 export default Vue.extend({
   name: 'print-dialog',
@@ -36,18 +37,21 @@ export default Vue.extend({
       required: true,
     },
   },
-  data: () => ({
-    selectedMechID: null,
-  }),
-  created() {
-    if (this.pilot.ActiveMech) this.selectedMechID = this.pilot.ActiveMech.ID
+  computed: {
+    selectedMechID(): string | null {
+      if ((this.pilot as Pilot).ActiveMech){
+       return this.pilot.selectedMechID 
+      } else {
+        return null;
+      }
+    }
   },
   methods: {
     show() {
-      this.$refs.dialog.show()
+      (this.$refs as any).dialog.show()
     },
     hide() {
-      this.$refs.dialog.hide()
+      (this.$refs as any).dialog.hide()
     },
     print() {
       this.$router.push(`/print/${this.pilot.ID}/${this.selectedMechID}`)
