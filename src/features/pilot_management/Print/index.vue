@@ -47,18 +47,27 @@ export default Vue.extend({
     mech: null as Mech | null,
     blank: false,
   }),
-  created() {
-    if (this.pilotID === 'blank') this.blank = true
-    let pilot = getModule(CCDSInterface, this.$store).pilots.Pilots.find(
-      p => p.ID === this.pilotID
-    )
-    if(!pilot) {
-      this.blank = true;
-    } else {
-      this.pilot = pilot;
-      this.mech = !this.mechID ? null : (this.pilot as Pilot).Mechs.find(m => m.ID === this.mechID) || null;
+  computed: {
+    blank(): boolean {
+      if (this.pilotID === 'blank') {
+        return true;
+      }
+      let pilot = getModule(CCDSInterface, this.$store).pilots.getPilot(this.pilotID) || null;
+      if(!pilot) {
+        return true;
+      }
+      return false;
+    },
+    pilot(): Pilot | null {
+      return getModule(CCDSInterface, this.$store).pilots.getPilot(this.pilotID) || null;
+    },
+    mech(): Mech | null {
+      if(this.pilot && this.mechID) {
+        return this.pilot.Mechs.find(m => m.ID === this.mechID) || null;
+      }
+      return null;
     }
-  },
+  }
 })
 </script>
 

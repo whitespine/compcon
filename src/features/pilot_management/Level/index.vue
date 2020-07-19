@@ -143,7 +143,7 @@ export default Vue.extend({
       window.scrollTo(0, 0)
     },
   },
-  created() {
+  created() { // NEEDSWORK
     this.pilot = Pilot.Deserialize(Pilot.Serialize(this.currentPilot))
     this.pilot.Level++
     this.cbEligible = this.pilot.IsMissingCBs

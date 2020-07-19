@@ -108,7 +108,7 @@ export default Vue.extend({
       window.scrollTo(0, 0)
     },
   },
-  created() {
+  created() { // NEEDSWORK
     this.pilot = new Pilot()
   },
   methods: {

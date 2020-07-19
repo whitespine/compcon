@@ -53,6 +53,7 @@ import {
 } from 'tiptap-vuetify'
 
 import vueMixins from '@/util/vueMixins'
+import { Pilot } from 'compcon_data'
 
 export default vueMixins(activePilot).extend({
   name: 'appearance-block',
@@ -83,14 +84,13 @@ export default vueMixins(activePilot).extend({
     ],
   }),
 
-  created() {
-    // this.$vuetify.lang.current = 'en'
-    this.appearance = this.pilot.TextAppearance || ''
+  created() { // AUDITED
+    this.appearance = (this.pilot as Pilot).TextAppearance || ''
   },
   methods: {
     show() {
-      this.appearance = this.pilot.TextAppearance || ''
-      this.$refs.dialog.show()
+      this.appearance = (this.pilot as Pilot).TextAppearance || '';
+      (this.$refs as any).dialog.show()
     },
   },
 })

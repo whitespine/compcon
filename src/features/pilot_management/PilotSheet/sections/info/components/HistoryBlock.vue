@@ -53,6 +53,7 @@ import {
 } from 'tiptap-vuetify'
 
 import vueMixins from '@/util/vueMixins'
+import { Pilot } from 'compcon_data'
 
 export default vueMixins(activePilot).extend({
   name: 'history-block',
@@ -82,13 +83,13 @@ export default vueMixins(activePilot).extend({
       HardBreak,
     ],
   }),
-  created() {
-    this.history = this.pilot.History || ''
+  created() { // AUDITED
+    this.history = (this.pilot as Pilot).History || ''
   },
   methods: {
     show() {
-      this.history = this.pilot.History || ''
-      this.$refs.dialog.show()
+      this.history = (this.pilot as Pilot).History || '';
+      (this.$refs as any).dialog.show()
     },
   },
 })

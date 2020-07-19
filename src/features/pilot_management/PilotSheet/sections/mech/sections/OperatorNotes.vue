@@ -51,6 +51,7 @@ import {
   HorizontalRule,
   History,
 } from 'tiptap-vuetify'
+import { Mech } from 'compcon_data'
 
 export default Vue.extend({
   name: 'notes-block',
@@ -91,13 +92,13 @@ export default Vue.extend({
       HardBreak,
     ],
   }),
-  created() {
-    this.notes = this.mech.Notes || ''
+  created() { // AUDITED
+    this.notes = (this.mech as Mech).Notes || ''
   },
   methods: {
     show() {
-      this.notes = this.mech.Notes || ''
-      this.$refs.dialog.show()
+      this.notes = (this.mech as Mech).Notes || '';
+      (this.$refs as any).dialog.show()
     },
   },
 })
